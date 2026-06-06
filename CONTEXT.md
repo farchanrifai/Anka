@@ -9,7 +9,7 @@
 
 - **Name:** Anka
 - **Platform:** iOS only (no macOS, no Android)
-- **Minimum iOS:** 17.0
+- **Minimum iOS:** 26.0 (uses Liquid Glass tab bar APIs: `role: .search` detached Add button, `.tabBarMinimizeBehavior`)
 - **Bundle ID:** com.nc.anka
 - **App Group:** group.com.nc.anka
 - **Purpose:** Personal expense tracker — manual-entry first, fast logging, beautiful design
@@ -105,10 +105,10 @@ transactions: [Transaction] // @Relationship(deleteRule: .nullify)
 
 ## App Navigation
 
-**3 tabs:**
-- Tab 0: Today (dashboard + transaction list)
-- Tab 1: Add (intercepted — opens full-screen sheet, does NOT navigate)
-- Tab 2: Reports (monthly summary, charts)
+**Liquid Glass tab bar (iOS 26):**
+- Left pill/island: **Today** (dashboard + transaction list) + **Reports** (monthly summary, charts) grouped together
+- Right detached button: **Add** — `role: .search` detaches it from the pill; intercepted via `onChange` (opens sheet, restores previous tab, does NOT navigate)
+- `.tabBarMinimizeBehavior(.onScrollDown)` — bar minimizes as content scrolls down
 
 **Settings:** accessible from Today tab via gear icon (top-right)
 
@@ -226,7 +226,7 @@ Do NOT port: any View files, FirestoreSyncService, ProfileManager, InsightEngine
 
 | Phase | Name | Status |
 |---|---|---|
-| 0 | Project Setup + Design System | ⬜ Not started |
+| 0 | Project Setup + Design System | ✅ Done |
 | 1 | Data Models | ⬜ Not started |
 | 2 | Add Transaction | ⬜ Not started |
 | 3 | Today View | ⬜ Not started |
