@@ -98,8 +98,16 @@ emoji: String
 colorHex: String
 type: TransactionType
 sortOrder: Int
-transactions: [Transaction] // @Relationship(deleteRule: .nullify)
+transactions: [Transaction] // @Relationship(deleteRule: .cascade, inverse: \Transaction.category)
 ```
+
+### TransactionType enum
+`String`-backed, `Codable, CaseIterable, Hashable`: `.expense` / `.income`, each with a `displayName`.
+
+### Seeding & Sample Data (`Models/SampleData.swift`)
+- `createDefaultCategories()` → 12 defaults (6 expense, 6 income), each with emoji + hex color + `sortOrder`.
+- `container()` → in-memory `ModelContainer` for previews/tests, pre-seeded with the 12 categories + 3 sample transactions.
+- `AnkaApp.init()` builds the on-disk `ModelContainer(for: Transaction.self, Category.self)` and seeds the 12 default categories only when the store is empty (first launch).
 
 ---
 
@@ -112,7 +120,15 @@ transactions: [Transaction] // @Relationship(deleteRule: .nullify)
 
 **Settings:** accessible from Today tab via gear icon (top-right)
 
-**Add Transaction flow:** full-screen modal → numpad → category row → optional note → Save
+**Add Transaction flow (Spendy-adapted layout):** full-screen modal, top→bottom:
+- Top bar: `Cancel` capsule (left) · `•••` options-placeholder capsule (right, inert — recurring lives in a later phase)
+- Centered amount: `IDR` prefix + whole-number value with thousands separator (e.g. `IDR 12,345`), animated `.numericText()` transition
+- Centered `Add note` text field (focuses the system keyboard; numpad fades out while editing)
+- Flexible spacers push the action row + numpad to the bottom
+- Category + Date + Save row (all 48 pt tall): compact category slot (opens picker **sheet** — segmented Expenses/Income tabs + scrollable list, `.medium`→`.large` detents) · functional date pill (`DD`/`MON`, tap = inline `DatePicker`) · coral Save capsule (disabled until amount + category set)
+- Numpad: 1–9, then note-key (✎) · 0 · `⌫`. No per-key backgrounds; each key is a full-cell tap target and the grid expands to fill available height. IDR amounts are whole numbers, so the note key replaces the decimal.
+
+Default currency: `IDR`. State held in-view via `@State` (no ViewModel). No persistence yet — Save just dismisses (Phase 3 wires SwiftData).
 
 ---
 
@@ -227,8 +243,8 @@ Do NOT port: any View files, FirestoreSyncService, ProfileManager, InsightEngine
 | Phase | Name | Status |
 |---|---|---|
 | 0 | Project Setup + Design System | ✅ Done |
-| 1 | Data Models | ⬜ Not started |
-| 2 | Add Transaction | ⬜ Not started |
+| 1 | Data Models | ✅ Done |
+| 2 | Add Transaction | ✅ Done (UI only — no persistence yet) |
 | 3 | Today View | ⬜ Not started |
 | 4 | Reports View | ⬜ Not started |
 | 5 | Settings + Categories | ⬜ Not started |

@@ -40,8 +40,9 @@ struct AppRouter: View {
                 previousTab = newValue
             }
         }
-        .sheet(isPresented: $showAddTransaction) {
-            AddTransactionPlaceholder()
+        .fullScreenCover(isPresented: $showAddTransaction) {
+            AddTransactionView()
+                .ignoresSafeArea(.keyboard)
         }
         .onAppear {
             previousTab = appState.selectedTab
