@@ -31,6 +31,20 @@ enum PeriodFilter: String, CaseIterable, Hashable {
     }
 }
 
+// MARK: - Balance Mode
+
+enum BalanceMode: String, CaseIterable, Hashable {
+    case expense, income, total
+
+    var title: String {
+        switch self {
+        case .expense: return "Expense"
+        case .income:  return "Income"
+        case .total:   return "Total"
+        }
+    }
+}
+
 // MARK: - TodayViewModel
 
 @MainActor @Observable final class TodayViewModel {
@@ -54,8 +68,11 @@ enum PeriodFilter: String, CaseIterable, Hashable {
 
     var selectedPeriod: PeriodFilter = .thisMonth
     var selectedCategories: [Category] = []
-    var showingExpense: Bool = true
+    var balanceMode: BalanceMode = .expense
     var isChartVisible: Bool = true
+
+    /// Default transaction type for the Add sheet — Total falls back to expense.
+    var addDefaultType: TransactionType { balanceMode == .income ? .income : .expense }
 
     // MARK: - Sheet / navigation state
 
@@ -70,7 +87,7 @@ enum PeriodFilter: String, CaseIterable, Hashable {
 
     var dashboardKey: String {
         let catIDs = selectedCategories.map(\.id.uuidString).sorted().joined(separator: ",")
-        return "\(dataVersion)-\(selectedPeriod.rawValue)-\(showingExpense)-\(catIDs)"
+        return "\(dataVersion)-\(selectedPeriod.rawValue)-\(balanceMode.rawValue)-\(catIDs)"
     }
 
     // MARK: - Cached output (populated by refreshDashboard)
@@ -104,12 +121,20 @@ enum PeriodFilter: String, CaseIterable, Hashable {
         if !selectedCategories.isEmpty {
             return filteredTransactions.reduce(0) { $0 + $1.amount }
         }
-        return showingExpense ? expenseTotal : incomeTotal
+        switch balanceMode {
+        case .expense: return expenseTotal
+        case .income:  return incomeTotal
+        case .total:   return incomeTotal - expenseTotal
+        }
     }
 
     var filteredTransactions: [Transaction] {
-        let type: TransactionType = showingExpense ? .expense : .income
-        var txs = periodTransactions.filter { $0.type == type }
+        var txs: [Transaction]
+        switch balanceMode {
+        case .expense: txs = periodTransactions.filter { $0.type == .expense }
+        case .income:  txs = periodTransactions.filter { $0.type == .income }
+        case .total:   txs = periodTransactions
+        }
         if !selectedCategories.isEmpty {
             let ids = Set(selectedCategories.map { $0.id })
             txs = txs.filter { ids.contains($0.category?.id ?? UUID()) }
@@ -119,8 +144,14 @@ enum PeriodFilter: String, CaseIterable, Hashable {
 
     var availableCategories: [Category] {
         let ids = Set(selectedCategories.map { $0.id })
-        let type: TransactionType = showingExpense ? .expense : .income
-        return categories.filter { !ids.contains($0.id) && $0.type == type }
+        return categories.filter { cat in
+            guard !ids.contains(cat.id) else { return false }
+            switch balanceMode {
+            case .expense: return cat.type == .expense
+            case .income:  return cat.type == .income
+            case .total:   return true
+            }
+        }
     }
 
     // MARK: - Async refresh
@@ -134,7 +165,14 @@ enum PeriodFilter: String, CaseIterable, Hashable {
         // 1. Snapshot Sendable value types on the main actor.
         let txSnaps           = transactions.map(TxSnap.init)
         let interval          = selectedPeriod.dateInterval
-        let capturedType: TransactionType = showingExpense ? .expense : .income
+        // nil = include both types (Total mode)
+        let capturedType: TransactionType? = {
+            switch balanceMode {
+            case .expense: return .expense
+            case .income:  return .income
+            case .total:   return nil
+            }
+        }()
         let capturedCatIDs: Set<UUID>     = Set(selectedCategories.map(\.id))
         let tz                            = TimeZone.current
 
@@ -147,7 +185,7 @@ enum PeriodFilter: String, CaseIterable, Hashable {
             let periodSnaps = txSnaps.filter { interval.contains($0.date) }
 
             // Filtered + sorted snaps (type + optional category filter)
-            var filtered = periodSnaps.filter { $0.type == capturedType }
+            var filtered = capturedType == nil ? periodSnaps : periodSnaps.filter { $0.type == capturedType }
             if !capturedCatIDs.isEmpty {
                 filtered = filtered.filter { capturedCatIDs.contains($0.categoryID ?? UUID()) }
             }
@@ -164,7 +202,7 @@ enum PeriodFilter: String, CaseIterable, Hashable {
 
             // Chart aggregation
             var chartBuckets: [UUID: Double] = [:]
-            for snap in periodSnaps where snap.type == capturedType {
+            for snap in periodSnaps where capturedType == nil || snap.type == capturedType {
                 if let catID = snap.categoryID {
                     chartBuckets[catID, default: 0] += snap.amount
                 }

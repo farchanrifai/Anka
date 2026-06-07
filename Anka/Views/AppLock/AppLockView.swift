@@ -114,19 +114,27 @@ struct AppLockView: View {
 
     private var biometricSymbol: String {
         switch lock.biometricType {
-        case .faceID:  return "faceid"
-        case .touchID: return "touchid"
-        case .opticID: return "opticid"
-        @unknown default: return "lock.shield"
+        case .faceID:
+            return "faceid"
+        case .touchID:
+            return "touchid"
+        case .opticID:
+            return "opticid"
+        @unknown default:
+            return "lock.shield"
         }
     }
 
     private var biometricLabel: String {
         switch lock.biometricType {
-        case .faceID:  return "Unlock with Face ID"
-        case .touchID: return "Unlock with Touch ID"
-        case .opticID: return "Unlock with Optic ID"
-        @unknown default: return "Unlock"
+        case .faceID:
+            return "Unlock with Face ID"
+        case .touchID:
+            return "Unlock with Touch ID"
+        case .opticID:
+            return "Unlock with Optic ID"
+        @unknown default:
+            return "Unlock"
         }
     }
 

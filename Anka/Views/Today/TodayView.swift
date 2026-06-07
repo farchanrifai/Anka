@@ -41,7 +41,7 @@ struct TodayView: View {
             SettingsView()
         }
         .sheet(isPresented: $vm.showAddTransaction) {
-            AddTransactionView(defaultType: vm.showingExpense ? .expense : .income)
+            AddTransactionView(defaultType: vm.addDefaultType)
         }
         .sheet(isPresented: Binding(
             get: { vm.editingTransaction != nil },
@@ -116,12 +116,7 @@ struct TodayView: View {
                 }
                 .frame(height: 0)
 
-                if vm.isChartVisible && vm.selectedCategories.isEmpty {
-                    chartSection
-                        .padding(.top, 16)
-                        .padding(.bottom, 16)
-                        .transition(.opacity.combined(with: .move(edge: .top)))
-                }
+                // Bar chart hidden for now.
 
                 if vm.isLoading {
                     ForEach(0..<5, id: \.self) { _ in
@@ -154,9 +149,12 @@ struct TodayView: View {
     // MARK: - Sticky Header
 
     private var stickyHeader: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 16) {
+            // ── Expense / Income / Total switcher ─────────────────────
+            balanceModeSwitcher
+
+            // ── Currency prefix + amount ──────────────────────────────
             HStack(alignment: .bottom, spacing: 0) {
-                // ── Currency prefix + amount ──────────────────────────────
                 HStack(alignment: .top, spacing: 4) {
                     Text("Rp")
                         .font(.dsTitle2Bold)
@@ -187,12 +185,30 @@ struct TodayView: View {
                 .allowsHitTesting(true)
             }
 
-            filterChipsRow
+            // ── Period indicator + Navigate to Reports ─────────────────
+            HStack(alignment: .center, spacing: 0) {
+                periodIndicator
+                Spacer()
+                statsButton
+            }
         }
         .padding(.horizontal, 20)
         .padding(.top, 75)
         .padding(.bottom, 14)
         .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
+        .gesture(
+            DragGesture(minimumDistance: 24)
+                .onEnded { value in
+                    guard abs(value.translation.width) > abs(value.translation.height) else { return }
+                    let modes = BalanceMode.allCases
+                    guard let idx = modes.firstIndex(of: vm.balanceMode) else { return }
+                    let next = value.translation.width < 0
+                        ? modes[(idx + 1) % modes.count]
+                        : modes[(idx - 1 + modes.count) % modes.count]
+                    withAnimation(.snappy(duration: 0.25)) { vm.balanceMode = next }
+                }
+        )
         .background {
             LinearGradient(
                 stops: [
@@ -209,89 +225,55 @@ struct TodayView: View {
         }
     }
 
-    // MARK: - Filter Chips
+    // MARK: - Period Indicator
 
-    private var filterChipsRow: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                // Period menu chip
-                Menu {
-                    ForEach(PeriodFilter.allCases, id: \.self) { period in
-                        Button(period.displayString) { vm.selectedPeriod = period }
-                    }
-                } label: {
-                    HStack(spacing: 4) {
-                        Text(vm.selectedPeriod.displayString)
-                        Image(systemName: "chevron.up.chevron.down")
-                            .font(.dsBadgeSemi)
-                    }
-                    .font(.dsFootnoteMedium)
-                    .foregroundStyle(.primary)
-                    .frame(height: 32)
-                    .padding(.horizontal, 12)
-                    .background(DSColor.bgSecondary, in: Capsule())
-                }
-
-                Text("in")
-                    .font(.dsFootnote)
-                    .foregroundStyle(.secondary)
-
-                if vm.selectedCategories.isEmpty {
-                    Menu {
-                        Button("Expense") { vm.showingExpense = true }
-                        Button("Income")  { vm.showingExpense = false }
-                    } label: {
-                        HStack(spacing: 4) {
-                            Text(vm.showingExpense ? "Expense" : "Income")
-                            Image(systemName: "chevron.up.chevron.down")
-                                .font(.dsBadgeSemi)
-                        }
-                        .font(.dsFootnoteMedium)
-                        .foregroundStyle(.primary)
-                        .frame(height: 32)
-                        .padding(.horizontal, 12)
-                        .background(DSColor.bgSecondary, in: Capsule())
-                    }
-                } else {
-                    ForEach(vm.selectedCategories, id: \.id) { cat in
-                        Button { vm.removeCategory(cat) } label: {
-                            HStack(spacing: 4) {
-                                Text(cat.emoji)
-                                Text(cat.name)
-                                Image(systemName: "xmark")
-                                    .font(.dsCaption2Semi)
-                            }
-                            .font(.dsFootnoteMedium)
-                            .foregroundStyle(.primary)
-                            .frame(height: 32)
-                            .padding(.horizontal, 12)
-                            .background(DSColor.bgSecondary, in: Capsule())
-                        }
-                        .buttonStyle(.plain)
-                    }
-
-                    if !vm.availableCategories.isEmpty {
-                        Menu {
-                            ForEach(vm.availableCategories, id: \.id) { cat in
-                                Button {
-                                    vm.addCategory(cat)
-                                } label: {
-                                    Text("\(cat.emoji) \(cat.name)")
-                                }
-                            }
-                        } label: {
-                            Image(systemName: "plus")
-                                .font(.dsFootnoteSemi)
-                                .frame(width: 32, height: 32)
-                                .background(DSColor.bgSecondary, in: Circle())
-                        }
-                        .accessibilityLabel("Filter by category")
-                    }
-                }
+    private var periodIndicator: some View {
+        Menu {
+            ForEach(PeriodFilter.allCases, id: \.self) { period in
+                Button(period.displayString) { vm.selectedPeriod = period }
             }
-            .padding(.horizontal, 20)
+        } label: {
+            HStack(spacing: 4) {
+                let displayText = vm.selectedPeriod.displayString
+                let capitalizedText = displayText.prefix(1).uppercased() + displayText.dropFirst()
+                Text(capitalizedText)
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.dsBadgeSemi)
+            }
+            .font(.dsFootnoteMedium)
+            .foregroundStyle(.secondary)
         }
-        .padding(.horizontal, -20)
+    }
+
+    // MARK: - Balance Mode Switcher
+
+    private var balanceModeSwitcher: some View {
+        HStack(spacing: 16) {
+            ForEach(BalanceMode.allCases, id: \.self) { mode in
+                Text(mode.title)
+                    .font(.dsFootnoteMedium)
+                    .foregroundStyle(vm.balanceMode == mode ? .primary : .secondary)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        withAnimation(.snappy(duration: 0.25)) { vm.balanceMode = mode }
+                    }
+            }
+        }
+    }
+
+    // MARK: - Stats Button
+
+    private var statsButton: some View {
+        NavigationLink {
+            ReportsView()
+        } label: {
+            HStack(spacing: 4) {
+                Text("Stats")
+                Image(systemName: "arrow.right")
+            }
+            .font(.dsFootnoteMedium)
+            .foregroundStyle(DSColor.accent)
+        }
     }
 
     // MARK: - Chart Section
@@ -345,8 +327,20 @@ struct TodayView: View {
     // MARK: - Day Header
 
     private func dayHeader(for group: (date: Date, transactions: [Transaction])) -> some View {
-        let dailyTotal = group.transactions.reduce(0) { $0 + $1.amount }
-        let sign = vm.showingExpense ? "" : "+"
+        let dailyTotal: Double
+        let sign: String
+        switch vm.balanceMode {
+        case .expense:
+            dailyTotal = group.transactions.reduce(0) { $0 + $1.amount }
+            sign = ""
+        case .income:
+            dailyTotal = group.transactions.reduce(0) { $0 + $1.amount }
+            sign = "+"
+        case .total:
+            let net = group.transactions.reduce(0) { $0 + ($1.type == .income ? $1.amount : -$1.amount) }
+            dailyTotal = abs(net)
+            sign = net >= 0 ? "+" : "-"
+        }
 
         return HStack {
             Text(vm.shortDateLabel(for: group.date))
