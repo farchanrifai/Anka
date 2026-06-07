@@ -99,7 +99,6 @@ struct TodayView: View {
             scrollContent
                 .safeAreaInset(edge: .top, spacing: 0) {
                     stickyHeader
-                        .ignoresSafeArea(.keyboard, edges: .bottom)
                 }
                 // Keep the nav bar present (but invisible) so pushing Stats
                 // crossfades the back button in place — matching the iOS
@@ -132,6 +131,16 @@ struct TodayView: View {
                 // circle when the Filter pill is wide. When inactive let the
                 // bar expand to fill the centre — matching Mail.
                 .searchToolbarBehavior(vm.filterLabel == nil ? .automatic : .minimize)
+                // CRITICAL: iOS 26's default search-presentation behavior hides
+                // the underlying content (nav bar + sticky header + scroll
+                // content slide up out of view) when the search field becomes
+                // active — that's the "UI shifted up" symptom. `.ignoresSafeArea(.keyboard)`
+                // doesn't help because this isn't keyboard avoidance, it's
+                // UISearchController's hidesNavigationBarDuringPresentation +
+                // standard search-active animation. This modifier (iOS 18.2+)
+                // tells the search presentation to keep the underlying content
+                // in place.
+                .searchPresentationToolbarBehavior(.avoidHidingContent)
         }
         // Belt-and-braces keyboard avoidance at the NavigationStack level too,
         // so the whole dashboard pane (not just scroll content) stays put when
@@ -222,6 +231,13 @@ struct TodayView: View {
             scrollOffset = offset       // view owns the raw offset (presentational)
             vm.handleScrollOffset(offset) // VM derives isChartVisible from it
         }
+        // Defensive — keep the ScrollView's own safe-area accounting from
+        // reacting to the keyboard. The PRIMARY fix for the "UI shifted up"
+        // behavior is `.searchPresentationToolbarBehavior(.avoidHidingContent)`
+        // on the searchable modifier below; this one just covers the edge
+        // case where the keyboard alone (no search) would still try to shrink
+        // the scroll viewport.
+        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
 
     // MARK: - Sticky Header
