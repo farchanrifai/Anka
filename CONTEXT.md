@@ -132,6 +132,33 @@ Default currency: `IDR`. State held in-view via `@State` (no ViewModel). No pers
 
 ---
 
+## App Lock (Phase 8)
+
+`Services/AppLockManager.swift` is `@MainActor @Observable`, owned by `AnkaApp` as `@State` and injected via `.environment(lockManager)`. Single source of truth for:
+
+- `appLockEnabled: Bool` — persisted to `UserDefaults` under `anka.appLockEnabled` (the `didSet` writes through automatically)
+- `isLocked: Bool` — transient, flips between launches/foreground/background
+- `hasPIN: Bool` — derived from `KeychainHelper.read(forKey: "ankaPINCode") != nil`
+- Biometric helpers: `biometricType`, `canUseBiometrics`, `authenticateWithBiometrics() async -> Bool`
+- PIN: `savePIN`, `removePIN`, `verifyPIN`
+
+`KeychainHelper` uses service `nc.Anka` (separate from the App Group ID).
+
+**Lock gate at app root** — `AnkaApp.body` wraps `AppRouter` in a `ZStack` and overlays `AppLockView` when `lockManager.isLocked` is true. `.onChange(of: scenePhase)` calls `lockManager.lock()` on `.background`/`.inactive`, but `lock()` itself bails when `appLockEnabled == false` OR `hasPIN == false` — so the user can never be stranded.
+
+**PIN is mandatory when enabling.** The Settings toggle won't flip `appLockEnabled` to true unless a PIN exists; it presents `PINSetupSheet` first. Biometric remains the fast path, PIN is fallback.
+
+**Settings security section** lives in the existing native `List` (Settings → Section "Security"):
+- Toggle: "Face ID & PIN" / "Touch ID & PIN" / "App Lock (PIN)" depending on `biometricType`
+- "Change PIN" — re-runs `PINSetupSheet`
+- "Remove PIN" — confirmation dialog, then `removePIN()` + `appLockEnabled = false` together
+
+**Lock screen UX** (`AppLockView`):
+- Auto-prompts biometric once on first appearance via `.task`
+- If biometric fails/cancels, falls through to PIN input automatically
+- 4-digit PIN auto-submits on the 4th character; wrong PIN clears + error haptic
+- "Use PIN instead" / "Back to Face ID" toggles between the two methods
+
 ## ML Auto-Categorization (Phase 6)
 
 3-layer pipeline lives in `Services/CategoryPredictor.swift`:
@@ -251,11 +278,14 @@ Anka/
 │   ├── Reports/
 │   │   ├── ReportsView.swift
 │   │   └── ReportsViewModel.swift
-│   └── Settings/
-│       ├── SettingsView.swift              // native List, sectioned
-│       ├── SettingsViewModel.swift         // @Observable @MainActor
-│       ├── CategoryManagementView.swift    // sub-menu: list + swipe-delete + drag-reorder
-│       └── AddEditCategorySheet.swift      // modal form for add/edit/delete
+│   ├── Settings/
+│   │   ├── SettingsView.swift              // native List, sectioned
+│   │   ├── SettingsViewModel.swift         // @Observable @MainActor
+│   │   ├── CategoryManagementView.swift    // sub-menu: list + swipe-delete + drag-reorder
+│   │   └── AddEditCategorySheet.swift      // modal form for add/edit/delete
+│   └── AppLock/
+│       ├── AppLockView.swift               // biometric primary, PIN fallback
+│       └── PINSetupSheet.swift             // two-step PIN enrollment
 ├── Components/               // reusable UI, no business logic
 │   ├── TransactionRow.swift
 │   ├── AmountLabel.swift
@@ -266,8 +296,10 @@ Anka/
 │   ├── KeywordMatcher.swift          // ported from Spendy
 │   ├── PlatformPaths.swift           // App Group ID + container URL (Anka IDs)
 │   ├── TransactionFilterEngine.swift // ported, gated #if ENABLE_TRANSACTION_FILTER_ENGINE
-│   ├── AppLockManager.swift          // ported from Spendy (Phase 8)
-│   └── WidgetDataWriter.swift        // rewritten clean (Phase 7)
+│   ├── AppLockManager.swift          // ported from Spendy — pinKey "ankaPINCode"
+│   ├── KeychainHelper.swift          // ported from Spendy — service "nc.Anka"
+│   ├── WidgetDataWriter.swift        // writes shared App Group UserDefaults
+│   └── WidgetSharedTypes.swift       // shared by main app + AnkaWidgets target
 └── Resources/
     ├── Assets.xcassets
     └── StarterCategoryClassifier.mlmodelc  // ported from Spendy
@@ -302,7 +334,7 @@ Do NOT port: any View files, FirestoreSyncService, ProfileManager, InsightEngine
 | 5 | Settings + Categories | ✅ Done |
 | 6 | ML Auto-Categorization | ✅ Done |
 | 7 | Widgets | ✅ Done |
-| 8 | App Lock | ⬜ Not started |
+| 8 | App Lock | ✅ Done |
 | 9 | Subscription | ⬜ Not started |
 | 10 | iCloud Sync | ⬜ Not started |
 

@@ -9,6 +9,12 @@ struct AnkaApp: App {
     /// once for the app's lifetime — not on every AddTransaction sheet open.
     @State private var predictor = CategoryPredictor()
 
+    /// App-lock manager — single source of truth for biometric/PIN state. Lives
+    /// at app root so scene-phase changes can flip `isLocked` between transitions.
+    @State private var lockManager = AppLockManager()
+
+    @Environment(\.scenePhase) private var scenePhase
+
     init() {
         let config = ModelConfiguration()
         let container = try! ModelContainer(for: Transaction.self, Category.self, configurations: config)
@@ -78,9 +84,34 @@ struct AnkaApp: App {
 
     var body: some Scene {
         WindowGroup {
-            AppRouter()
-                .environment(predictor)
+            ZStack {
+                AppRouter()
+                    .environment(predictor)
+                    .environment(lockManager)
+
+                if lockManager.isLocked {
+                    AppLockView()
+                        .environment(lockManager)
+                        .transition(.opacity)
+                        .zIndex(1)
+                }
+            }
+            .animation(.easeInOut(duration: 0.25), value: lockManager.isLocked)
         }
         .modelContainer(modelContainer)
+        .onChange(of: scenePhase) { _, newPhase in
+            // Lock on background/inactive so the app contents aren't visible
+            // in the iOS app switcher. Only re-lock if lock is enabled AND a
+            // PIN is set — otherwise the user would be stranded with no way
+            // back in.
+            switch newPhase {
+            case .background, .inactive:
+                lockManager.lock()
+            case .active:
+                break
+            @unknown default:
+                break
+            }
+        }
     }
 }
