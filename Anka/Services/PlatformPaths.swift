@@ -14,7 +14,7 @@ public enum PlatformPaths {
         #if os(macOS)
         return "nc.Anka"
         #else
-        return "group.com.nc.anka"
+        return "group.com.nc.Anka"
         #endif
     }()
 

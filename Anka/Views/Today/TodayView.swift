@@ -53,9 +53,11 @@ struct TodayView: View {
         }
         .task {
             viewModel.update(transactions: allTransactions)
+            WidgetDataWriter.shared.updateWidgetData(transactions: allTransactions)
         }
         .onChange(of: allTransactions) { _, newTransactions in
             viewModel.update(transactions: newTransactions)
+            WidgetDataWriter.shared.updateWidgetData(transactions: newTransactions)
         }
         .sheet(isPresented: $showSettings) {
             SettingsView()

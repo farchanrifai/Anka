@@ -11,7 +11,7 @@
 - **Platform:** iOS only (no macOS, no Android)
 - **Minimum iOS:** 26.0 (uses Liquid Glass tab bar APIs: `role: .search` detached Add button, `.tabBarMinimizeBehavior`)
 - **Bundle ID:** com.nc.anka
-- **App Group:** group.com.nc.anka
+- **App Group:** group.com.nc.Anka
 - **Purpose:** Personal expense tracker — manual-entry first, fast logging, beautiful design
 - **Target user:** Global audience, single user, no collaboration
 - **Model:** Subscription (StoreKit 2), 14-day free trial, annual-first
@@ -278,7 +278,7 @@ Anka/
 ## Files Ported from Spendy
 
 Copy these verbatim from the Spendy project — do not rewrite:
-- `CategoryPredictor.swift` → update App Group ID to `group.com.nc.anka`
+- `CategoryPredictor.swift` → update App Group ID to `group.com.nc.Anka`
 - `CategoryMLTrainer.swift` → update App Group ID
 - `KeywordMatcher.swift` → no changes needed
 - `TransactionFilterEngine.swift` → no changes needed
@@ -301,7 +301,7 @@ Do NOT port: any View files, FirestoreSyncService, ProfileManager, InsightEngine
 | 4 | Reports View | ✅ Done |
 | 5 | Settings + Categories | ✅ Done |
 | 6 | ML Auto-Categorization | ✅ Done |
-| 7 | Widgets | ⬜ Not started |
+| 7 | Widgets | ✅ Done |
 | 8 | App Lock | ⬜ Not started |
 | 9 | Subscription | ⬜ Not started |
 | 10 | iCloud Sync | ⬜ Not started |
