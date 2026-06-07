@@ -72,6 +72,7 @@ struct AddTransactionView: View {
     // MARK: - Environment
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(CategoryPredictor.self) private var predictor
 
     @Query(sort: \Category.sortOrder) private var categories: [Category]
     @Query(sort: \Transaction.date, order: .reverse) private var allTransactions: [Transaction]
@@ -278,6 +279,34 @@ struct AddTransactionView: View {
             .textInputAutocapitalization(.sentences)
             .submitLabel(.next)
             .onSubmit { focusedField = .amount }
+            .onChange(of: vm.descriptionText) { old, newValue in
+                // Only run ML when the user is actively typing.
+                // When editing an existing transaction, loadExisting() seeds
+                // descriptionText programmatically during onAppear with no focus —
+                // skip ML so we don't overwrite the saved category.
+                guard existingTransaction == nil || focusedField == .description else { return }
+
+                if newValue.isEmpty {
+                    withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) {
+                        if vm.isMLAssigned { vm.selectedCategory = nil }
+                        vm.isMLAssigned = false
+                    }
+                    vm.latestMLCategory = nil
+                    vm.cancelMLPrediction()
+                } else {
+                    // If a chip was showing for the previous text and now the
+                    // user kept typing, that's a negative signal — log it.
+                    if let pred = predictor.latestPrediction, pred.shouldShowChip {
+                        predictor.logCorrection(
+                            note: old,
+                            amount: vm.parsedAmount,
+                            predicted: pred.category,
+                            actual: nil
+                        )
+                    }
+                    vm.triggerMLPrediction(note: newValue, predictor: predictor)
+                }
+            }
     }
 
     private var amountField: some View {
@@ -372,6 +401,16 @@ struct AddTransactionView: View {
     private var sparkleButton: some View {
         Button {
             if vm.selectedCategory != nil {
+                // If we're discarding an ML-assigned category, that's a
+                // negative correction signal for training.
+                if vm.isMLAssigned, let predicted = vm.latestMLCategory {
+                    predictor.logCorrection(
+                        note: vm.descriptionText,
+                        amount: vm.parsedAmount,
+                        predicted: predicted.name,
+                        actual: nil
+                    )
+                }
                 withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) {
                     vm.selectedCategory = nil
                     vm.isMLAssigned = false
@@ -429,6 +468,21 @@ struct AddTransactionView: View {
     private func performSave() {
         do {
             if try vm.save(context: modelContext) {
+                // If the user overrode the ML suggestion with a different
+                // category before saving, log a positive correction.
+                if let mlPick = vm.latestMLCategory,
+                   let final = vm.selectedCategory,
+                   !vm.isMLAssigned, mlPick.id != final.id {
+                    predictor.logCorrection(
+                        note: vm.descriptionText,
+                        amount: vm.parsedAmount,
+                        predicted: mlPick.name,
+                        actual: final.name
+                    )
+                }
+                // Background train using the now-updated transaction set.
+                // Training is gated internally (≥20 transactions, +10 since last).
+                predictor.trainIfReady(transactions: vm.trainableSnapshots())
                 dismiss()
             } else {
                 triggerShake()
@@ -642,5 +696,6 @@ struct AddTransactionView: View {
         .sheet(isPresented: .constant(true)) {
             AddTransactionView(defaultType: .expense)
                 .modelContainer(SampleData.container())
+                .environment(CategoryPredictor())
         }
 }

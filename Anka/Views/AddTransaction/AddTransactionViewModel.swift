@@ -1,5 +1,6 @@
 import Observation
 import SwiftData
+import SwiftUI
 import Foundation
 
 /// Business state + logic for AddTransactionView (adapted from Spendy's
@@ -16,10 +17,15 @@ final class AddTransactionViewModel {
     var selectedTags: [String]
     var tagInput: String
 
-    // MARK: - ML placeholders (not used at MVP — kept so view code mirrors V2)
+    // MARK: - ML state
     var isMLAssigned: Bool = false
     var latestMLCategory: Category? = nil
-    var sparkleActive: Bool = false
+
+    /// Pulses the sparkle icon while the user is actively describing.
+    var sparkleActive: Bool { !descriptionText.trimmingCharacters(in: .whitespaces).isEmpty }
+
+    /// Pending debounced prediction task — cancelled on text change / dismiss.
+    @ObservationIgnored private var predictionTask: Task<Void, Never>?
 
     // MARK: - Snapshot from Queries
     private(set) var allCategories: [Category] = []
@@ -176,8 +182,61 @@ final class AddTransactionViewModel {
         try context.save()
     }
 
-    // MARK: - ML stubs (kept so view code mirrors V2 — never fire)
+    // MARK: - ML Prediction
+    // `predictor` is passed in from the view's @Environment so the model stays
+    // loaded at app-root and isn't recreated on every sheet open.
 
-    func triggerMLPrediction(note: String) {}
-    func cancelMLPrediction() {}
+    func triggerMLPrediction(note: String, predictor: CategoryPredictor) {
+        predictionTask?.cancel()
+        guard !note.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+        predictionTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 400_000_000)
+            guard !Task.isCancelled, let self else { return }
+            let amount = self.parsedAmount
+            guard let pred = predictor.predict(note: note, amount: amount) else { return }
+            await MainActor.run { [weak self] in
+                self?.applyMLPrediction(pred)
+            }
+        }
+    }
+
+    func cancelMLPrediction() {
+        predictionTask?.cancel()
+        predictionTask = nil
+    }
+
+    private func applyMLPrediction(_ pred: Prediction) {
+        guard pred.shouldAutoAssign || pred.shouldShowChip else { return }
+
+        // Prefer a match in the currently-selected type. If none exists,
+        // fall back to the opposite type and auto-switch — handles cases
+        // like typing "gaji" / "salary" while still on Expense mode.
+        let match: Category? = {
+            if let m = allCategories.first(where: { $0.name == pred.category && $0.type == selectedType }) {
+                return m
+            }
+            return allCategories.first { $0.name == pred.category }
+        }()
+
+        guard let match, match.id != selectedCategory?.id else { return }
+
+        withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) {
+            if match.type != selectedType {
+                selectedType = match.type
+            }
+            selectedCategory = match
+            isMLAssigned = true
+            latestMLCategory = match
+        }
+    }
+
+    /// Build snapshots for the on-device trainer. Called after a successful save.
+    func trainableSnapshots() -> [TrainableTransaction] {
+        allTransactions.compactMap { tx in
+            guard let categoryName = tx.category?.name,
+                  let note = tx.note,
+                  !note.trimmingCharacters(in: .whitespaces).isEmpty else { return nil }
+            return TrainableTransaction(note: note, amount: tx.amount, categoryName: categoryName)
+        }
+    }
 }

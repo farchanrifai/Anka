@@ -118,7 +118,7 @@ transactions: [Transaction] // @Relationship(deleteRule: .cascade, inverse: \Tra
 - Right detached button: **Add** — `role: .search` detaches it from the pill; intercepted via `onChange` (opens sheet, restores previous tab, does NOT navigate)
 - `.tabBarMinimizeBehavior(.onScrollDown)` — bar minimizes as content scrolls down
 
-**Settings:** accessible from Today tab via gear icon (top-right)
+**Settings:** floating gear icon (top-right) on **both Today and Reports** → presents `SettingsView` as a sheet (modal, not a tab). Native `List` with sections: **General** (Categories → push to `CategoryManagementView`, Default Currency) · **Appearance** (Dark Mode toggle) · **Data** (Export stub) · **About** (version). `CategoryManagementView` is the sub-menu: native List split into Expense / Income sections, swipe-to-delete via `.onDelete`, drag-to-reorder via `.onMove` + `EditButton`, `+` toolbar button presents `AddEditCategorySheet` for add/edit/delete.
 
 **Add Transaction flow (Spendy-adapted layout):** full-screen modal, top→bottom:
 - Top bar: `Cancel` capsule (left) · `•••` options-placeholder capsule (right, inert — recurring lives in a later phase)
@@ -132,7 +132,56 @@ Default currency: `IDR`. State held in-view via `@State` (no ViewModel). No pers
 
 ---
 
-## MVP Features (Phase 0–9)
+## ML Auto-Categorization (Phase 6)
+
+3-layer pipeline lives in `Services/CategoryPredictor.swift`:
+1. **KeywordMatcher** — static dictionary, fires first
+2. **UserCategoryClassifier** — `NLModel` trained on the user's own transactions via CreateML, stored in App Group container as `UserCategoryClassifier.mlmodelc`. Threshold 0.75.
+3. **StarterCategoryClassifier** — bundled `.mlmodelc` in `Resources/`, softest fallback. Threshold 0.60.
+
+`Prediction.shouldAutoAssign` (≥0.85) silently assigns; `Prediction.shouldShowChip` (0.60–0.85) shows the sparkle pill.
+
+**Lifecycle in AddTransactionView:**
+- `CategoryPredictor` is created once in `AnkaApp` (`@State`) and injected via `.environment(predictor)`. The view reads it via `@Environment(CategoryPredictor.self)`.
+- `descriptionField.onChange` calls `vm.triggerMLPrediction(note:predictor:)` — 400 ms debounce in a cancellable `Task`. On empty text, the ML-assigned category is cleared.
+- **Auto-type switch.** `applyMLPrediction` first looks for a name match in `selectedType`; if none, falls back to the opposite type and updates `selectedType` along with the category. Lets the user type "gaji" / "salary" / "freelance" while still on Expense mode and have the sheet flip to Income automatically.
+- `vm.sparkleActive` is computed (`!descriptionText.isEmpty`) so the sparkle icon pulses while typing.
+- On manual deselect of an ML-picked category: logs negative correction (`actual: nil`).
+- On save with a user-overridden category: logs positive correction (`actual: <picked name>`).
+- After successful save: `predictor.trainIfReady(transactions: vm.trainableSnapshots())` kicks background CreateML training (gated to ≥20 transactions, +10 since last train).
+
+Correction signals live in `UserDefaults(suiteName: PlatformPaths.appGroupID)` under key `ml_corrections`, weighted 2x during the next training pass.
+
+**⚠️ Category-name coupling.** The bundled `StarterCategoryClassifier` and `KeywordMatcher` emit a fixed set of label strings — Anka's default categories in `SampleData.createDefaultCategories()` must match those strings exactly, or `applyMLPrediction` silently fails to look up the SwiftData `Category`. Locked taxonomy: **Home · Groceries · Eating Out · Food Delivery · Coffee · Car · Taxi · Health · Shopping · Entertainment** (expense) and **Salary · Freelance · Investment** (income, ML-relevant). `Bonus / Other Income / Refund` are Anka-only extras (no ML hits, but harmless). Do not rename any locked entry without retraining the model.
+
+`AnkaApp.seedOrMigrateCategories()` runs a one-time wipe of the legacy pre-ML defaults (Food & Dining / Transport / Utilities / Other Income / Refund) and re-seeds, gated by `UserDefaults` key `anka.categoryMigration.v2`. Transactions are unlinked first so the `.cascade` delete doesn't drop them.
+
+### TODO — globalize ML training data
+
+Both `KeywordMatcher` and `StarterCategoryClassifier` were ported from Spendy and are heavily **Indonesia-skewed** (Indomaret, GoFood, Grab, Pertamina, PLN, Apotek, warteg, etc.). Anka targets a global audience (CONTEXT § App Identity), so before public launch the training data needs broadening:
+
+- **KeywordMatcher** (`Services/KeywordMatcher.swift`) — extend dictionaries with global merchants/brands per category. Minimum coverage targets:
+  - Groceries: Whole Foods, Trader Joe's, Tesco, Sainsbury's, Aldi, Lidl, Walmart, Costco, FairPrice, NTUC, Cold Storage, Don Quijote, AEON, 7-Eleven
+  - Eating Out: McDonald's, Chipotle, Panera, Nando's, Pret, Wagamama, Yoshinoya, Saizeriya, Sushiro
+  - Coffee: Starbucks (have), Blue Bottle, Costa, Pret, Tim Hortons, Doutor, Tully's, %Arabica
+  - Food Delivery: DoorDash, Uber Eats, Deliveroo, Just Eat, foodpanda, Wolt, Rappi, Swiggy, Zomato, Meituan
+  - Taxi: Uber, Lyft, Bolt, Cabify, DiDi, Ola, Comfort
+  - Car: Shell (have), BP, Esso, Chevron, Mobil, Texaco, EV charging keywords (Supercharger, Ionity, Electrify America)
+  - Home: Verizon, AT&T, Comcast, BT, Sky, Vodafone, EE, Singtel, electricity/water bill keywords in EN/JA/KO/ES/FR/DE
+  - Health: CVS, Walgreens, Boots, Watsons, pharmacy/clinic generic terms across languages
+  - Shopping: Amazon, eBay, Target, IKEA, Uniqlo, H&M, Zara, ASOS
+  - Entertainment: Netflix (have), Apple TV+, Hulu, HBO, Prime Video, Crunchyroll, Steam (have), Epic Games, AMC, Cineworld
+
+- **StarterCategoryClassifier** (`Resources/StarterCategoryClassifier.mlmodel`) — retrain with a globally-balanced corpus. Plan:
+  1. Generate a synthetic + curated multi-locale dataset (EN-US, EN-UK, EN-SG, JA, KO, ES, FR, DE, ID baseline) — ≥200 labeled samples per category, mix of merchant names, generic terms, and short notes like "lunch", "coffee", "uber"
+  2. Train with `MLTextClassifier` (mirroring `CategoryMLTrainer`) — locale parameter on `MLTextClassifier.ModelParameters(language: .english)` may need replacing with `.unspecified` or one model per language
+  3. Drop the new `.mlmodel` into `Anka/Resources/` (replaces the existing file)
+  4. Keep the same 10 expense + 3 income labels — do **not** rename, since `SampleData` defaults are coupled to them
+  5. Re-test the suite: `grab food`, `doordash`, `tesco`, `7-eleven`, `uber pool`, `shell gas`, `cvs pharmacy`, `verizon bill`, `netflix`
+
+- **Fallback strategy while ML is IDR-skewed**: keyword pass already runs Layer 1 with confidence 0.90 (auto-assign). Adding global merchant strings to `KeywordMatcher` gives an immediate quality lift without retraining. Do that first.
+
+- **Internationalization concern**: amount buckets (`micro` < 20k / `small` < 100k / etc.) are tuned for **IDR** ranges. When supporting USD/EUR/etc., either (a) convert to a normalized "small/medium/large" tier based on the user's home currency, or (b) drop the amount bucket from the input string entirely. Decide before retraining — input format must match what the model was trained on.
 
 - Fast Add Transaction (numpad, category, note, save in <5 taps)
 - ML auto-categorization (3-layer: KeywordMatcher → UserModel → StarterModel)
@@ -203,19 +252,22 @@ Anka/
 │   │   ├── ReportsView.swift
 │   │   └── ReportsViewModel.swift
 │   └── Settings/
-│       ├── SettingsView.swift
-│       └── CategoryManagementView.swift
+│       ├── SettingsView.swift              // native List, sectioned
+│       ├── SettingsViewModel.swift         // @Observable @MainActor
+│       ├── CategoryManagementView.swift    // sub-menu: list + swipe-delete + drag-reorder
+│       └── AddEditCategorySheet.swift      // modal form for add/edit/delete
 ├── Components/               // reusable UI, no business logic
 │   ├── TransactionRow.swift
 │   ├── AmountLabel.swift
 │   └── SectionHeader.swift
 ├── Services/
-│   ├── CategoryPredictor.swift    // ported from Spendy
-│   ├── CategoryMLTrainer.swift    // ported from Spendy
-│   ├── KeywordMatcher.swift       // ported from Spendy
-│   ├── TransactionFilterEngine.swift // ported from Spendy
-│   ├── AppLockManager.swift       // ported from Spendy
-│   └── WidgetDataWriter.swift     // rewritten clean
+│   ├── CategoryPredictor.swift       // ported from Spendy (3-layer pipeline)
+│   ├── CategoryMLTrainer.swift       // ported from Spendy (on-device CreateML)
+│   ├── KeywordMatcher.swift          // ported from Spendy
+│   ├── PlatformPaths.swift           // App Group ID + container URL (Anka IDs)
+│   ├── TransactionFilterEngine.swift // ported, gated #if ENABLE_TRANSACTION_FILTER_ENGINE
+│   ├── AppLockManager.swift          // ported from Spendy (Phase 8)
+│   └── WidgetDataWriter.swift        // rewritten clean (Phase 7)
 └── Resources/
     ├── Assets.xcassets
     └── StarterCategoryClassifier.mlmodelc  // ported from Spendy
@@ -248,7 +300,7 @@ Do NOT port: any View files, FirestoreSyncService, ProfileManager, InsightEngine
 | 3 | Today View | ✅ Done |
 | 4 | Reports View | ✅ Done |
 | 5 | Settings + Categories | ✅ Done |
-| 6 | ML Auto-Categorization | ⬜ Not started |
+| 6 | ML Auto-Categorization | ✅ Done |
 | 7 | Widgets | ⬜ Not started |
 | 8 | App Lock | ⬜ Not started |
 | 9 | Subscription | ⬜ Not started |

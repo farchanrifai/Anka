@@ -2,23 +2,31 @@ import SwiftData
 import Foundation
 
 struct SampleData {
+    /// IMPORTANT: These names are tightly coupled to the ML classifier labels
+    /// (Services/CategoryPredictor.swift). The bundled StarterCategoryClassifier
+    /// and KeywordMatcher emit exactly these strings — renaming any of them
+    /// will silently break ML auto-categorization for that category.
     static func createDefaultCategories() -> [Category] {
         let expenseCategories = [
-            ("Food & Dining", "🍔", "E74C3C", 0),
-            ("Transport", "🚗", "3498DB", 1),
-            ("Shopping", "🛍️", "E91E63", 2),
-            ("Entertainment", "🎬", "9C27B0", 3),
-            ("Utilities", "💡", "FF9800", 4),
-            ("Health", "⚕️", "2ECC71", 5),
+            ("Home",          "🏠", "7E57C2", 0),
+            ("Groceries",     "🛒", "FF6B6B", 1),
+            ("Eating Out",    "🍽️", "FF6B6B", 2),
+            ("Food Delivery", "🥡", "FF6B6B", 3),
+            ("Coffee",        "☕", "FF8A65", 4),
+            ("Car",           "🚗", "42A5F5", 5),
+            ("Taxi",          "🚕", "42A5F5", 6),
+            ("Health",        "💊", "66BB6A", 7),
+            ("Shopping",      "🛍️", "EC407A", 8),
+            ("Entertainment", "🎬", "FFA726", 9),
         ]
 
         let incomeCategories = [
-            ("Salary", "💼", "27AE60", 0),
-            ("Freelance", "💻", "16A085", 1),
-            ("Investment", "📈", "2980B9", 2),
-            ("Bonus", "🎁", "F39C12", 3),
+            ("Salary",       "💼", "66BB6A", 0),
+            ("Freelance",    "💻", "42A5F5", 1),
+            ("Investment",   "📈", "FFCA28", 2),
+            ("Bonus",        "🎁", "F39C12", 3),
             ("Other Income", "💰", "C0392B", 4),
-            ("Refund", "↩️", "8E44AD", 5),
+            ("Refund",       "↩️", "8E44AD", 5),
         ]
 
         var categories: [Category] = []
@@ -60,7 +68,7 @@ struct SampleData {
         }
 
         // Add 3 sample transactions for testing
-        let foodCategory = defaultCategories.first(where: { $0.name == "Food & Dining" })
+        let foodCategory = defaultCategories.first(where: { $0.name == "Eating Out" })
         let salaryCategory = defaultCategories.first(where: { $0.name == "Salary" })
 
         let today = Date()

@@ -1,0 +1,175 @@
+import Foundation
+import Observation
+import CoreML
+import NaturalLanguage
+import SwiftData
+
+// MARK: - Prediction types
+
+public enum PredictionSource {
+    case keyword, userModel, starterModel
+}
+
+public struct Prediction {
+    public let category: String
+    public let confidence: Double
+    public let source: PredictionSource
+
+    /// Auto-assign silently when confidence is very high.
+    public var shouldAutoAssign: Bool { confidence >= 0.85 }
+
+    /// Show a confirm chip below the note field.
+    public var shouldShowChip: Bool { confidence >= 0.60 && !shouldAutoAssign }
+}
+
+// MARK: - Correction signal
+
+/// A labeled correction signal from user behavior.
+/// `actual` is nil when the user dismissed a chip without assigning (negative signal).
+public struct CorrectionEntry: Codable {
+    public let note: String
+    public let amount: Double
+    public let predicted: String
+    public let actual: String?
+}
+
+// MARK: - Predictor
+
+/// Orchestrates the 3-layer prediction pipeline:
+///   1. KeywordMatcher     — static dictionary, fires first
+///   2. UserCategoryClassifier — trained on user's own transactions
+///   3. StarterCategoryClassifier — bundled model, softest fallback
+@MainActor
+@Observable
+public final class CategoryPredictor {
+    public private(set) var latestPrediction: Prediction? = nil
+
+    private let starterModel: NLModel?
+    private var userModel: NLModel?
+
+    public init() {
+        starterModel = Self.loadStarterModel()
+        loadUserModel()
+    }
+
+    public func loadModels() {
+        loadUserModel()
+    }
+
+    // MARK: - Predict
+
+    @discardableResult
+    public func predict(note: String, amount: Double) -> Prediction? {
+        let trimmed = note.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else {
+            latestPrediction = nil
+            return nil
+        }
+
+        let input = buildInput(note: trimmed, amount: amount)
+        var result: Prediction?
+
+        // Layer 1: keyword
+        if let match = KeywordMatcher.match(note: trimmed) {
+            result = Prediction(category: match.category, confidence: match.confidence, source: .keyword)
+        }
+
+        // Layer 2: user model (threshold 0.75)
+        if result == nil, let model = userModel {
+            result = infer(model: model, input: input, threshold: 0.75, source: .userModel)
+        }
+
+        // Layer 3: starter model (threshold 0.60)
+        if result == nil, let model = starterModel {
+            result = infer(model: model, input: input, threshold: 0.60, source: .starterModel)
+        }
+
+        latestPrediction = result
+        return result
+    }
+
+    // MARK: - Correction logging
+
+    public func logCorrection(note: String, amount: Double, predicted: String, actual: String?) {
+        let entry = CorrectionEntry(note: note, amount: amount, predicted: predicted, actual: actual)
+        let defaults = UserDefaults(suiteName: Self.appGroupID)
+        var existing: [CorrectionEntry] = []
+        if let data = defaults?.data(forKey: Self.correctionsKey),
+           let decoded = try? JSONDecoder().decode([CorrectionEntry].self, from: data) {
+            existing = decoded
+        }
+        existing.append(entry)
+        if let encoded = try? JSONEncoder().encode(existing) {
+            defaults?.set(encoded, forKey: Self.correctionsKey)
+        }
+    }
+
+    /// Kick off background training then reload models on main actor when done.
+    public func trainIfReady(transactions: [TrainableTransaction]) {
+        Task.detached(priority: .background) {
+            do {
+                try await CategoryMLTrainer.trainIfNeeded(transactions: transactions)
+                await MainActor.run { [weak self] in self?.loadUserModel() }
+            } catch {
+                print("CategoryPredictor ML training failed: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    // MARK: - Private
+
+    private static let correctionsKey = "ml_corrections"
+    private static let appGroupID     = PlatformPaths.appGroupID
+
+    // Bundled asset — loads optionally, doesn't crash if missing.
+    private static func loadStarterModel() -> NLModel? {
+        guard let url = Bundle.main.url(forResource: "StarterCategoryClassifier", withExtension: "mlmodelc") else {
+            print("[CategoryPredictor] StarterCategoryClassifier.mlmodelc not found in app bundle")
+            return nil
+        }
+        do {
+            return try NLModel(mlModel: MLModel(contentsOf: url))
+        } catch {
+            print("[CategoryPredictor] StarterCategoryClassifier failed to load: \(error)")
+            return nil
+        }
+    }
+
+    // User-trained model lives in the App Group container and may legitimately not exist.
+    private func loadUserModel() {
+        guard let url = userModelURL(),
+              FileManager.default.fileExists(atPath: url.path),
+              let mlModel = try? MLModel(contentsOf: url),
+              let nlModel = try? NLModel(mlModel: mlModel) else {
+            userModel = nil
+            return
+        }
+        userModel = nlModel
+    }
+
+    private func infer(model: NLModel, input: String, threshold: Double, source: PredictionSource) -> Prediction? {
+        guard let label = model.predictedLabel(for: input) else { return nil }
+        let confidence = model.predictedLabelHypotheses(for: input, maximumCount: 1)[label] ?? 0
+        guard confidence >= threshold else { return nil }
+        return Prediction(category: label, confidence: confidence, source: source)
+    }
+
+    private func buildInput(note: String, amount: Double) -> String {
+        "\(note.lowercased()) \(amountBucket(amount))"
+    }
+
+    private func amountBucket(_ amount: Double) -> String {
+        switch amount {
+        case ..<20_000:    return "micro"
+        case ..<100_000:   return "small"
+        case ..<500_000:   return "medium"
+        case ..<2_000_000: return "large"
+        default:           return "xlarge"
+        }
+    }
+
+    private func userModelURL() -> URL? {
+        PlatformPaths.appGroupContainerURL
+            .appendingPathComponent("UserCategoryClassifier.mlmodelc")
+    }
+}
