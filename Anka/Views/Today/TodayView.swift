@@ -31,17 +31,17 @@ struct TodayView: View {
     // MARK: - Body
 
     var body: some View {
-        ZStack(alignment: .topTrailing) {
-            dashboardTab
-            settingsButton
-                .padding(.top, 16)
-                .padding(.trailing, 20)
-        }
+        dashboardTab
         .sheet(isPresented: $vm.showSettings) {
             SettingsView()
         }
         .sheet(isPresented: $vm.showAddTransaction) {
             AddTransactionView(defaultType: vm.addDefaultType)
+        }
+        .sheet(isPresented: $vm.showCategoryFilter) {
+            CategoryFilterSheet(selection: $vm.selectedCategories)
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: Binding(
             get: { vm.editingTransaction != nil },
@@ -99,6 +99,7 @@ struct TodayView: View {
             scrollContent
                 .safeAreaInset(edge: .top, spacing: 0) {
                     stickyHeader
+                        .ignoresSafeArea(.keyboard, edges: .bottom)
                 }
                 // Keep the nav bar present (but invisible) so pushing Stats
                 // crossfades the back button in place — matching the iOS
@@ -107,7 +108,79 @@ struct TodayView: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbarBackground(.hidden, for: .navigationBar)
                 .background(DSColor.bgPrimary.ignoresSafeArea())
+                // iOS Mail-style bottom toolbar: Filter • Search • Add.
+                // Layout switches on filter state:
+                //   - inactive: filter-icon | flex | full search bar | flex | +
+                //   - active:   filter-pill | flex | search-circle | +
+                // (when active the trailing flex is dropped so the search
+                //  circle sits right next to + with standard toolbar padding.)
+                // Settings lives in the top-bar trailing slot so it crossfades
+                // out (iOS Settings-style) when Stats is pushed.
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) { settingsToolbarButton }
+
+                    ToolbarItem(placement: .bottomBar) { filterToolbarButton }
+                    ToolbarSpacer(.flexible, placement: .bottomBar)
+                    DefaultToolbarItem(kind: .search, placement: .bottomBar)
+                    if vm.filterLabel == nil {
+                        ToolbarSpacer(.flexible, placement: .bottomBar)
+                    }
+                    ToolbarItem(placement: .bottomBar) { addToolbarButton }
+                }
+                .searchable(text: $vm.searchQuery, prompt: "Search transactions")
+                // Only force the search to its minimized magnifying-glass
+                // circle when the Filter pill is wide. When inactive let the
+                // bar expand to fill the centre — matching Mail.
+                .searchToolbarBehavior(vm.filterLabel == nil ? .automatic : .minimize)
         }
+        // Belt-and-braces keyboard avoidance at the NavigationStack level too,
+        // so the whole dashboard pane (not just scroll content) stays put when
+        // the keyboard slides up over the search field.
+        .ignoresSafeArea(.keyboard, edges: .bottom)
+    }
+
+    // MARK: - Bottom toolbar buttons
+
+    @ViewBuilder
+    private var filterToolbarButton: some View {
+        Button {
+            vm.showCategoryFilter = true
+        } label: {
+            if let label = vm.filterLabel {
+                // Active state: icon + "Filtered by <label> ⌄"
+                HStack(spacing: 8) {
+                    Image(systemName: "line.3.horizontal.decrease")
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text("Filtered by")
+                            .font(.dsCaption2)
+                            .foregroundStyle(.secondary)
+                        HStack(spacing: 3) {
+                            Text(label)
+                                .font(.dsFootnoteSemi)
+                                .lineLimit(1)
+                            Image(systemName: "chevron.down")
+                                .font(.dsCaption2Semi)
+                        }
+                    }
+                }
+            } else {
+                // Idle state: just the icon, system renders it as a circle.
+                Image(systemName: "line.3.horizontal.decrease")
+            }
+        }
+        .tint(vm.filterLabel == nil ? .primary : DSColor.accent)
+        .accessibilityLabel(vm.filterLabel == nil ? "Filter" : "Filtered by \(vm.filterLabel!). Tap to edit.")
+    }
+
+    @ViewBuilder
+    private var addToolbarButton: some View {
+        Button {
+            vm.showAddTransaction = true
+        } label: {
+            Image(systemName: "plus")
+        }
+        .tint(.primary)
+        .accessibilityLabel("Add transaction")
     }
 
     private var scrollContent: some View {
@@ -127,10 +200,10 @@ struct TodayView: View {
                     ForEach(0..<5, id: \.self) { _ in
                         skeletonTransactionRow
                     }
-                } else if vm.groupedByDay.isEmpty {
+                } else if vm.displayedGroupedByDay.isEmpty {
                     emptyStateView
                 } else {
-                    ForEach(vm.groupedByDay, id: \.date) { group in
+                    ForEach(vm.displayedGroupedByDay, id: \.date) { group in
                         Section {
                             ForEach(group.transactions, id: \.id) { tx in
                                 transactionRow(tx)
@@ -198,7 +271,10 @@ struct TodayView: View {
             }
         }
         .padding(.horizontal, 20)
-        .padding(.top, 75)
+        // Previously 75 — that included status-bar clearance back when the nav
+        // bar was fully hidden. The bar is now present (transparent), so safe
+        // area already covers the status + nav bar; only breathing room left.
+        .padding(.top, 8)
         .padding(.bottom, 14)
         .frame(maxWidth: .infinity, alignment: .leading)
         .contentShape(Rectangle())
@@ -503,13 +579,11 @@ struct TodayView: View {
 
     // MARK: - Settings Button
 
-    private var settingsButton: some View {
+    private var settingsToolbarButton: some View {
         Button { vm.showSettings = true } label: {
             Image(systemName: "gearshape")
         }
-        .buttonStyle(.glass)
-        .buttonBorderShape(.circle)
-        .controlSize(.large)
+        .tint(.primary)
         .accessibilityLabel("Settings")
     }
 }

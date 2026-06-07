@@ -78,8 +78,24 @@ enum BalanceMode: String, CaseIterable, Hashable {
 
     var showSettings = false
     var showAddTransaction = false
+    var showCategoryFilter = false
     var editingTransaction: Transaction? = nil
     var pendingDeleteTransaction: Transaction? = nil
+
+    // MARK: - Bottom toolbar (search)
+    /// Bound to SwiftUI's `.searchable(text:)` — filters the displayed list in
+    /// the view layer (no `Task.detached`, no `dashboardKey` invalidation).
+    var searchQuery: String = ""
+
+    /// Label shown next to the bottom-bar Filter pill when active.
+    /// nil ⇒ no filter → render a plain icon button.
+    var filterLabel: String? {
+        switch selectedCategories.count {
+        case 0:  return nil
+        case 1:  return selectedCategories[0].name
+        default: return "\(selectedCategories.count) Categories"
+        }
+    }
 
     // MARK: - Task gate
     // Encodes every dependency of the cached vars.
@@ -97,6 +113,22 @@ enum BalanceMode: String, CaseIterable, Hashable {
 
     /// Filtered, date-sorted, day-grouped transactions for the main list.
     private(set) var groupedByDay: [(date: Date, transactions: [Transaction])] = []
+
+    /// `groupedByDay` further narrowed by `searchQuery` — cheap, view-layer pass
+    /// so each keystroke doesn't re-fire the heavy refresh pipeline.
+    var displayedGroupedByDay: [(date: Date, transactions: [Transaction])] {
+        let q = searchQuery.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard !q.isEmpty else { return groupedByDay }
+        return groupedByDay.compactMap { group in
+            let matches = group.transactions.filter { tx in
+                if let n = tx.note?.lowercased(), n.contains(q) { return true }
+                if let cn = tx.category?.name.lowercased(), cn.contains(q) { return true }
+                if String(Int(tx.amount)).contains(q) { return true }
+                return false
+            }
+            return matches.isEmpty ? nil : (date: group.date, transactions: matches)
+        }
+    }
 
     /// Category totals for the chart bar, sorted descending.
     private(set) var chartData: [(category: Category, total: Double)] = []
