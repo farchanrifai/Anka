@@ -100,7 +100,12 @@ struct TodayView: View {
                 .safeAreaInset(edge: .top, spacing: 0) {
                     stickyHeader
                 }
-                .toolbar(.hidden, for: .navigationBar)
+                // Keep the nav bar present (but invisible) so pushing Stats
+                // crossfades the back button in place — matching the iOS
+                // Settings app — instead of sliding a fresh bar in with the
+                // pushed view.
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbarBackground(.hidden, for: .navigationBar)
                 .background(DSColor.bgPrimary.ignoresSafeArea())
         }
     }
@@ -265,7 +270,7 @@ struct TodayView: View {
 
     private var statsButton: some View {
         NavigationLink {
-            ReportsView()
+            StatsView()
         } label: {
             HStack(spacing: 4) {
                 Text("Stats")

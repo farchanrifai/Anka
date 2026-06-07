@@ -19,12 +19,6 @@ struct AppRouter: View {
                 }
             }
 
-            Tab("Reports", systemImage: "chart.bar.doc.horizontal", value: "reports") {
-                NavigationStack {
-                    ReportsView()
-                }
-            }
-
             // Add — detached to the right via .search role; intercepted, never navigates
             Tab("Add", systemImage: "plus", value: "add", role: .search) {
                 Color.clear

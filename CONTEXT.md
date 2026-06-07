@@ -114,11 +114,11 @@ transactions: [Transaction] // @Relationship(deleteRule: .cascade, inverse: \Tra
 ## App Navigation
 
 **Liquid Glass tab bar (iOS 26):**
-- Left pill/island: **Today** (dashboard + transaction list) + **Reports** (monthly summary, charts) grouped together
+- Left pill/island: **Today** only — the Reports tab was removed; **Stats** is reached via the "Stats →" button in the Today hero, pushed onto Today's `NavigationStack`
 - Right detached button: **Add** — `role: .search` detaches it from the pill; intercepted via `onChange` (opens sheet, restores previous tab, does NOT navigate)
 - `.tabBarMinimizeBehavior(.onScrollDown)` — bar minimizes as content scrolls down
 
-**Settings:** floating gear icon (top-right) on **both Today and Reports** → presents `SettingsView` as a sheet (modal, not a tab). Native `List` with sections: **General** (Categories → push to `CategoryManagementView`, Default Currency) · **Appearance** (Dark Mode toggle) · **Data** (Export stub) · **About** (version). `CategoryManagementView` is the sub-menu: native List split into Expense / Income sections, swipe-to-delete via `.onDelete`, drag-to-reorder via `.onMove` + `EditButton`, `+` toolbar button presents `AddEditCategorySheet` for add/edit/delete.
+**Settings:** floating gear icon (top-right) on **Today** → presents `SettingsView` as a sheet (modal, not a tab). Native `List` with sections: **General** (Categories → push to `CategoryManagementView`, Default Currency) · **Appearance** (Dark Mode toggle) · **Data** (Export stub) · **About** (version). `CategoryManagementView` is the sub-menu: native List split into Expense / Income sections, swipe-to-delete via `.onDelete`, drag-to-reorder via `.onMove` + `EditButton`, `+` toolbar button presents `AddEditCategorySheet` for add/edit/delete.
 
 **Add Transaction flow (Spendy-adapted layout):** full-screen modal, top→bottom:
 - Top bar: `Cancel` capsule (left) · `•••` options-placeholder capsule (right, inert — recurring lives in a later phase)
@@ -275,9 +275,9 @@ Anka/
 │   │   ├── AddTransactionViewModel.swift
 │   │   ├── NumpadView.swift
 │   │   └── CategoryPickerView.swift
-│   ├── Reports/
-│   │   ├── ReportsView.swift
-│   │   └── ReportsViewModel.swift
+│   ├── Stats/
+│   │   ├── StatsView.swift                 // donut chart + top categories per month
+│   │   └── StatsViewModel.swift            // monthly aggregation, swipe-driven month nav
 │   ├── Settings/
 │   │   ├── SettingsView.swift              // native List, sectioned
 │   │   ├── SettingsViewModel.swift         // @Observable @MainActor
@@ -289,7 +289,8 @@ Anka/
 ├── Components/               // reusable UI, no business logic
 │   ├── TransactionRow.swift
 │   ├── AmountLabel.swift
-│   └── SectionHeader.swift
+│   ├── SectionHeader.swift
+│   └── DonutChartView.swift            // ported verbatim from Spendy — pixel-perfect
 ├── Services/
 │   ├── CategoryPredictor.swift       // ported from Spendy (3-layer pipeline)
 │   ├── CategoryMLTrainer.swift       // ported from Spendy (on-device CreateML)
@@ -317,6 +318,7 @@ Copy these verbatim from the Spendy project — do not rewrite:
 - `AppLockManager.swift` → update Keychain key to `"ankaPINCode"`
 - `DSFont.swift` → clean up tokens to 8–10 only
 - `StarterCategoryClassifier.mlmodelc` → drag into Resources/
+- `DonutChartView.swift` (Spendy `Views/Charts/`) → only swap `Color.spendyCoral` → `DSColor.accent`; preserve `innerRatio: 0.78`, drag-vs-swipe deadzone (12pt), spring/easeInOut timings, haptic, raw font sizes (13/23/12) — these define the chart's feel
 
 Do NOT port: any View files, FirestoreSyncService, ProfileManager, InsightEngine, RecurringDetector, BackupService, CSVService, DashboardV2/V3.
 
@@ -329,8 +331,8 @@ Do NOT port: any View files, FirestoreSyncService, ProfileManager, InsightEngine
 | 0 | Project Setup + Design System | ✅ Done |
 | 1 | Data Models | ✅ Done |
 | 2 | Add Transaction | ✅ Done (Spendy V2-adapted layout, SwiftData persistence wired) |
-| 3 | Today View | ✅ Done |
-| 4 | Reports View | ✅ Done |
+| 3 | Today View | ✅ Done (Expense/Income/Total switcher, pinned hero, Stats button) |
+| 4 | Stats View | ✅ Done (Spendy donut chart ported pixel-perfect; replaces old Reports) |
 | 5 | Settings + Categories | ✅ Done |
 | 6 | ML Auto-Categorization | ✅ Done |
 | 7 | Widgets | ✅ Done |
