@@ -1,0 +1,51 @@
+import Foundation
+
+// MARK: - Shared formatters (DateFormatter is expensive to allocate — never create inline)
+private enum SharedDateFormatter {
+    static let relative:       DateFormatter = { let f = DateFormatter(); f.dateFormat = "EEEE, MMM d";        return f }()
+    static let section:        DateFormatter = { let f = DateFormatter(); f.dateFormat = "EEEE, MMMM d";       return f }()
+    static let fullDate:       DateFormatter = { let f = DateFormatter(); f.dateFormat = "EEEE, MMMM d, yyyy"; return f }()
+    static let monthName:      DateFormatter = { let f = DateFormatter(); f.dateFormat = "MMMM";               return f }()
+    static let shortMonthName: DateFormatter = { let f = DateFormatter(); f.dateFormat = "MMM";                return f }()
+    static let monthYear:      DateFormatter = { let f = DateFormatter(); f.dateFormat = "MMMM yyyy";          return f }()
+}
+
+extension Date {
+    var startOfDay: Date { Calendar.current.startOfDay(for: self) }
+
+    var startOfMonth: Date {
+        let comps = Calendar.current.dateComponents([.year, .month], from: self)
+        return Calendar.current.date(from: comps) ?? self
+    }
+
+    var endOfMonth: Date {
+        Calendar.current.date(byAdding: DateComponents(month: 1, second: -1), to: startOfMonth) ?? self
+    }
+
+    var monthInterval: DateInterval {
+        DateInterval(start: startOfMonth, end: endOfMonth)
+    }
+
+    var relativeLabel: String {
+        if Calendar.current.isDateInToday(self) { return "Today" }
+        if Calendar.current.isDateInYesterday(self) { return "Yesterday" }
+        return SharedDateFormatter.relative.string(from: self)
+    }
+
+    var sectionLabel: String {
+        if Calendar.current.isDateInToday(self) { return "Today" }
+        if Calendar.current.isDateInYesterday(self) { return "Yesterday" }
+        return SharedDateFormatter.section.string(from: self)
+    }
+
+    var fullDateLabel: String    { SharedDateFormatter.fullDate.string(from: self) }
+    var monthName: String        { SharedDateFormatter.monthName.string(from: self) }
+    var shortMonthName: String   { SharedDateFormatter.shortMonthName.string(from: self) }
+
+    var dayOfMonth: Int { Calendar.current.component(.day, from: self) }
+    var month: Int      { Calendar.current.component(.month, from: self) }
+    var year: Int       { Calendar.current.component(.year, from: self) }
+
+    /// "May 2026" — shared formatter so the year is never formatted with thousands separator
+    var monthYearLabel: String   { SharedDateFormatter.monthYear.string(from: self) }
+}
