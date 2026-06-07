@@ -246,7 +246,7 @@ Do NOT port: any View files, FirestoreSyncService, ProfileManager, InsightEngine
 | 1 | Data Models | ✅ Done |
 | 2 | Add Transaction | ✅ Done (UI only — no persistence yet) |
 | 3 | Today View | ✅ Done |
-| 4 | Reports View | ⬜ Not started |
+| 4 | Reports View | ✅ Done |
 | 5 | Settings + Categories | ⬜ Not started |
 | 6 | ML Auto-Categorization | ⬜ Not started |
 | 7 | Widgets | ⬜ Not started |
