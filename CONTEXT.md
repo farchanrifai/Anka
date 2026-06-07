@@ -247,7 +247,7 @@ Do NOT port: any View files, FirestoreSyncService, ProfileManager, InsightEngine
 | 2 | Add Transaction | ✅ Done (Spendy V2-adapted layout, SwiftData persistence wired) |
 | 3 | Today View | ✅ Done |
 | 4 | Reports View | ✅ Done |
-| 5 | Settings + Categories | ⬜ Not started |
+| 5 | Settings + Categories | ✅ Done |
 | 6 | ML Auto-Categorization | ⬜ Not started |
 | 7 | Widgets | ⬜ Not started |
 | 8 | App Lock | ⬜ Not started |

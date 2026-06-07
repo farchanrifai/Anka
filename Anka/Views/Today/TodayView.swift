@@ -5,9 +5,10 @@ struct TodayView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Transaction.date, order: .reverse) private var allTransactions: [Transaction]
     @State private var viewModel = TodayViewModel()
+    @State private var showSettings = false
 
     var body: some View {
-        ZStack(alignment: .top) {
+        ZStack(alignment: .topTrailing) {
             DSColor.bgPrimary
                 .ignoresSafeArea()
 
@@ -36,12 +37,28 @@ struct TodayView: View {
                 }
             }
             .toolbar(.hidden, for: .navigationBar)
+
+            // Floating gear button — opens Settings as a modal sheet.
+            Button {
+                showSettings = true
+            } label: {
+                Image(systemName: "gearshape.fill")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(DSColor.accent)
+                    .frame(width: 36, height: 36)
+                    .background(DSColor.bgCard, in: Circle())
+            }
+            .padding(.top, DSSpacing.md)
+            .padding(.trailing, DSSpacing.lg)
         }
         .task {
             viewModel.update(transactions: allTransactions)
         }
         .onChange(of: allTransactions) { _, newTransactions in
             viewModel.update(transactions: newTransactions)
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
         }
     }
 
