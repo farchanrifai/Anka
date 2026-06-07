@@ -244,7 +244,7 @@ Do NOT port: any View files, FirestoreSyncService, ProfileManager, InsightEngine
 |---|---|---|
 | 0 | Project Setup + Design System | ✅ Done |
 | 1 | Data Models | ✅ Done |
-| 2 | Add Transaction | ✅ Done (UI only — no persistence yet) |
+| 2 | Add Transaction | ✅ Done (Spendy V2-adapted layout, SwiftData persistence wired) |
 | 3 | Today View | ✅ Done |
 | 4 | Reports View | ✅ Done |
 | 5 | Settings + Categories | ⬜ Not started |
