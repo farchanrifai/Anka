@@ -3,6 +3,8 @@ import SwiftData
 
 struct CategoryManagementView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.colorScheme) private var scheme
+    @Environment(AppearanceManager.self) private var appearance
     @Bindable var viewModel: SettingsViewModel
 
     private var expenses: [Category] {
@@ -30,6 +32,7 @@ struct CategoryManagementView: View {
                     move(in: expenses, from: from, to: to)
                 }
             }
+            .listRowBackground(appearance.bgCard(scheme))
 
             Section("Income") {
                 ForEach(incomes) { category in
@@ -42,7 +45,10 @@ struct CategoryManagementView: View {
                     move(in: incomes, from: from, to: to)
                 }
             }
+            .listRowBackground(appearance.bgCard(scheme))
         }
+        .scrollContentBackground(.hidden)
+        .background(appearance.bgGrouped(scheme))
         .navigationTitle("Categories")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -115,4 +121,5 @@ struct CategoryManagementView: View {
         CategoryManagementView(viewModel: SettingsViewModel())
     }
     .modelContainer(SampleData.container())
+    .environment(AppearanceManager())
 }

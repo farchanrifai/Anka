@@ -132,6 +132,68 @@ Default currency: `IDR`. State held in-view via `@State` (no ViewModel). No pers
 
 ---
 
+## Appearance (Theme + Dark Variant)
+
+`Services/AppearanceManager.swift` is `@MainActor @Observable`, owned by `AnkaApp` as `@State` and injected via `.environment`.
+
+- `Mode`: `.system / .light / .dark` — persisted as `anka.appearanceMode`. Maps to SwiftUI's `.preferredColorScheme(_:)` applied at WindowGroup level.
+- `DarkVariant`: `.black (#000000) / .gray (#1A1A1A)` — persisted as `anka.darkVariant`. Only meaningful in dark mode (light mode ignores it).
+
+**Variant resolution lives on AppearanceManager, NOT on DSColor.** Earlier attempts used `UIColor(dynamicProvider:)` inside `DSColor.bgPrimary` etc — but those closures only re-evaluate on **trait** changes, not on UserDefaults writes. Forcing a trait pass either via `overrideUserInterfaceStyle` toggle or via a SwiftUI scheme-shake both caused either intermittent failures or a visible flash. Don't bring those approaches back.
+
+Current design: `AppearanceManager` exposes `@Observable` helper methods that take the calling view's `@Environment(\.colorScheme)` and return a plain `Color`:
+
+```swift
+func bgPrimary(_ scheme: ColorScheme) -> Color
+func bgCard(_ scheme: ColorScheme) -> Color
+func bgGrouped(_ scheme: ColorScheme) -> Color
+// + bgSecondary, bgTertiary
+```
+
+| Helper | Light | Dark · Pure Black | Dark · Soft Dark |
+|---|---|---|---|
+| bgPrimary | systemBackground | #000000 | #1A1A1A |
+| bgCard | secondarySystemGrouped | #1A1A1A | #242424 |
+| bgSecondary | secondarySystem | #1C1C1E | #2C2C2C |
+| bgTertiary | tertiarySystem | #2C2C2E | #3A3A3C |
+| bgGrouped | systemGrouped | #000000 | #1A1A1A |
+
+When the user changes mode or variant, `AppearanceManager` publishes, dependent views re-render, the helper is re-called with current state, the returned `Color` is fresh. No trait shake, no flash, instant. SwiftUI's `@Environment(\.colorScheme)` reflects whatever `.preferredColorScheme` the app/sheet applies, so it's already the effective scheme for mode resolution.
+
+**DSColor.bg* tokens still exist** as static fallbacks for contexts where `@Environment` isn't readable (widgets, lock screen overlay, simple previews). They use system colors and do **not** honor the dark variant. Refactored views use `appearance.bgX(scheme)`; legacy paths use `DSColor.bgX`.
+
+**Native List + variant.** iOS's native `List` paints its own UIKit-managed background that bypasses our colors entirely. To make `SettingsView` / `AppearanceSettingsView` / `CategoryManagementView` follow the variant, those views apply:
+
+```swift
+.scrollContentBackground(.hidden)
+.background(appearance.bgGrouped(scheme))
+```
+
+…on the `List`, and `.listRowBackground(appearance.bgCard(scheme))` on each `Section`. Without these, the List would always show `systemGroupedBackground` regardless of variant.
+
+**Sheet propagation note.** `.preferredColorScheme(...)` at the WindowGroup level doesn't always re-propagate into sheets that are already presented (SwiftUI sheet hosts are independent `UIHostingController`s that subscribe to env at presentation time but don't always re-subscribe on parent env changes). To make mode changes update sheets immediately, **also apply `.preferredColorScheme` on the sheet roots** (currently: `SettingsView`, `AddTransactionView`). The lock screen `AppLockView` is overlaid in the same ZStack as `AppRouter` so it shares the WindowGroup-level modifier directly.
+
+**`.system` → sheet quirk.** Two SwiftUI gotchas around sheet roots and `.preferredColorScheme`:
+
+1. Passing `nil` to `.preferredColorScheme` on a sheet does NOT release a previously-applied explicit override. Once a sheet has been given `.light`/`.dark`, `nil` won't un-stick it — you'd need to close and reopen the sheet.
+2. Conditionally omitting the modifier via `@ViewBuilder` changes the view's structural type, which causes SwiftUI to **tear down the NavigationStack inside** — popping the user from `AppearanceSettingsView` back to the main `SettingsView` on every mode toggle.
+
+**Fix:** apply `.preferredColorScheme(appearance.effectiveScheme)` unconditionally on sheet roots. `effectiveScheme` is never nil — it's `.light`/`.dark` for explicit modes, and **the live OS scheme** for `.system`. Always concrete + always applied = stable view structure (no nav pop) and clean trait transitions (no stuck overrides).
+
+The OS scheme is tracked in `AppearanceManager.osScheme`, mirrored from `AppRouter`'s `@Environment(\.colorScheme)` via `.onChange`. `AppRouter` sits inside the WindowGroup's `.preferredColorScheme(mode.preferredColorScheme)` — so when mode is `.system` (modifier resolves to nil), the WindowGroup follows the OS and AppRouter's env scheme IS the OS scheme. For `.light`/`.dark` modes the env reflects our override, which is also written to `osScheme` but unused (`effectiveScheme` short-circuits before reading it).
+
+Settings flow: **Settings → Appearance** (NavigationLink pushes `AppearanceSettingsView`). Sub-page has two sections — Theme (System/Light/Dark) and Dark Variant (Pure Black/Soft Dark). The Dark Variant section is `.disabled` (still visible) when mode is Light, so toggling modes doesn't shift the layout.
+
+The old `darkModeEnabled` toggle in `SettingsViewModel` (a leftover from Phase 5) was non-functional and is now superseded by the AppearanceManager — the field can be removed from the VM when convenient.
+
+## Today View — Search behavior gotcha
+
+`TodayView` uses iOS-26's bottom-toolbar search pattern: `.searchable(text:)` + `DefaultToolbarItem(kind: .search, placement: .bottomBar)` + `.searchToolbarBehavior(...)`. By default, activating the search field triggers `UISearchController`'s **search-presentation mode**, which slides the underlying content up out of view (it assumes the search results will replace the original content). This caused the sticky header (Expense/Income/Total + amount + Stats) to disappear when the keyboard came up.
+
+**Fix:** `.searchPresentationToolbarBehavior(.avoidHidingContent)` on the `.searchable` chain. iOS 18.2+ modifier that keeps the underlying content in place while search is active. This is **not** a keyboard-avoidance issue — `.ignoresSafeArea(.keyboard)` and `.scrollDismissesKeyboard(.never)` do not help, since the shift comes from `UISearchController` not from the keyboard inset itself.
+
+Cosmetic UIKit warnings persist (`SearchBarHidesWhenScrolling-default` vs `-explicit`, `Adding UIKitToolbar as subview...`, constraint conflicts on `_UIButtonBarButton`) — these are known SwiftUI↔UIKit bridge noise from the bottom-toolbar search pattern in iOS 26 and don't affect runtime behavior.
+
 ## App Lock (Phase 8)
 
 `Services/AppLockManager.swift` is `@MainActor @Observable`, owned by `AnkaApp` as `@State` and injected via `.environment(lockManager)`. Single source of truth for:
@@ -282,7 +344,8 @@ Anka/
 │   │   ├── SettingsView.swift              // native List, sectioned
 │   │   ├── SettingsViewModel.swift         // @Observable @MainActor
 │   │   ├── CategoryManagementView.swift    // sub-menu: list + swipe-delete + drag-reorder
-│   │   └── AddEditCategorySheet.swift      // modal form for add/edit/delete
+│   │   ├── AddEditCategorySheet.swift      // modal form for add/edit/delete
+│   │   └── AppearanceSettingsView.swift    // sub-page: Mode + Dark Variant
 │   └── AppLock/
 │       ├── AppLockView.swift               // biometric primary, PIN fallback
 │       └── PINSetupSheet.swift             // two-step PIN enrollment
@@ -299,6 +362,7 @@ Anka/
 │   ├── TransactionFilterEngine.swift // ported, gated #if ENABLE_TRANSACTION_FILTER_ENGINE
 │   ├── AppLockManager.swift          // ported from Spendy — pinKey "ankaPINCode"
 │   ├── KeychainHelper.swift          // ported from Spendy — service "nc.Anka"
+│   ├── AppearanceManager.swift       // @Observable — mode + dark variant
 │   ├── WidgetDataWriter.swift        // writes shared App Group UserDefaults
 │   └── WidgetSharedTypes.swift       // shared by main app + AnkaWidgets target
 └── Resources/

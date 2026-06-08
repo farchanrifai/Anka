@@ -13,6 +13,10 @@ struct AnkaApp: App {
     /// at app root so scene-phase changes can flip `isLocked` between transitions.
     @State private var lockManager = AppLockManager()
 
+    /// Appearance manager — drives `.preferredColorScheme` + dark-variant
+    /// overrides consumed by DSColor's dynamic background tokens.
+    @State private var appearance = AppearanceManager()
+
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
@@ -88,15 +92,18 @@ struct AnkaApp: App {
                 AppRouter()
                     .environment(predictor)
                     .environment(lockManager)
+                    .environment(appearance)
 
                 if lockManager.isLocked {
                     AppLockView()
                         .environment(lockManager)
+                        .environment(appearance)
                         .transition(.opacity)
                         .zIndex(1)
                 }
             }
             .animation(.easeInOut(duration: 0.25), value: lockManager.isLocked)
+            .preferredColorScheme(appearance.mode.preferredColorScheme)
         }
         .modelContainer(modelContainer)
         .onChange(of: scenePhase) { _, newPhase in

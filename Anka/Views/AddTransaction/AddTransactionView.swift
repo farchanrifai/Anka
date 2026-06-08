@@ -73,6 +73,7 @@ struct AddTransactionView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(CategoryPredictor.self) private var predictor
+    @Environment(AppearanceManager.self) private var appearance
 
     @Query(sort: \Category.sortOrder) private var categories: [Category]
     @Query(sort: \Transaction.date, order: .reverse) private var allTransactions: [Transaction]
@@ -193,6 +194,11 @@ struct AddTransactionView: View {
                 }
             }
         }
+        // Always pass a concrete scheme — `effectiveScheme` resolves `.system`
+        // to the live OS scheme tracked by AppearanceManager via UIScreen.
+        // See SettingsView for the full rationale (nil-doesn't-reset bug +
+        // view-structure changes popping navigation).
+        .preferredColorScheme(appearance.effectiveScheme)
     }
 
     // MARK: - Top Bar
@@ -697,5 +703,6 @@ struct AddTransactionView: View {
             AddTransactionView(defaultType: .expense)
                 .modelContainer(SampleData.container())
                 .environment(CategoryPredictor())
+                .environment(AppearanceManager())
         }
 }

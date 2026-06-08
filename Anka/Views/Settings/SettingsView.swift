@@ -4,7 +4,9 @@ import LocalAuthentication
 
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var scheme
     @Environment(AppLockManager.self) private var lock
+    @Environment(AppearanceManager.self) private var appearance
     @Query(sort: \Category.sortOrder) private var allCategories: [Category]
     @State private var viewModel = SettingsViewModel()
     @State private var showPINSetup = false
@@ -40,20 +42,25 @@ struct SettingsView: View {
                         }
                     }
                 }
+                .listRowBackground(appearance.bgCard(scheme))
 
                 Section("Appearance") {
-                    Toggle(isOn: $vm.darkModeEnabled) {
+                    NavigationLink {
+                        AppearanceSettingsView()
+                    } label: {
                         Label {
-                            Text("Dark Mode")
+                            Text("Theme")
                         } icon: {
-                            Image(systemName: "moon.fill")
+                            Image(systemName: appearance.mode.symbolName)
                                 .foregroundStyle(DSColor.accent)
                         }
+                        .badge(appearanceBadge)
                     }
-                    .tint(DSColor.accent)
                 }
+                .listRowBackground(appearance.bgCard(scheme))
 
                 securitySection
+                    .listRowBackground(appearance.bgCard(scheme))
 
                 Section("Data") {
                     Button {
@@ -68,13 +75,23 @@ struct SettingsView: View {
                         }
                     }
                 }
+                .listRowBackground(appearance.bgCard(scheme))
 
                 Section {
                     LabeledContent("Version", value: appVersion)
                 } header: {
                     Text("About")
                 }
+                .listRowBackground(appearance.bgCard(scheme))
             }
+            // Hide the List's default UIKit-managed background so our
+            // variant-aware grouped color shows through. Without these two
+            // modifiers the List paints its own systemGroupedBackground and
+            // ignores the variant entirely (which was the "Settings page
+            // doesn't follow the variant" bug). Each Section also overrides
+            // .listRowBackground so row surfaces match the variant.
+            .scrollContentBackground(.hidden)
+            .background(appearance.bgGrouped(scheme))
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -89,6 +106,22 @@ struct SettingsView: View {
                 }
             }
         }
+        // Apply preferredColorScheme unconditionally with a CONCRETE scheme
+        // (`effectiveScheme` resolves `.system` to the live OS scheme tracked
+        // via UIScreen). Concrete-only + always-applied is critical:
+        //
+        // 1. Passing nil for `.system` doesn't release the sheet host's
+        //    previously-applied override (sheet gets stuck on the last
+        //    concrete value, needs the sheet closed and reopened to fix).
+        // 2. Conditionally omitting the modifier with @ViewBuilder changes
+        //    the view's structural type, which causes SwiftUI to tear down
+        //    the NavigationStack inside — popping AppearanceSettingsView
+        //    back to the main Settings page on every Light↔Dark↔System
+        //    toggle.
+        //
+        // Tracking the OS scheme separately via UIScreen lets us always
+        // pass a real value while still following OS in `.system` mode.
+        .preferredColorScheme(appearance.effectiveScheme)
         .task {
             viewModel.update(categories: allCategories)
         }
@@ -198,6 +231,15 @@ struct SettingsView: View {
         }
     }
 
+    /// "System · Pure Black" / "Light" / "Dark · Soft Dark".
+    /// Hides the dark-variant suffix when it doesn't apply (Light mode).
+    private var appearanceBadge: String {
+        if appearance.isDarkVariantApplicable {
+            return "\(appearance.mode.displayName) · \(appearance.darkVariant.displayName)"
+        }
+        return appearance.mode.displayName
+    }
+
     private var appVersion: String {
         let v = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
         let b = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
@@ -209,4 +251,5 @@ struct SettingsView: View {
     SettingsView()
         .modelContainer(SampleData.container())
         .environment(AppLockManager())
+        .environment(AppearanceManager())
 }
