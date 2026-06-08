@@ -174,10 +174,19 @@ struct AddTransactionView: View {
                     isTagInputActive = true
                 }
             }
-            Task { @MainActor in
-                try? await Task.sleep(for: .milliseconds(300))
-                focusedField = .description
-            }
+            // Keep focusedField in sync with the actual UIKit first responder
+            // so other state (e.g. `.animation(nil, value: focusedField)` and
+            // ML-prediction guard `focusedField == .description`) works as
+            // expected. The actual `becomeFirstResponder()` call happens
+            // inside AutoFocusTextField's `didMoveToWindow`, which fires
+            // during the sheet's zoom present animation — that's what
+            // delivers Mail-style keyboard timing. This assignment alone
+            // wouldn't (SwiftUI's @FocusState → UIKit bridge runs too late).
+            focusedField = .description
+        }
+        .onDisappear {
+            focusedField = nil
+            isTagFieldFocused = false
         }
         .onChange(of: categories) {
             vm.update(categories: categories, allTransactions: allTransactions)
@@ -276,43 +285,62 @@ struct AddTransactionView: View {
     }
 
     // MARK: - Text Fields
+    //
+    // Description uses a UIKit-backed AutoFocusTextField (UIViewRepresentable)
+    // so the first-responder claim fires inside `didMoveToWindow` — i.e.
+    // *during* the sheet's zoom present animation. SwiftUI's `TextField`
+    // + `@FocusState` couldn't deliver Mail-style timing because the
+    // FocusState → becomeFirstResponder bridge runs on a later runloop tick,
+    // so the keyboard slide happened sequentially after the zoom finished.
     private var descriptionField: some View {
-        TextField("", text: $vm.descriptionText, prompt: Text("Description").foregroundStyle(.secondary))
-            .font(.dsTitle)
-            .foregroundStyle(.primary)
-            .focused($focusedField, equals: .description)
-            .autocorrectionDisabled()
-            .textInputAutocapitalization(.sentences)
-            .submitLabel(.next)
-            .onSubmit { focusedField = .amount }
-            .onChange(of: vm.descriptionText) { old, newValue in
-                // Only run ML when the user is actively typing.
-                // When editing an existing transaction, loadExisting() seeds
-                // descriptionText programmatically during onAppear with no focus —
-                // skip ML so we don't overwrite the saved category.
-                guard existingTransaction == nil || focusedField == .description else { return }
+        AutoFocusTextField(
+            text: $vm.descriptionText,
+            placeholder: "Description",
+            font: UIFont.systemFont(ofSize: 34, weight: .bold),  // mirrors DSFont.dsTitle
+            focusBinding: $focusedField,
+            focusValue: FocusField.description,
+            autoFocusOnAppear: true,
+            returnKeyType: .next,
+            onChange: { newValue in handleDescriptionChange(newValue) },
+            onSubmit: { focusedField = .amount }
+        )
+        // Match the original frame so layout stays the same.
+        .frame(height: 44)
+    }
 
-                if newValue.isEmpty {
-                    withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) {
-                        if vm.isMLAssigned { vm.selectedCategory = nil }
-                        vm.isMLAssigned = false
-                    }
-                    vm.latestMLCategory = nil
-                    vm.cancelMLPrediction()
-                } else {
-                    // If a chip was showing for the previous text and now the
-                    // user kept typing, that's a negative signal — log it.
-                    if let pred = predictor.latestPrediction, pred.shouldShowChip {
-                        predictor.logCorrection(
-                            note: old,
-                            amount: vm.parsedAmount,
-                            predicted: pred.category,
-                            actual: nil
-                        )
-                    }
-                    vm.triggerMLPrediction(note: newValue, predictor: predictor)
-                }
+    /// Pulled out of the .onChange closure so the descriptionField var stays
+    /// compact and the closure can capture state cleanly across the UIKit
+    /// bridge. Logic preserved verbatim from the SwiftUI version.
+    private func handleDescriptionChange(_ newValue: String) {
+        // Only run ML when the user is actively typing.
+        // When editing an existing transaction, loadExisting() seeds
+        // descriptionText programmatically during onAppear with no focus —
+        // skip ML so we don't overwrite the saved category.
+        guard existingTransaction == nil || focusedField == .description else { return }
+
+        // Capture previous text from the VM before we proceed — UIKit
+        // editingChanged fires AFTER the new value is committed to the
+        // binding, so we read the previous value from latestPrediction.
+        let old = vm.descriptionText
+
+        if newValue.isEmpty {
+            withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) {
+                if vm.isMLAssigned { vm.selectedCategory = nil }
+                vm.isMLAssigned = false
             }
+            vm.latestMLCategory = nil
+            vm.cancelMLPrediction()
+        } else {
+            if let pred = predictor.latestPrediction, pred.shouldShowChip {
+                predictor.logCorrection(
+                    note: old,
+                    amount: vm.parsedAmount,
+                    predicted: pred.category,
+                    actual: nil
+                )
+            }
+            vm.triggerMLPrediction(note: newValue, predictor: predictor)
+        }
     }
 
     private var amountField: some View {

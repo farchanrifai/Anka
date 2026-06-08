@@ -45,6 +45,12 @@ struct TodayView: View {
             CategoryFilterSheet(selection: $vm.selectedCategories)
                 .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.visible)
+                // Zoom transition originates from the filter toolbar button.
+                // The detent (.medium default, .large via drag) is honored —
+                // the zoom destination is whatever final size the sheet
+                // settles at, so this Mail-style expansion still resolves to
+                // a half-page sheet.
+                .navigationTransition(.zoom(sourceID: "filter", in: animationNamespace))
         }
         .sheet(isPresented: Binding(
             get: { vm.editingTransaction != nil },
@@ -52,6 +58,7 @@ struct TodayView: View {
         )) {
             if let tx = vm.editingTransaction {
                 AddTransactionView(defaultType: tx.type, existingTransaction: tx)
+                    .navigationTransition(.zoom(sourceID: tx.id, in: animationNamespace))
             }
         }
         .alert("Delete Transaction?", isPresented: Binding(
@@ -182,6 +189,9 @@ struct TodayView: View {
         }
         .tint(vm.filterLabel == nil ? .primary : DSColor.accent)
         .accessibilityLabel(vm.filterLabel == nil ? "Filter" : "Filtered by \(vm.filterLabel!). Tap to edit.")
+        // Mail-style zoom: sheet expands out of the filter button. Detent
+        // is preserved on the sheet side (`.medium` default).
+        .matchedTransitionSource(id: "filter", in: animationNamespace)
     }
 
     @ViewBuilder
@@ -589,6 +599,12 @@ struct TodayView: View {
         }
         .buttonStyle(.plain)
         .tint(.primary)
+        // Mail-like zoom: tapping a row presents the edit sheet via a zoom
+        // transition originating from this row. Pairs with
+        // `.navigationTransition(.zoom(sourceID: tx.id, in: animationNamespace))`
+        // applied on the edit sheet's AddTransactionView. Each row uses its
+        // own tx.id so the zoom sources from the exact row the user tapped.
+        .matchedTransitionSource(id: tx.id, in: animationNamespace)
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             Button { vm.requestDelete(tx) } label: {
                 Label("Delete", systemImage: "trash")
