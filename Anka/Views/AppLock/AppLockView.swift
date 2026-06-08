@@ -120,6 +120,8 @@ struct AppLockView: View {
             return "touchid"
         case .opticID:
             return "opticid"
+        case .none:
+            return "lock.shield"
         @unknown default:
             return "lock.shield"
         }
@@ -133,6 +135,8 @@ struct AppLockView: View {
             return "Unlock with Touch ID"
         case .opticID:
             return "Unlock with Optic ID"
+        case .none:
+            return "Unlock"
         @unknown default:
             return "Unlock"
         }
