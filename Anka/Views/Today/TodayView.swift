@@ -28,6 +28,8 @@ struct TodayView: View {
     @AppStorage("balanceLaunchMode") private var balanceLaunchMode = 0 // 0=Show, 1=Hide, 2=Follow Last Session
     @AppStorage("balanceLastHidden") private var balanceLastHidden = false
 
+    @Namespace private var animationNamespace
+
     // MARK: - Body
 
     var body: some View {
@@ -37,6 +39,7 @@ struct TodayView: View {
         }
         .sheet(isPresented: $vm.showAddTransaction) {
             AddTransactionView(defaultType: vm.addDefaultType)
+                .navigationTransition(.zoom(sourceID: "addTransaction", in: animationNamespace))
         }
         .sheet(isPresented: $vm.showCategoryFilter) {
             CategoryFilterSheet(selection: $vm.selectedCategories)
@@ -190,6 +193,7 @@ struct TodayView: View {
         }
         .tint(.primary)
         .accessibilityLabel("Add transaction")
+        .matchedTransitionSource(id: "addTransaction", in: animationNamespace)
     }
 
     private var scrollContent: some View {
