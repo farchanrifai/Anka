@@ -128,7 +128,7 @@ transactions: [Transaction] // @Relationship(deleteRule: .cascade, inverse: \Tra
 - Category + Date + Save row (all 48 pt tall): compact category slot (opens picker **sheet** — segmented Expenses/Income tabs + scrollable list, `.medium`→`.large` detents) · functional date pill (`DD`/`MON`, tap = inline `DatePicker`) · coral Save capsule (disabled until amount + category set)
 - Numpad: 1–9, then note-key (✎) · 0 · `⌫`. No per-key backgrounds; each key is a full-cell tap target and the grid expands to fill available height. IDR amounts are whole numbers, so the note key replaces the decimal.
 
-Default currency: `IDR`. State held in-view via `@State` (no ViewModel). No persistence yet — Save just dismisses (Phase 3 wires SwiftData).
+Default currency: `IDR`. State held in-view via `@State` (no ViewModel). No persistence yet — Save just dismisses (Phase 3 wires SwiftData). Default currency for entry: user-selected (USD, EUR, IDR, etc.). App stores currencyCode per transaction for later FX conversion in reports.
 
 ---
 
@@ -272,13 +272,37 @@ Both `KeywordMatcher` and `StarterCategoryClassifier` were ported from Spendy an
 
 - **Internationalization concern**: amount buckets (`micro` < 20k / `small` < 100k / etc.) are tuned for **IDR** ranges. When supporting USD/EUR/etc., either (a) convert to a normalized "small/medium/large" tier based on the user's home currency, or (b) drop the amount bucket from the input string entirely. Decide before retraining — input format must match what the model was trained on.
 
+---
+
+## Multi-Currency & FX Rates (Phase 9)
+
+**Design:**
+- **Home Currency:** User sets one (default: IDR) in Settings → applies to all reports
+- **Transaction Currency:** Each transaction logged in any currency (USD, EUR, GBP, JPY, INR, SGD, AUD, etc.)
+- **Conversion:** All reports + charts convert to home currency using daily cached FX rates
+- **Display on Transaction Row:** Original currency → Home currency (e.g., "USD 100 → IDR 1,550,000 (rate: 1 USD = 15.5K IDR)")
+
+**Backend Architecture:**
+- **Provider:** Supabase (free tier: 500MB database, unlimited API calls)
+- **FX Data Source:** Open Exchange Rates (free API, 1,000 req/month)
+- **Update Frequency:** Daily (1 call per day for all currency pairs)
+- **Caching:** Rates stored in Supabase table, shared by all users globally
+- **Fallback:** Last-known rate if API unavailable
+- **Service:** `Services/FXRateService.swift` → `getRate(from:to:)` async throws Double
+
+**UI Changes:**
+- **Add Transaction:** Currency picker (dropdown, ~15 major currencies)
+- **Settings:** "Home Currency" picker dropdown + "Refresh Rates" button (manual sync)
+- **Reports:** All amounts auto-converted to home currency before charting
+- **Transaction List:** Shows original amount + converted amount + rate used
+
 - Fast Add Transaction (numpad, category, note, save in <5 taps)
 - ML auto-categorization (3-layer: KeywordMatcher → UserModel → StarterModel)
 - Home Screen + Lock Screen widgets (quick-add)
 - Transaction list (grouped by day, swipe to delete, tap to edit)
 - Monthly Reports (donut chart + bar chart — Swift Charts only)
 - Category management (add/edit/delete/reorder)
-- Multi-currency (per-transaction, no live rates at MVP)
+- Multi-currency (per-transaction, daily FX rates cached from Supabase + Open Exchange Rates)
 - Dark mode + adaptive appearance
 - Biometric lock (Face ID / Touch ID)
 - CSV + JSON export
@@ -294,7 +318,6 @@ Both `KeywordMatcher` and `StarterCategoryClassifier` were ported from Spendy an
 - Receipt OCR (Apple Vision)
 - Recurring transactions
 - Simple category budgets
-- Live exchange rates
 - 2–3 smart insights max
 
 ---
@@ -310,6 +333,7 @@ Both `KeywordMatcher` and `StarterCategoryClassifier` were ported from Spendy an
 - Ads of any kind
 - More than 2 chart types (donut + bar only)
 - Android version (until iOS is profitable)
+- Real-time FX rates (daily rates sufficient for personal expense tracking)
 
 ---
 
@@ -363,6 +387,7 @@ Anka/
 │   ├── AppLockManager.swift          // ported from Spendy — pinKey "ankaPINCode"
 │   ├── KeychainHelper.swift          // ported from Spendy — service "nc.Anka"
 │   ├── AppearanceManager.swift       // @Observable — mode + dark variant
+│   ├── FXRateService.swift           // Supabase + Open Exchange Rates integration
 │   ├── WidgetDataWriter.swift        // writes shared App Group UserDefaults
 │   └── WidgetSharedTypes.swift       // shared by main app + AnkaWidgets target
 └── Resources/
@@ -435,3 +460,6 @@ Update status to: ⬜ Not started / 🔄 In progress / ✅ Done / ❌ Issue
 | Platform | iOS only | Focus, macOS later if needed |
 | Subscription | StoreKit 2 native | No RevenueCat needed at this scale |
 | AI scope | ML categorization + OCR only | On-device, free, private |
+| Multi-Currency | Per-transaction, convert all to home currency in reports | Like YNAB; simplifies charts + totals |
+| FX Rates | Daily cached via Supabase + Open Exchange Rates | Free at MVP scale, no real-time complexity |
+| Home Currency | Single base currency for all reports | Clean reporting, no ambiguity |
