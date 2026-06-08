@@ -63,14 +63,24 @@ struct SettingsView: View {
                     .listRowBackground(appearance.bgCard(scheme))
 
                 Section("Data") {
-                    Button {
-                        // Phase 9+: export
+                    NavigationLink {
+                        BackupSettingsView()
                     } label: {
                         Label {
-                            Text("Export")
-                                .foregroundStyle(DSColor.textPrimary)
+                            Text("Backup & Restore")
                         } icon: {
-                            Image(systemName: "square.and.arrow.up")
+                            Image(systemName: "externaldrive.fill")
+                                .foregroundStyle(DSColor.accent)
+                        }
+                    }
+
+                    NavigationLink {
+                        DataManagementView()
+                    } label: {
+                        Label {
+                            Text("Import & Export")
+                        } icon: {
+                            Image(systemName: "square.and.arrow.up.on.square")
                                 .foregroundStyle(DSColor.accent)
                         }
                     }
