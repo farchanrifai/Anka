@@ -359,15 +359,31 @@ struct TodayView: View {
     // MARK: - Balance Mode Switcher
 
     private var balanceModeSwitcher: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: 8) {
             ForEach(BalanceMode.allCases, id: \.self) { mode in
-                Text(mode.title)
-                    .font(.dsFootnoteMedium)
-                    .foregroundStyle(vm.balanceMode == mode ? .primary : .secondary)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        withAnimation(.snappy(duration: 0.25)) { vm.balanceMode = mode }
+                let isActive = vm.balanceMode == mode
+                
+                Button {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                        vm.balanceMode = mode
                     }
+                } label: {
+                    HStack(spacing: isActive ? 6 : 0) {
+                        Image(systemName: mode.icon)
+                            .font(.dsFootnoteMedium)
+                        
+                        if isActive {
+                            Text(mode.title)
+                                .font(.dsFootnoteMedium)
+                                .lineLimit(1)
+                        }
+                    }
+                    .padding(.horizontal, isActive ? 14 : 14)
+                    .padding(.vertical, 8)
+                    .foregroundStyle(isActive ? DSColor.bgPrimary : .primary)
+                    .background(isActive ? Color.primary : DSColor.bgSecondary, in: Capsule())
+                }
+                .buttonStyle(.plain)
             }
         }
     }

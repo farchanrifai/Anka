@@ -43,6 +43,14 @@ enum BalanceMode: String, CaseIterable, Hashable {
         case .total:   return "Total"
         }
     }
+    
+    var icon: String {
+        switch self {
+        case .expense: return "arrow.up.right"
+        case .income:  return "arrow.down.left"
+        case .total:   return "sum"
+        }
+    }
 }
 
 // MARK: - TodayViewModel
