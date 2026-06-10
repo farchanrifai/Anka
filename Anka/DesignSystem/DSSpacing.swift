@@ -8,4 +8,7 @@ enum DSSpacing {
     static let xl:   CGFloat = 24
     static let xxl:  CGFloat = 32
     static let xxxl: CGFloat = 48
+
+    /// Standard screen-edge horizontal padding (no value in the base scale).
+    static let screenEdge: CGFloat = 20
 }

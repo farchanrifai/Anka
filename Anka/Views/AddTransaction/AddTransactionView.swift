@@ -104,7 +104,7 @@ struct AddTransactionView: View {
 
             VStack(spacing: 0) {
                 topBar
-                    .padding(.horizontal, 20)
+                    .padding(.horizontal, DSSpacing.screenEdge)
                     .padding(.top, 16)
                     .padding(.bottom, 8)
 
@@ -124,7 +124,7 @@ struct AddTransactionView: View {
                     amountField
                     categoryArea
                 }
-                .padding(.horizontal, 20)
+                .padding(.horizontal, DSSpacing.screenEdge)
                 .padding(.bottom, 12)
             }
             .frame(maxHeight: .infinity, alignment: .top)
@@ -556,7 +556,7 @@ struct AddTransactionView: View {
             .background(Color.primary, in: Capsule())
         }
         .frame(height: 50)
-        .padding(.horizontal, 20)
+        .padding(.horizontal, DSSpacing.screenEdge)
         .padding(.bottom, 8)
         .background(DSColor.bgGrouped)
     }

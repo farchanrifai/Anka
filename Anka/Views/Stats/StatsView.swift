@@ -49,7 +49,7 @@ struct StatsView: View {
         }
         .frame(height: Self.chartHeight)
         .animation(.spring(response: 0.35, dampingFraction: 0.85), value: vm.refreshKey)
-        .padding(.horizontal, 20)
+        .padding(.horizontal, DSSpacing.screenEdge)
     }
 
     // MARK: - Top Categories
@@ -61,7 +61,7 @@ struct StatsView: View {
                     .font(.dsFootnoteMedium)
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.horizontal, 20)
+                    .padding(.horizontal, DSSpacing.screenEdge)
 
                 categoriesList
             } else {
@@ -84,7 +84,7 @@ struct StatsView: View {
             }
         }
         .background(DSColor.bgSecondary, in: RoundedRectangle(cornerRadius: 16))
-        .padding(.horizontal, 20)
+        .padding(.horizontal, DSSpacing.screenEdge)
     }
 
     private func categoryRow(_ item: CategorySpendData) -> some View {

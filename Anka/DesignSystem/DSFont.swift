@@ -30,6 +30,9 @@ extension Font {
 
     /// 57 pt — hero amount on dashboard.
     static let dsHero         = Font.system(size: 57)
+    /// 52 pt — Today dashboard hero balance amount. Dynamic-Type-aware
+    /// (UIFontMetrics-scaled relative to .largeTitle), unlike the fixed-size `dsHero`.
+    static let dsHeroAmount   = Font.system(size: 52, weight: .black, relativeTo: .largeTitle)
     /// 53 pt — large emoji/icon display.
     static let dsDisplay      = Font.system(size: 53)
     /// 37 pt — large text field inputs (description, amount).
@@ -42,6 +45,9 @@ extension Font {
     static let dsTitle2Bold   = Font.system(size: 26, weight: .bold)
     /// 24 pt
     static let dsTitle3       = Font.system(size: 24)
+    /// 24 pt — category emoji in transaction rows. Dynamic-Type-aware
+    /// (UIFontMetrics-scaled relative to .title2), unlike the fixed-size `dsTitle3`.
+    static let dsEmoji        = Font.system(size: 24, weight: .regular, relativeTo: .title2)
 
     // MARK: Body
 

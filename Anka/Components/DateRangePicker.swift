@@ -81,7 +81,7 @@ struct DateRangePicker: View {
             }
             .buttonStyle(.plain)
         }
-        .padding(.horizontal, 20)
+        .padding(.horizontal, DSSpacing.screenEdge)
     }
     
     private var subtitleText: String {

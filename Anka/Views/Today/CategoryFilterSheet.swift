@@ -120,7 +120,7 @@ struct CategoryFilterSheet: View {
                     }
                 }
             }
-            .padding(.horizontal, 20)
+            .padding(.horizontal, DSSpacing.screenEdge)
             .padding(.vertical, 12)
         }
         .background(Color.clear)

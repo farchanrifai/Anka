@@ -75,6 +75,14 @@ struct TodayView: View {
         } message: {
             Text("This action cannot be undone.")
         }
+        .alert("Delete Failed", isPresented: Binding(
+            get: { vm.deleteErrorMessage != nil },
+            set: { if !$0 { vm.deleteErrorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) { vm.deleteErrorMessage = nil }
+        } message: {
+            Text(vm.deleteErrorMessage ?? "An unknown error occurred. Please try again.")
+        }
         .onChange(of: vm.selectedCategories) { _, _ in
             vm.onCategoryFilterChanged(scrollOffset: scrollOffset)
         }
@@ -231,7 +239,12 @@ struct TodayView: View {
                     ForEach(vm.displayedGroupedByDay, id: \.date) { group in
                         Section {
                             ForEach(group.transactions, id: \.id) { tx in
-                                transactionRow(tx)
+                                TransactionRow(
+                                    transaction: tx,
+                                    namespace: animationNamespace,
+                                    onEdit: { vm.editingTransaction = tx },
+                                    onDelete: { vm.requestDelete(tx) }
+                                )
                             }
                         } header: {
                             dayHeader(for: group)
@@ -273,7 +286,7 @@ struct TodayView: View {
                         .blur(radius: isAmountHidden ? 8 : 0)
 
                     Text(vm.heroAmount.idrShort)
-                        .font(.system(size: 52, weight: .black))
+                        .font(.dsHeroAmount)
                         .contentTransition(.numericText(value: vm.heroAmount))
                         .animation(.snappy(duration: 0.3), value: vm.heroAmount)
                         .lineLimit(1)
@@ -295,7 +308,7 @@ struct TodayView: View {
                 .allowsHitTesting(true)
             }
         }
-        .padding(.horizontal, 20)
+        .padding(.horizontal, DSSpacing.screenEdge)
         // Previously 75 — that included status-bar clearance back when the nav
         // bar was fully hidden. The bar is now present (transparent), so safe
         // area already covers the status + nav bar; only breathing room left.
@@ -388,7 +401,7 @@ struct TodayView: View {
                     chartColumn(category: item.category, total: item.total, barHeight: barHeight, isMax: isMax)
                 }
             }
-            .padding(.horizontal, 20)
+            .padding(.horizontal, DSSpacing.screenEdge)
         }
     }
 
@@ -461,7 +474,7 @@ struct TodayView: View {
                     .background(.ultraThinMaterial, in: Capsule())
             }
         }
-        .padding(.horizontal, 20)
+        .padding(.horizontal, DSSpacing.screenEdge)
         .padding(.vertical, 8)
     }
 
@@ -492,7 +505,7 @@ struct TodayView: View {
                     Text("Add Transaction")
                         .font(.dsSubheadSemi)
                         .foregroundStyle(DSColor.bgPrimary)
-                        .padding(.horizontal, 20)
+                        .padding(.horizontal, DSSpacing.screenEdge)
                         .padding(.vertical, 10)
                         .background(Color.primary, in: Capsule())
                 }
@@ -539,76 +552,9 @@ struct TodayView: View {
                 .fill(DSColor.bgSecondary)
                 .frame(width: 64, height: 28)
         }
-        .padding(.horizontal, 20)
+        .padding(.horizontal, DSSpacing.screenEdge)
         .frame(height: 68)
         .redacted(reason: .placeholder)
-    }
-
-    // MARK: - Transaction Row
-
-    private func transactionRow(_ tx: Transaction) -> some View {
-        Button {
-            vm.editingTransaction = tx
-        } label: {
-            HStack(spacing: 12) {
-                let cat = tx.category
-                ZStack {
-                    Circle()
-                        .fill((cat.map { Color(hex: $0.colorHex) } ?? .gray).opacity(0.15))
-                        .frame(width: 54, height: 54)
-                    Text(cat?.emoji ?? "💳")
-                        .font(.system(size: 24))
-                }
-
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(cat?.name ?? "Uncategorized")
-                        .font(.dsCaption)
-                        .foregroundStyle(.secondary)
-
-                    let desc = tx.note?.isEmpty == false ? tx.note! : (cat?.name ?? tx.type.displayName)
-                    Text(desc)
-                        .font(.dsBodySemi)
-                        .foregroundStyle(.primary)
-                        .lineLimit(1)
-                }
-
-                Spacer()
-
-                let sign = tx.type == .expense ? "" : "+ "
-                Text("\(sign)Rp \(tx.amount.idrShort)")
-                    .font(.dsFootnoteMedium)
-                    .foregroundStyle(.primary)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(DSColor.bgSecondary, in: Capsule())
-            }
-            .padding(.horizontal, 20)
-            .frame(minHeight: 68)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .tint(.primary)
-        // Mail-like zoom: tapping a row presents the edit sheet via a zoom
-        // transition originating from this row. Pairs with
-        // `.navigationTransition(.zoom(sourceID: tx.id, in: animationNamespace))`
-        // applied on the edit sheet's AddTransactionView. Each row uses its
-        // own tx.id so the zoom sources from the exact row the user tapped.
-        .matchedTransitionSource(id: tx.id, in: animationNamespace)
-        // `.swipeActions` is List-only and is a no-op inside this
-        // ScrollView/LazyVStack, so delete/edit live in a long-press
-        // context menu instead. The tap-to-edit Button above is unchanged.
-        .contextMenu {
-            Button {
-                vm.editingTransaction = tx
-            } label: {
-                Label("Edit", systemImage: "pencil")
-            }
-            Button(role: .destructive) {
-                vm.requestDelete(tx)
-            } label: {
-                Label("Delete", systemImage: "trash")
-            }
-        }
     }
 
     // MARK: - Settings Button

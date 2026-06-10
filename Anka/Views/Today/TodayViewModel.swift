@@ -96,6 +96,9 @@ enum BalanceMode: String, CaseIterable, Hashable {
     var editingTransaction: Transaction? = nil
     var pendingDeleteTransaction: Transaction? = nil
 
+    /// Non-nil when a delete failed to persist — surfaced as an alert in the view.
+    var deleteErrorMessage: String? = nil
+
     // MARK: - Bottom toolbar (search)
     /// Bound to SwiftUI's `.searchable(text:)` — filters the displayed list in
     /// the view layer (no `Task.detached`, no `dashboardKey` invalidation).
@@ -340,7 +343,11 @@ enum BalanceMode: String, CaseIterable, Hashable {
     func confirmDelete(context: ModelContext) {
         guard let tx = pendingDeleteTransaction else { return }
         context.delete(tx)
-        try? context.save()
+        do {
+            try context.save()
+        } catch {
+            deleteErrorMessage = "Failed to delete transaction. Please try again."
+        }
         pendingDeleteTransaction = nil
     }
 
