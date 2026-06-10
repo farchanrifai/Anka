@@ -83,23 +83,42 @@ struct AutoFocusTextField<FocusValue: Hashable>: UIViewRepresentable {
         // current bindings/closures, not stale ones from `makeUIView`.
         context.coordinator.parent = self
 
+        // Sync external binding writes back to the field (e.g.
+        // `vm.loadExisting(tx)` seeds descriptionText). The guard is critical
+        // because re-assigning `tf.text` during active editing resets the
+        // cursor and can interact badly with input-handling.
         if tf.text != text {
             tf.text = text
         }
 
-        if tf.placeholder != placeholder { tf.placeholder = placeholder }
-        if tf.font != font { tf.font = font }
+        // NOTE: `placeholder` and `font` are intentionally set ONLY in
+        // makeUIView. They don't change at runtime for this field, and
+        // re-assigning them on every render caused a regression where the
+        // keyboard closed after one keystroke. UIFont equality is unreliable
+        // (`UIFont.systemFont(...)` can return distinct instances), so the
+        // `!=` check often fired and the spurious property write happened
+        // during UIKit's input-handling pass — corrupting first-responder
+        // state. If these ever need to be runtime-configurable, gate the
+        // re-assignment on `!tf.isFirstResponder`.
 
-        // Sync SwiftUI @FocusState → UIKit first responder. (Bridging is
-        // synchronous via `becomeFirstResponder` / `resignFirstResponder`,
-        // so subsequent focus changes are still fast — but it's the initial
-        // didMoveToWindow path that gives us the Mail-style timing.)
+        // Sync SwiftUI @FocusState → UIKit first responder, but ONLY in the
+        // grant direction. We never force-resign here:
+        //
+        // - UIKit already resigns the field automatically when another
+        //   responder takes over (e.g. focusedField = .amount → amountField's
+        //   .focused() bridge → becomeFirstResponder on the amount UITextField
+        //   → UIKit auto-resigns this one).
+        // - User-driven dismissal (tap-outside, swipe-down) also resigns
+        //   without our involvement.
+        // - Force-resigning here on a transient `focusedField != .description`
+        //   (which happens momentarily during some SwiftUI re-renders,
+        //   especially when sparkleActive flips after the first char) would
+        //   tear down focus the user explicitly wanted. That was the
+        //   "keyboard closes after one character" bug.
         if let binding = focusBinding, let value = focusValue {
             let shouldBeFocused = (binding.wrappedValue == value)
             if shouldBeFocused && !tf.isFirstResponder {
                 tf.becomeFirstResponder()
-            } else if !shouldBeFocused && tf.isFirstResponder {
-                tf.resignFirstResponder()
             }
         }
     }
@@ -129,10 +148,21 @@ struct AutoFocusTextField<FocusValue: Hashable>: UIViewRepresentable {
         }
 
         func textFieldDidEndEditing(_ tf: UITextField) {
-            if let binding = parent.focusBinding, let value = parent.focusValue {
-                if binding.wrappedValue == value {
+            // Defer the nil-set: if this `endEditing` was a transient UIKit
+            // internal (mid-render layout churn, brief window detach), the
+            // field will be back to first-responder by the next runloop tick.
+            // Only commit the nil to the binding if we're STILL not focused
+            // after that grace period — preserves real user-driven resigns
+            // (tap-outside, return key) while ignoring spurious blips.
+            guard let binding = parent.focusBinding,
+                  let value = parent.focusValue,
+                  binding.wrappedValue == value else { return }
+            DispatchQueue.main.async { [weak tf, weak self] in
+                guard let tf, let self else { return }
+                if !tf.isFirstResponder, binding.wrappedValue == value {
                     binding.wrappedValue = nil
                 }
+                _ = self  // silence unused-warning; we keep the capture intentional
             }
         }
 
