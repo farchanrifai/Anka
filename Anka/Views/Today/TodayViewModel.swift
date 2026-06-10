@@ -6,31 +6,47 @@ import Foundation
 // MARK: - Period Filter
 
 enum PeriodFilter: String, CaseIterable, Hashable {
-    case thisMonth   = "this month"
-    case lastMonth   = "last month"
-    case last3Months = "last 3 months"
+    /// Single navigable month — driven by the dashboard swipe gesture, anchored
+    /// to `TodayViewModel.selectedMonth`. Not shown in the filter sheet.
+    case month       = "month"
+    case last3Months = "3 months"
+    case last6Months = "6 months"
     case thisYear    = "this year"
     case custom      = "custom"
 
-    var displayString: String { rawValue }
+    /// Presets offered in the filter sheet (the `.month` case is reached by
+    /// swiping the dashboard, not by tapping a pill).
+    static let filterOptions: [PeriodFilter] = [.last3Months, .last6Months, .thisYear, .custom]
 
+    var displayString: String {
+        switch self {
+        case .month:       return "Month"
+        case .last3Months: return "3 Months"
+        case .last6Months: return "6 Months"
+        case .thisYear:    return "This Year"
+        case .custom:      return "Custom"
+        }
+    }
+
+    /// Date interval for the presets that are anchored to "now" (no extra
+    /// state). `.month` and `.custom` are resolved on the view model instead,
+    /// since they need `selectedMonth` / the custom date bindings.
     var dateInterval: DateInterval {
         let cal = Calendar.current
         let now = Date()
         switch self {
-        case .thisMonth:
-            return now.monthInterval
-        case .lastMonth:
-            return cal.date(byAdding: .month, value: -1, to: now)!.monthInterval
         case .last3Months:
             let start = cal.date(byAdding: .month, value: -3, to: now.startOfMonth)!
+            return DateInterval(start: start, end: now)
+        case .last6Months:
+            let start = cal.date(byAdding: .month, value: -6, to: now.startOfMonth)!
             return DateInterval(start: start, end: now)
         case .thisYear:
             let start = cal.date(from: DateComponents(year: cal.component(.year, from: now)))!
             return DateInterval(start: start, end: now)
-        case .custom:
-            // Handled separately by customDateInterval, but return a fallback
-            return DateInterval(start: now, end: now)
+        case .month, .custom:
+            // Anchored variants — resolved by TodayViewModel.periodInterval.
+            return now.monthInterval
         }
     }
 }
@@ -78,7 +94,9 @@ enum BalanceMode: String, CaseIterable, Hashable {
 
     // MARK: - Filter + chart state
 
-    var selectedPeriod: PeriodFilter = .thisMonth
+    var selectedPeriod: PeriodFilter = .month
+    /// Anchor month for `.month` mode — moved by the dashboard swipe gesture.
+    var selectedMonth: Date = Date().startOfMonth
     var customStartDate: Date? = nil
     var customEndDate: Date? = nil
     var selectedCategories: [Category] = []
@@ -127,7 +145,7 @@ enum BalanceMode: String, CaseIterable, Hashable {
             }
             return "none"
         }()
-        return "\(dataVersion)-\(selectedPeriod.rawValue)-\(customRange)-\(balanceMode.rawValue)-\(catIDs)"
+        return "\(dataVersion)-\(selectedPeriod.rawValue)-\(selectedMonth.timeIntervalSince1970)-\(customRange)-\(balanceMode.rawValue)-\(catIDs)"
     }
 
     // MARK: - Cached output (populated by refreshDashboard)
@@ -162,14 +180,48 @@ enum BalanceMode: String, CaseIterable, Hashable {
     // MARK: - Derived: Period (cheap — operate on cached periodTransactions)
 
     var periodInterval: DateInterval {
-        if selectedPeriod == .custom, let start = customStartDate {
-            let end = customEndDate ?? start
-            // Use end of day for the end date to include all transactions on that day
-            let cal = Calendar.current
-            let endOfDay = cal.date(bySettingHour: 23, minute: 59, second: 59, of: end) ?? end
-            return DateInterval(start: cal.startOfDay(for: start), end: endOfDay)
+        switch selectedPeriod {
+        case .month:
+            return selectedMonth.monthInterval
+        case .custom:
+            if let start = customStartDate {
+                let end = customEndDate ?? start
+                // End of day so all transactions on the end date are included.
+                let cal = Calendar.current
+                let endOfDay = cal.date(bySettingHour: 23, minute: 59, second: 59, of: end) ?? end
+                return DateInterval(start: cal.startOfDay(for: start), end: endOfDay)
+            }
+            return DateInterval(start: Date(), end: Date())
+        case .last3Months, .last6Months, .thisYear:
+            return selectedPeriod.dateInterval
         }
-        return selectedPeriod.dateInterval
+    }
+
+    /// Label for the period pill shown left of the balance-mode switcher.
+    /// In `.month` mode it shows the selected month name (e.g. "May", "June")
+    /// driven by the swipe gesture; otherwise it shows the preset's label
+    /// ("3 Months", "6 Months", "This Year", "Custom").
+    var periodPillLabel: String {
+        switch selectedPeriod {
+        case .month:
+            return selectedMonth.monthName
+        case .last3Months, .last6Months, .thisYear, .custom:
+            return selectedPeriod.displayString
+        }
+    }
+
+    /// Swipe-driven month navigation on the dashboard. Moves to the adjacent
+    /// month and switches into single-month mode (clearing any custom range).
+    /// `delta` is +1 for the next month (swipe left) / -1 for the previous
+    /// (swipe right).
+    func navigateMonth(by delta: Int) {
+        let cal = Calendar.current
+        let base = (selectedPeriod == .month) ? selectedMonth : Date().startOfMonth
+        guard let next = cal.date(byAdding: .month, value: delta, to: base) else { return }
+        selectedPeriod = .month
+        customStartDate = nil
+        customEndDate = nil
+        selectedMonth = next.startOfMonth
     }
 
     var expenseTotal: Double {

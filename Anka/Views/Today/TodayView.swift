@@ -24,6 +24,9 @@ struct TodayView: View {
     @State private var scrollOffset: CGFloat = 0
     @State private var isAmountHidden  = false
     @State private var hasInitializedVisibility = false
+    /// True while a horizontal month-swipe is in progress — suppresses the
+    /// row tap so a swipe doesn't accidentally open a transaction.
+    @State private var isSwitchingMonth = false
 
     @AppStorage("balanceLaunchMode") private var balanceLaunchMode = 0 // 0=Show, 1=Hide, 2=Follow Last Session
     @AppStorage("balanceLastHidden") private var balanceLastHidden = false
@@ -242,7 +245,11 @@ struct TodayView: View {
                                 TransactionRow(
                                     transaction: tx,
                                     namespace: animationNamespace,
-                                    onEdit: { vm.editingTransaction = tx },
+                                    onEdit: {
+                                        // Ignore the tap if it was actually a month swipe.
+                                        guard !isSwitchingMonth else { return }
+                                        vm.editingTransaction = tx
+                                    },
                                     onDelete: { vm.requestDelete(tx) }
                                 )
                             }
@@ -260,6 +267,35 @@ struct TodayView: View {
             scrollOffset = offset       // view owns the raw offset (presentational)
             vm.handleScrollOffset(offset) // VM derives isChartVisible from it
         }
+        // Horizontal swipe over the list navigates months (swipe left → next
+        // month, right → previous). `.simultaneousGesture` so vertical scroll
+        // and long-press context menus keep working.
+        //
+        // Tap-vs-swipe: as soon as a drag turns clearly horizontal we set
+        // `isSwitchingMonth`, which the row's `onEdit` checks and bails on — so
+        // a swipe never opens a transaction. The flag is cleared on the next
+        // runloop after the gesture ends, so the row's tap (which fires on the
+        // same touch-up) still sees it as `true` and is suppressed; a genuine
+        // tap (no horizontal movement) never sets the flag and works normally.
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 18)
+                .onChanged { value in
+                    if abs(value.translation.width) > abs(value.translation.height) {
+                        isSwitchingMonth = true
+                    }
+                }
+                .onEnded { value in
+                    let dx = value.translation.width
+                    let dy = value.translation.height
+                    if abs(dx) > 60, abs(dx) > abs(dy) * 1.5 {
+                        withAnimation(.snappy(duration: 0.3)) {
+                            vm.navigateMonth(by: dx < 0 ? 1 : -1)
+                        }
+                    }
+                    // Defer so the row's tap (same touch-up) still sees the flag.
+                    DispatchQueue.main.async { isSwitchingMonth = false }
+                }
+        )
         // Defensive — keep the ScrollView's own safe-area accounting from
         // reacting to the keyboard. The PRIMARY fix for the "UI shifted up"
         // behavior is `.searchPresentationToolbarBehavior(.avoidHidingContent)`
@@ -273,8 +309,11 @@ struct TodayView: View {
 
     private var stickyHeader: some View {
         VStack(alignment: .leading, spacing: 16) {
-            // ── Balance Mode ───────────────────────────────────────────
-            balanceModeSwitcher
+            // ── Period + Balance Mode ──────────────────────────────────
+            HStack(spacing: 8) {
+                periodPill
+                balanceModeSwitcher
+            }
 
             // ── Currency prefix + amount ──────────────────────────────
             HStack(alignment: .bottom, spacing: 0) {
@@ -344,6 +383,30 @@ struct TodayView: View {
         }
     }
 
+
+    // MARK: - Period Pill
+
+    private var periodPill: some View {
+        Button {
+            vm.showCategoryFilter = true
+        } label: {
+            Text(vm.periodPillLabel)
+                .font(.dsFootnoteMedium)
+                .lineLimit(1)
+                // Roll the label like the hero number when the month changes.
+                .contentTransition(.numericText())
+                // Match the mode-picker pills exactly: same padding + Capsule radius.
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+                .foregroundStyle(DSColor.textOnAccent)
+                .background(DSColor.accent, in: Capsule())
+                // Animate both the label transition and the pill's width as the
+                // text length changes (e.g. "May" → "September" → "3 Months").
+                .animation(.snappy(duration: 0.3), value: vm.periodPillLabel)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Period: \(vm.periodPillLabel). Tap to change.")
+    }
 
     // MARK: - Balance Mode Switcher
 

@@ -91,7 +91,7 @@ struct CategoryFilterSheet: View {
     private var periodPills: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
-                ForEach(PeriodFilter.allCases, id: \.self) { period in
+                ForEach(PeriodFilter.filterOptions, id: \.self) { period in
                     if period == .custom {
                         NavigationLink {
                             DateRangePicker(startDate: $customStartDate, endDate: $customEndDate)
@@ -129,14 +129,12 @@ struct CategoryFilterSheet: View {
     @ViewBuilder
     private func pillLabel(for period: PeriodFilter) -> some View {
         let isSelected = selectedPeriod == period
-        let displayText = period.displayString
-        let capitalizedText = displayText.prefix(1).uppercased() + displayText.dropFirst()
-        
+
         HStack(spacing: 6) {
             if period == .custom {
                 Image(systemName: "calendar")
             }
-            Text(capitalizedText)
+            Text(period.displayString)
         }
         .font(.dsFootnoteSemi)
         .foregroundStyle(isSelected ? DSColor.textOnAccent : DSColor.textPrimary)
@@ -149,7 +147,7 @@ struct CategoryFilterSheet: View {
 
 #Preview {
     @Previewable @State var selection: [Category] = []
-    @Previewable @State var selectedPeriod: PeriodFilter = .thisMonth
+    @Previewable @State var selectedPeriod: PeriodFilter = .month
     @Previewable @State var customStartDate: Date? = nil
     @Previewable @State var customEndDate: Date? = nil
     return CategoryFilterSheet(
