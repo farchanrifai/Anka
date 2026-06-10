@@ -10,25 +10,36 @@ struct CategoryFilterSheet: View {
 
     /// Two-way binding with TodayViewModel.selectedCategories.
     @Binding var selection: [Category]
+    @Binding var selectedPeriod: PeriodFilter
+    @Binding var customStartDate: Date?
+    @Binding var customEndDate: Date?
 
     private var expense: [Category] { allCategories.filter { $0.type == .expense } }
     private var income:  [Category] { allCategories.filter { $0.type == .income  } }
 
     var body: some View {
         NavigationStack {
-            List {
-                if !expense.isEmpty {
-                    Section("Expense") {
-                        ForEach(expense, id: \.id) { row($0) }
+            VStack(spacing: 0) {
+                periodPills
+                
+                Divider()
+                
+                List {
+                    if !expense.isEmpty {
+                        Section("Expense") {
+                            ForEach(expense, id: \.id) { row($0) }
+                        }
+                    }
+                    if !income.isEmpty {
+                        Section("Income") {
+                            ForEach(income, id: \.id) { row($0) }
+                        }
                     }
                 }
-                if !income.isEmpty {
-                    Section("Income") {
-                        ForEach(income, id: \.id) { row($0) }
-                    }
-                }
+                .scrollContentBackground(.hidden)
             }
-            .navigationTitle("Filter by Category")
+            .background(.clear)
+            .navigationTitle("Filters")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -45,6 +56,7 @@ struct CategoryFilterSheet: View {
                 }
             }
         }
+        .presentationBackground(.regularMaterial)
     }
 
     @ViewBuilder
@@ -73,10 +85,78 @@ struct CategoryFilterSheet: View {
         }
         .buttonStyle(.plain)
     }
+
+    // MARK: - Period Pills
+
+    private var periodPills: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(PeriodFilter.allCases, id: \.self) { period in
+                    if period == .custom {
+                        NavigationLink {
+                            DateRangePicker(startDate: $customStartDate, endDate: $customEndDate)
+                                .navigationTitle("Select Dates")
+                                .navigationBarTitleDisplayMode(.inline)
+                                .onAppear {
+                                    selectedPeriod = .custom
+                                }
+                        } label: {
+                            pillLabel(for: period)
+                        }
+                        .buttonStyle(.plain)
+                    } else {
+                        Button {
+                            let impact = UIImpactFeedbackGenerator(style: .light)
+                            impact.impactOccurred()
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                selectedPeriod = period
+                                customStartDate = nil
+                                customEndDate = nil
+                            }
+                        } label: {
+                            pillLabel(for: period)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 12)
+        }
+        .background(Color.clear)
+    }
+
+    @ViewBuilder
+    private func pillLabel(for period: PeriodFilter) -> some View {
+        let isSelected = selectedPeriod == period
+        let displayText = period.displayString
+        let capitalizedText = displayText.prefix(1).uppercased() + displayText.dropFirst()
+        
+        HStack(spacing: 6) {
+            if period == .custom {
+                Image(systemName: "calendar")
+            }
+            Text(capitalizedText)
+        }
+        .font(.dsFootnoteSemi)
+        .foregroundStyle(isSelected ? DSColor.textOnAccent : DSColor.textPrimary)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .background(isSelected ? DSColor.accent : DSColor.bgSecondary, in: Capsule())
+        .scaleEffect(isSelected ? 1.05 : 1.0)
+    }
 }
 
 #Preview {
     @Previewable @State var selection: [Category] = []
-    return CategoryFilterSheet(selection: $selection)
-        .modelContainer(SampleData.container())
+    @Previewable @State var selectedPeriod: PeriodFilter = .thisMonth
+    @Previewable @State var customStartDate: Date? = nil
+    @Previewable @State var customEndDate: Date? = nil
+    return CategoryFilterSheet(
+        selection: $selection,
+        selectedPeriod: $selectedPeriod,
+        customStartDate: $customStartDate,
+        customEndDate: $customEndDate
+    )
+    .modelContainer(SampleData.container())
 }

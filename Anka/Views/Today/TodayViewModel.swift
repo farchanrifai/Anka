@@ -10,6 +10,7 @@ enum PeriodFilter: String, CaseIterable, Hashable {
     case lastMonth   = "last month"
     case last3Months = "last 3 months"
     case thisYear    = "this year"
+    case custom      = "custom"
 
     var displayString: String { rawValue }
 
@@ -27,6 +28,9 @@ enum PeriodFilter: String, CaseIterable, Hashable {
         case .thisYear:
             let start = cal.date(from: DateComponents(year: cal.component(.year, from: now)))!
             return DateInterval(start: start, end: now)
+        case .custom:
+            // Handled separately by customDateInterval, but return a fallback
+            return DateInterval(start: now, end: now)
         }
     }
 }
@@ -75,6 +79,8 @@ enum BalanceMode: String, CaseIterable, Hashable {
     // MARK: - Filter + chart state
 
     var selectedPeriod: PeriodFilter = .thisMonth
+    var customStartDate: Date? = nil
+    var customEndDate: Date? = nil
     var selectedCategories: [Category] = []
     var balanceMode: BalanceMode = .expense
     var isChartVisible: Bool = true
@@ -111,7 +117,14 @@ enum BalanceMode: String, CaseIterable, Hashable {
 
     var dashboardKey: String {
         let catIDs = selectedCategories.map(\.id.uuidString).sorted().joined(separator: ",")
-        return "\(dataVersion)-\(selectedPeriod.rawValue)-\(balanceMode.rawValue)-\(catIDs)"
+        let customRange = {
+            if let s = customStartDate {
+                let e = customEndDate ?? s
+                return "\(s.timeIntervalSince1970)-\(e.timeIntervalSince1970)"
+            }
+            return "none"
+        }()
+        return "\(dataVersion)-\(selectedPeriod.rawValue)-\(customRange)-\(balanceMode.rawValue)-\(catIDs)"
     }
 
     // MARK: - Cached output (populated by refreshDashboard)
@@ -145,7 +158,16 @@ enum BalanceMode: String, CaseIterable, Hashable {
 
     // MARK: - Derived: Period (cheap — operate on cached periodTransactions)
 
-    var periodInterval: DateInterval { selectedPeriod.dateInterval }
+    var periodInterval: DateInterval {
+        if selectedPeriod == .custom, let start = customStartDate {
+            let end = customEndDate ?? start
+            // Use end of day for the end date to include all transactions on that day
+            let cal = Calendar.current
+            let endOfDay = cal.date(bySettingHour: 23, minute: 59, second: 59, of: end) ?? end
+            return DateInterval(start: cal.startOfDay(for: start), end: endOfDay)
+        }
+        return selectedPeriod.dateInterval
+    }
 
     var expenseTotal: Double {
         periodTransactions.filter { $0.type == .expense }.reduce(0) { $0 + $1.amount }
@@ -204,7 +226,7 @@ enum BalanceMode: String, CaseIterable, Hashable {
 
         // 1. Snapshot Sendable value types on the main actor.
         let txSnaps           = transactions.map(TxSnap.init)
-        let interval          = selectedPeriod.dateInterval
+        let interval          = periodInterval
         // nil = include both types (Total mode)
         let capturedType: TransactionType? = {
             switch balanceMode {

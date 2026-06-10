@@ -42,8 +42,13 @@ struct TodayView: View {
                 .navigationTransition(.zoom(sourceID: "addTransaction", in: animationNamespace))
         }
         .sheet(isPresented: $vm.showCategoryFilter) {
-            CategoryFilterSheet(selection: $vm.selectedCategories)
-                .presentationDetents([.medium, .large])
+            CategoryFilterSheet(
+                selection: $vm.selectedCategories,
+                selectedPeriod: $vm.selectedPeriod,
+                customStartDate: $vm.customStartDate,
+                customEndDate: $vm.customEndDate
+            )
+            .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.visible)
                 // Zoom transition originates from the filter toolbar button.
                 // The detent (.medium default, .large via drag) is honored —
@@ -261,9 +266,6 @@ struct TodayView: View {
 
     private var stickyHeader: some View {
         VStack(alignment: .leading, spacing: 16) {
-            // ── Period Status ──────────────────────────────────────────
-            periodIndicator
-            
             // ── Balance Mode ───────────────────────────────────────────
             balanceModeSwitcher
 
@@ -335,17 +337,6 @@ struct TodayView: View {
         }
     }
 
-    // MARK: - Period Indicator
-
-    private var periodIndicator: some View {
-        HStack(spacing: 4) {
-            let displayText = vm.selectedPeriod.displayString
-            let capitalizedText = displayText.prefix(1).uppercased() + displayText.dropFirst()
-            Text(capitalizedText)
-        }
-        .font(.dsFootnoteMedium)
-        .foregroundStyle(.secondary)
-    }
 
     // MARK: - Balance Mode Switcher
 
