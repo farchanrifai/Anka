@@ -500,6 +500,7 @@ Do NOT port: any View files, FirestoreSyncService, ProfileManager, InsightEngine
 | Appearance (theme + dark variant via AppearanceManager) | ✅ Done |
 | Backup & Restore (rolling JSON, manual trigger) | ✅ Done (auto-triggers not wired) |
 | Import & Export (CSV + JSON, with preview) | ✅ Done |
+| Onboarding (Welcome → Speed → Clarity → Trial; `Views/Onboarding/`, gated by `anka.hasCompletedOnboarding`) | ✅ Done — paywall prices + "Start Trial" + Demo Mode are **placeholders** (StoreKit 2 is Phase 9, demo-mode 24h reset not built; both buttons just complete onboarding). Settings → **Developer → Replay Onboarding** flips the flag back to re-show it (dev tool while in active development; only mutates the flag, never SwiftData — existing transactions/categories are preserved). |
 
 Update status to: ⬜ Not started / 🔄 In progress / ✅ Done / ❌ Issue
 

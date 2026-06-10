@@ -49,6 +49,24 @@ extension Font {
     /// (UIFontMetrics-scaled relative to .title2), unlike the fixed-size `dsTitle3`.
     static let dsEmoji        = Font.system(size: 24, weight: .regular, relativeTo: .title2)
 
+    // MARK: Display Serif (onboarding / editorial headings)
+
+    /// Internal helper: scalable serif system font (New York). Weight is baked
+    /// into the UIFont, the serif design is applied via the font descriptor,
+    /// then UIFontMetrics scales it — same pattern as `system(size:weight:relativeTo:)`.
+    private static func serif(size: CGFloat, weight: Font.Weight, relativeTo textStyle: Font.TextStyle) -> Font {
+        let base       = UIFont.systemFont(ofSize: size, weight: weight.uiWeight)
+        let descriptor = base.fontDescriptor.withDesign(.serif) ?? base.fontDescriptor
+        let serifFont  = UIFont(descriptor: descriptor, size: size)
+        let scaled     = UIFontMetrics(forTextStyle: textStyle.uiTextStyle).scaledFont(for: serifFont)
+        return Font(scaled)
+    }
+
+    /// 40 pt serif — hero display heading (onboarding welcome).
+    static let dsSerifHero  = Font.serif(size: 40, weight: .semibold, relativeTo: .largeTitle)
+    /// 30 pt serif — page-level display heading (onboarding pages).
+    static let dsSerifTitle = Font.serif(size: 30, weight: .semibold, relativeTo: .title)
+
     // MARK: Body
 
     /// 20 pt — primary headings

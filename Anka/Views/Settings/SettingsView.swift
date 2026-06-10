@@ -12,6 +12,12 @@ struct SettingsView: View {
     @State private var showPINSetup = false
     @State private var showRemovePINConfirm = false
 
+    /// Mirrors the first-run gate in `AnkaApp`. Setting this back to `false`
+    /// re-presents the onboarding overlay. It is the *only* thing replaying
+    /// onboarding changes — no transactions or categories are touched — so
+    /// existing data is preserved whichever option the user picks at the end.
+    @AppStorage("anka.hasCompletedOnboarding") private var hasCompletedOnboarding = true
+
     var body: some View {
         @Bindable var vm = viewModel
 
@@ -93,6 +99,9 @@ struct SettingsView: View {
                     Text("About")
                 }
                 .listRowBackground(appearance.bgCard(scheme))
+
+                developerSection
+                    .listRowBackground(appearance.bgCard(scheme))
             }
             // Hide the List's default UIKit-managed background so our
             // variant-aware grouped color shows through. Without these two
@@ -137,6 +146,40 @@ struct SettingsView: View {
         }
         .onChange(of: allCategories) { _, new in
             viewModel.update(categories: new)
+        }
+    }
+
+    // MARK: - Developer section
+
+    /// Dev-only utilities while the app is in active development. Re-launches
+    /// the onboarding flow for design review. Replaying onboarding never
+    /// mutates SwiftData — it only flips the `hasCompletedOnboarding` flag —
+    /// so transactions and categories are left untouched.
+    @ViewBuilder
+    private var developerSection: some View {
+        Section {
+            Button {
+                // Dismiss Settings first so the onboarding overlay (presented
+                // at the app root, beneath any sheet) isn't hidden behind this
+                // sheet. The brief delay lets the dismissal animation finish
+                // before the overlay fades in.
+                dismiss()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                    hasCompletedOnboarding = false
+                }
+            } label: {
+                Label {
+                    Text("Replay Onboarding")
+                        .foregroundStyle(DSColor.textPrimary)
+                } icon: {
+                    Image(systemName: "sparkles")
+                        .foregroundStyle(DSColor.accent)
+                }
+            }
+        } header: {
+            Text("Developer")
+        } footer: {
+            Text("Re-launches the welcome flow. Your transactions and categories are not affected.")
         }
     }
 

@@ -24,6 +24,10 @@ struct AnkaApp: App {
 
     @Environment(\.scenePhase) private var scenePhase
 
+    /// First-run gate: onboarding overlays the app until completed. The
+    /// subscription/demo buttons on its last page are placeholders (Phase 9).
+    @AppStorage("anka.hasCompletedOnboarding") private var hasCompletedOnboarding = false
+
     init() {
         _containerResult = State(initialValue: Result { try Self.makeContainer() })
     }
@@ -150,15 +154,25 @@ struct AnkaApp: App {
                 .environment(lockManager)
                 .environment(appearance)
 
+            if !hasCompletedOnboarding {
+                OnboardingView {
+                    hasCompletedOnboarding = true
+                }
+                .environment(appearance)
+                .transition(.opacity.combined(with: .scale(scale: 1.04)))
+                .zIndex(1)
+            }
+
             if lockManager.isLocked {
                 AppLockView()
                     .environment(lockManager)
                     .environment(appearance)
                     .transition(.opacity)
-                    .zIndex(1)
+                    .zIndex(2)
             }
         }
         .animation(.easeInOut(duration: 0.25), value: lockManager.isLocked)
+        .animation(.easeInOut(duration: 0.35), value: hasCompletedOnboarding)
         .preferredColorScheme(appearance.mode.preferredColorScheme)
     }
 }
