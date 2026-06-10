@@ -136,19 +136,13 @@ struct TodayView: View {
                         settingsToolbarButton
                     }
 
+                    DefaultToolbarItem(kind: .search, placement: .bottomBar)
                     ToolbarItem(placement: .bottomBar) { filterToolbarButton }
                     ToolbarSpacer(.flexible, placement: .bottomBar)
-                    DefaultToolbarItem(kind: .search, placement: .bottomBar)
-                    if vm.filterLabel == nil {
-                        ToolbarSpacer(.flexible, placement: .bottomBar)
-                    }
                     ToolbarItem(placement: .bottomBar) { addToolbarButton }
                 }
                 .searchable(text: $vm.searchQuery, prompt: "Search transactions")
-                // Only force the search to its minimized magnifying-glass
-                // circle when the Filter pill is wide. When inactive let the
-                // bar expand to fill the centre — matching Mail.
-                .searchToolbarBehavior(vm.filterLabel == nil ? .automatic : .minimize)
+                .searchToolbarBehavior(.minimize)
                 // CRITICAL: iOS 26's default search-presentation behavior hides
                 // the underlying content (nav bar + sticky header + scroll
                 // content slide up out of view) when the search field becomes
@@ -600,11 +594,20 @@ struct TodayView: View {
         // applied on the edit sheet's AddTransactionView. Each row uses its
         // own tx.id so the zoom sources from the exact row the user tapped.
         .matchedTransitionSource(id: tx.id, in: animationNamespace)
-        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-            Button { vm.requestDelete(tx) } label: {
+        // `.swipeActions` is List-only and is a no-op inside this
+        // ScrollView/LazyVStack, so delete/edit live in a long-press
+        // context menu instead. The tap-to-edit Button above is unchanged.
+        .contextMenu {
+            Button {
+                vm.editingTransaction = tx
+            } label: {
+                Label("Edit", systemImage: "pencil")
+            }
+            Button(role: .destructive) {
+                vm.requestDelete(tx)
+            } label: {
                 Label("Delete", systemImage: "trash")
             }
-            .tint(.red)
         }
     }
 

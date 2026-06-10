@@ -6,6 +6,7 @@ import Foundation
 /// Business state + logic for AddTransactionView (adapted from Spendy's
 /// AddTransactionV2 / AddTransactionViewModel). Anka-only: no ML, no
 /// recurring, no accounts, no Tag @Model — tags are plain Strings.
+@MainActor
 @Observable
 final class AddTransactionViewModel {
     // MARK: - User-edited state
@@ -167,7 +168,7 @@ final class AddTransactionViewModel {
                 date: selectedDate,
                 note: trimmedNote.isEmpty ? nil : trimmedNote,
                 category: selectedCategory,
-                currencyCode: "IDR",
+                currencyCode: AppCurrency.code,
                 tags: selectedTags
             )
             context.insert(tx)

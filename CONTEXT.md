@@ -41,7 +41,7 @@
 - Views own `@Query` and push data into ViewModels via `update()` methods
 - Heavy computation runs in `Task.detached` with Sendable snapshots
 - `.task(id:)` triggers recomputes, never `onAppear` for data loading
-- All ViewModels are `@Observable` and `@MainActor`
+- All ViewModels are `@Observable` and `@MainActor` _(⚠️ current deviation: `AddTransactionViewModel` is `@Observable` only — needs `@MainActor` added)_
 - No Firestore. No Firebase. No backend. Ever.
 - No authentication required to use the app
 - No multi-profile system
@@ -85,7 +85,7 @@ date: Date
 createdAt: Date
 note: String?
 category: Category?
-currencyCode: String // default "USD"
+currencyCode: String // model init defaults to "USD" ⚠️ — but app is IDR-only; entry path writes AppCurrency.code ("IDR"). Reconcile.
 tags: [String] // optional, freeform
 paymentMethod: String? // optional, e.g. "Cash", "Visa"
 ```
@@ -118,7 +118,14 @@ transactions: [Transaction] // @Relationship(deleteRule: .cascade, inverse: \Tra
 - Right detached button: **Add** — `role: .search` detaches it from the pill; intercepted via `onChange` (opens sheet, restores previous tab, does NOT navigate)
 - `.tabBarMinimizeBehavior(.onScrollDown)` — bar minimizes as content scrolls down
 
-**Settings:** floating gear icon (top-right) on **Today** → presents `SettingsView` as a sheet (modal, not a tab). Native `List` with sections: **General** (Categories → push to `CategoryManagementView`, Default Currency) · **Appearance** (Dark Mode toggle) · **Data** (Export stub) · **About** (version). `CategoryManagementView` is the sub-menu: native List split into Expense / Income sections, swipe-to-delete via `.onDelete`, drag-to-reorder via `.onMove` + `EditButton`, `+` toolbar button presents `AddEditCategorySheet` for add/edit/delete.
+**Settings:** floating gear icon (top-right) on **Today** → presents `SettingsView` as a sheet (modal, not a tab). Native `List` with sections (current state):
+- **General** — Categories (→ `CategoryManagementView`, with a count badge) · Default Currency (read-only "IDR")
+- **Appearance** — Theme (→ `AppearanceSettingsView`; badge shows mode · dark-variant). _Note: the old inline "Dark Mode toggle" described in earlier specs is gone — it's now a navigation row._
+- **Security** — App Lock toggle (Face ID/Touch ID/Optic ID/PIN) · Change PIN · Remove PIN (see App Lock section)
+- **Data** — Backup & Restore (→ `BackupSettingsView`) · Import & Export (→ `DataManagementView`). _Both are fully built — no longer the "Export stub" described in earlier specs._
+- **About** — Version
+
+`CategoryManagementView` is the sub-menu: native List split into Expense / Income sections, swipe-to-delete via `.onDelete`, drag-to-reorder via `.onMove` + `EditButton`, `+` toolbar button presents `AddEditCategorySheet` for add/edit/delete.
 
 **Add Transaction flow (Spendy-adapted layout):** full-screen modal, top→bottom:
 - Top bar: `Cancel` capsule (left) · `•••` options-placeholder capsule (right, inert — recurring lives in a later phase)
@@ -128,7 +135,12 @@ transactions: [Transaction] // @Relationship(deleteRule: .cascade, inverse: \Tra
 - Category + Date + Save row (all 48 pt tall): compact category slot (opens picker **sheet** — segmented Expenses/Income tabs + scrollable list, `.medium`→`.large` detents) · functional date pill (`DD`/`MON`, tap = inline `DatePicker`) · coral Save capsule (disabled until amount + category set)
 - Numpad: 1–9, then note-key (✎) · 0 · `⌫`. No per-key backgrounds; each key is a full-cell tap target and the grid expands to fill available height. IDR amounts are whole numbers, so the note key replaces the decimal.
 
-Default currency: `IDR`. State held in-view via `@State` (no ViewModel). No persistence yet — Save just dismisses (Phase 3 wires SwiftData). Default currency for entry: user-selected (USD, EUR, IDR, etc.). App stores currencyCode per transaction for later FX conversion in reports.
+**Current state (updated):** the entry flow is now backed by `AddTransactionViewModel` (`Views/AddTransaction/AddTransactionViewModel.swift`) and **persists to SwiftData** (Phase 2/3 done — the earlier "no ViewModel / Save just dismisses" note is obsolete). The same view handles **edit** (`existingTransaction`) and **delete** of an existing transaction. It also adds:
+- **Tags** — a morphing bottom bar with a tag-input pill (shadow-suggestion autocomplete drawn from prior transactions' tags). Tags are plain `[String]` on `Transaction`.
+- **ML auto-categorization** — debounced prediction on the description field (see ML section).
+- ⚠️ **Known deviation:** `AddTransactionViewModel` is currently `@Observable` only — it is **missing `@MainActor`**, unlike the other ViewModels (violates the Architecture Rule below). Flagged in `Anka_Code_Audit.md`.
+
+**Currency:** the app is IDR-only at present. `NumberFormatter+Amount.swift` defines `AppCurrency.code = "IDR"` as the single source of truth, and the save path writes `currencyCode: "IDR"`. ⚠️ The `Transaction` model's `init` still defaults `currencyCode` to `"USD"` — an inconsistency to reconcile (use `AppCurrency.code`). Multi-currency entry (USD/EUR/etc.) + FX conversion is Phase 9 (not started).
 
 ---
 
@@ -193,6 +205,27 @@ The old `darkModeEnabled` toggle in `SettingsViewModel` (a leftover from Phase 5
 **Fix:** `.searchPresentationToolbarBehavior(.avoidHidingContent)` on the `.searchable` chain. iOS 18.2+ modifier that keeps the underlying content in place while search is active. This is **not** a keyboard-avoidance issue — `.ignoresSafeArea(.keyboard)` and `.scrollDismissesKeyboard(.never)` do not help, since the shift comes from `UISearchController` not from the keyboard inset itself.
 
 Cosmetic UIKit warnings persist (`SearchBarHidesWhenScrolling-default` vs `-explicit`, `Adding UIKitToolbar as subview...`, constraint conflicts on `_UIButtonBarButton`) — these are known SwiftUI↔UIKit bridge noise from the bottom-toolbar search pattern in iOS 26 and don't affect runtime behavior.
+
+## Search & Filter (Today) — IMPLEMENTED
+
+> Earlier specs treated search/filter as a future gap. **It is built.** Today's bottom toolbar is the iOS Mail pattern: **Filter • Search • Add**.
+
+- **Text search** — `.searchable(text: $vm.searchQuery)`. Filtering happens in the **view layer** via `TodayViewModel.displayedGroupedByDay` (a computed pass over the already-aggregated `groupedByDay`), so each keystroke does NOT re-fire the heavy `refreshDashboard()` pipeline or invalidate `dashboardKey`. Matches `note`, `category.name`, and an amount **substring** (`String(Int(amount)).contains`). Does **not** yet search `tags` or `paymentMethod`.
+- **Category filter** — `CategoryFilterSheet` (presented from the Filter button via a Mail-style zoom transition). Multi-select, two-way bound to `TodayViewModel.selectedCategories`. The Filter button renders as a plain icon when idle and a "Filtered by …" pill when active. Category filtering runs **inside** `refreshDashboard()` (it's part of `dashboardKey`), unlike text search.
+- **Period filter** — pills in the filter sheet: This Month / Last Month / Last 3 Months / This Year / **Custom**. Custom pushes `DateRangePicker` and drives `customStartDate`/`customEndDate`. `PeriodFilter.dateInterval` resolves the range (⚠️ force-unwraps Calendar math — safe in practice).
+- **Balance mode** — Expense / Income / Total pill switcher in the hero (also swipeable). Drives which transactions + totals are shown.
+
+**Remaining gaps:** Stats has **no** category filter, no month comparison, and is expense-only. Extending Today search to tags/paymentMethod is also pending. See `Anka_Code_Audit.md` §2.
+
+⚠️ **Known bug:** the transaction rows carry `.swipeActions` for delete, but Today renders them in a `ScrollView { LazyVStack }`, not a `List` — `.swipeActions` is List-only, so **swipe-to-delete is currently a no-op**. Delete works only via tap → edit sheet → trash. See audit §4.
+
+## Backup / Import / Export (Data section) — IMPLEMENTED
+
+> Earlier specs listed this as an "Export stub". It is now a working feature set.
+
+- **`BackupService`** — versioned JSON (`AnkaBackup`, `currentVersion = 1`) export/import. Restore de-duplicates by original `Transaction.id` and reports imported/skipped/updated/deleted + warnings (`BackupImportResult`). Categories are referenced by **name** in the payload.
+- **`AutoBackupService`** (`@MainActor @Observable`, singleton) — maintains up to **7 rolling JSON backups** in two locations (App Group `Backups/` + app `Documents/Backups/`). `BackupSettingsView` lists/restores/deletes them and triggers `performBackup()` manually. ⚠️ The service header describes automatic triggers on every save/delete and on 24h foreground, **but those are not wired** — `performBackup()` is only ever called from the manual "Back Up Now" action. If automatic backups are intended, wire `performBackup`/`shouldBackup` into the save/delete paths and `scenePhase`.
+- **`CSVService`** — CSV export (8-column: date,type,category,amount,note,tags,currency,paymentMethod) + parse-with-preview (no direct DB writes; commit happens after the user confirms in `ImportPreviewSheet` → `ImportSummarySheet`). Reached via Settings → Data → Import & Export (`DataManagementView`).
 
 ## App Lock (Phase 8)
 
@@ -339,45 +372,61 @@ Both `KeywordMatcher` and `StarterCategoryClassifier` were ported from Spendy an
 
 ## Folder Structure
 
+> **Updated to match the codebase as of this audit.** Differences from the original spec are called out inline.
+
 ```
 Anka/
+├── AnkaApp.swift              // entry point — ModelContainer setup + seedOrMigrateCategories (NOTE: at Anka/ root, not under App/)
 ├── App/
-│   ├── AnkaApp.swift          // entry point, ModelContainer setup
-│   └── AppRouter.swift        // tab bar + sheet state
+│   └── AppRouter.swift        // Today-only root (Stats is pushed); mirrors OS color scheme into AppearanceManager
 ├── DesignSystem/
 │   ├── DSColor.swift
-│   ├── DSFont.swift           // ported from Spendy
+│   ├── DSFont.swift           // Dynamic-Type-aware tokens via UIFontMetrics (ported from Spendy, expanded)
 │   ├── DSRadius.swift
-│   └── DSSpacing.swift
+│   ├── DSSpacing.swift        // scale: 4/8/12/16/24/32/48 — NOTE: "20" (common screen inset) has no token
+│   ├── Color+Hex.swift
+│   ├── DateHelpers.swift      // startOfMonth, monthInterval, month labels
+│   └── NumberFormatter+Amount.swift  // AppCurrency.code ("IDR") + idrShort / idrFormatted
 ├── Models/
 │   ├── Transaction.swift
-│   └── Category.swift
+│   ├── Category.swift
+│   ├── TransactionType.swift
+│   └── SampleData.swift       // default categories + in-memory preview/test container
 ├── Views/
 │   ├── Today/
-│   │   ├── TodayView.swift
-│   │   └── TodayViewModel.swift
+│   │   ├── TodayView.swift              // ScrollView+LazyVStack (NOT a List — see swipe note below)
+│   │   ├── TodayViewModel.swift         // @MainActor @Observable; Task.detached aggregation
+│   │   └── CategoryFilterSheet.swift    // multi-select category filter + period pills + custom range
 │   ├── AddTransaction/
 │   │   ├── AddTransactionView.swift
-│   │   ├── AddTransactionViewModel.swift
-│   │   ├── NumpadView.swift
-│   │   └── CategoryPickerView.swift
+│   │   ├── AddTransactionViewModel.swift  // ⚠️ @Observable only — MISSING @MainActor
+│   │   └── CategoryPickerView.swift       // CategorySlotView + CategoryPickerSheet
+│   │       // NOTE: NumpadView.swift from the original spec does not exist — the
+│   │       //       numpad concept was replaced by the system keyboard + category pills.
 │   ├── Stats/
 │   │   ├── StatsView.swift                 // donut chart + top categories per month
-│   │   └── StatsViewModel.swift            // monthly aggregation, swipe-driven month nav
+│   │   └── StatsViewModel.swift            // @MainActor; monthly aggregation, swipe-driven month nav
 │   ├── Settings/
 │   │   ├── SettingsView.swift              // native List, sectioned
-│   │   ├── SettingsViewModel.swift         // @Observable @MainActor
+│   │   ├── SettingsViewModel.swift         // @Observable @MainActor (has dead `darkModeEnabled` field)
 │   │   ├── CategoryManagementView.swift    // sub-menu: list + swipe-delete + drag-reorder
 │   │   ├── AddEditCategorySheet.swift      // modal form for add/edit/delete
-│   │   └── AppearanceSettingsView.swift    // sub-page: Mode + Dark Variant
+│   │   ├── AppearanceSettingsView.swift    // sub-page: Mode + Dark Variant
+│   │   ├── BackupSettingsView.swift        // rolling JSON backups: list / restore / delete
+│   │   ├── DataManagementView.swift        // CSV/JSON import + export entry point
+│   │   ├── ExportSheet.swift               // share-sheet for CSV/JSON export
+│   │   ├── ImportPreviewSheet.swift        // parsed-rows preview before committing import
+│   │   └── ImportSummarySheet.swift        // post-import result summary
 │   └── AppLock/
 │       ├── AppLockView.swift               // biometric primary, PIN fallback
 │       └── PINSetupSheet.swift             // two-step PIN enrollment
 ├── Components/               // reusable UI, no business logic
-│   ├── TransactionRow.swift
-│   ├── AmountLabel.swift
-│   ├── SectionHeader.swift
-│   └── DonutChartView.swift            // ported verbatim from Spendy — pixel-perfect
+│   ├── DonutChartView.swift            // ported verbatim from Spendy — pixel-perfect
+│   ├── DateRangePicker.swift           // custom date-range UI for the "custom" period filter
+│   ├── AutoFocusTextField.swift        // UIViewRepresentable — Mail-style first-responder timing
+│   └── ComponentsPlaceholder.swift     // stub. ⚠️ TransactionRow / AmountLabel / SectionHeader
+│                                       //   were specced here but NEVER built — the transaction
+│                                       //   row is inlined in TodayView. Extraction is pending.
 ├── Services/
 │   ├── CategoryPredictor.swift       // ported from Spendy (3-layer pipeline)
 │   ├── CategoryMLTrainer.swift       // ported from Spendy (on-device CreateML)
@@ -386,13 +435,23 @@ Anka/
 │   ├── TransactionFilterEngine.swift // ported, gated #if ENABLE_TRANSACTION_FILTER_ENGINE
 │   ├── AppLockManager.swift          // ported from Spendy — pinKey "ankaPINCode"
 │   ├── KeychainHelper.swift          // ported from Spendy — service "nc.Anka"
-│   ├── AppearanceManager.swift       // @Observable — mode + dark variant
-│   ├── FXRateService.swift           // Supabase + Open Exchange Rates integration
+│   ├── AppearanceManager.swift       // @MainActor @Observable — mode + dark variant
+│   ├── BackupService.swift           // versioned JSON export/import, dedup by transaction id
+│   ├── AutoBackupService.swift       // rolling JSON backups (App Group + Documents, keep 7)
+│   │                                 //   ⚠️ header claims save/delete + foreground auto-triggers,
+│   │                                 //      but performBackup() is only called manually from
+│   │                                 //      BackupSettingsView — the auto-triggers are NOT wired.
+│   ├── CSVService.swift              // CSV export + parse-with-preview (no direct DB writes)
 │   ├── WidgetDataWriter.swift        // writes shared App Group UserDefaults
 │   └── WidgetSharedTypes.swift       // shared by main app + AnkaWidgets target
+│       // NOTE: FXRateService.swift (Supabase + Open Exchange Rates) is specced for Phase 9
+│       //       and does NOT exist yet.
 └── Resources/
     ├── Assets.xcassets
     └── StarterCategoryClassifier.mlmodelc  // ported from Spendy
+
+(repo root, untracked, NOT part of the target: test2.swift / test3.swift — scratch
+ toolbar-search experiments. Safe to delete.)
 ```
 
 ---
@@ -419,7 +478,7 @@ Do NOT port: any View files, FirestoreSyncService, ProfileManager, InsightEngine
 |---|---|---|
 | 0 | Project Setup + Design System | ✅ Done |
 | 1 | Data Models | ✅ Done |
-| 2 | Add Transaction | ✅ Done (Spendy V2-adapted layout, SwiftData persistence wired) |
+| 2 | Add Transaction | ✅ Done (Spendy V2-adapted layout, SwiftData persistence wired; tags + ML + edit/delete added) |
 | 3 | Today View | ✅ Done (Expense/Income/Total switcher, pinned hero, Stats button) |
 | 4 | Stats View | ✅ Done (Spendy donut chart ported pixel-perfect; replaces old Reports) |
 | 5 | Settings + Categories | ✅ Done |
@@ -429,7 +488,18 @@ Do NOT port: any View files, FirestoreSyncService, ProfileManager, InsightEngine
 | 9 | Subscription | ⬜ Not started |
 | 10 | iCloud Sync | ⬜ Not started |
 
+**Shipped outside the numbered plan (no dedicated phase number):**
+
+| Feature | Status |
+|---|---|
+| Search & Filter on Today (text search + category multi-select + period/custom range) | ✅ Done (see "Search & Filter" section; swipe-delete bug outstanding) |
+| Appearance (theme + dark variant via AppearanceManager) | ✅ Done |
+| Backup & Restore (rolling JSON, manual trigger) | ✅ Done (auto-triggers not wired) |
+| Import & Export (CSV + JSON, with preview) | ✅ Done |
+
 Update status to: ⬜ Not started / 🔄 In progress / ✅ Done / ❌ Issue
+
+> **Code health:** a full audit lives in `Anka_Code_Audit.md` (repo root). Open items at audit time: swipe-to-delete no-op on Today, `try!` ModelContainer init, `AddTransactionViewModel` missing `@MainActor`, currency default inconsistency, and design-token under-adoption.
 
 ---
 

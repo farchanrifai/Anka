@@ -24,15 +24,17 @@ final class AppLockManager {
         KeychainHelper.shared.read(forKey: pinKey) != nil
     }
 
-    var biometricType: LABiometryType {
-        let ctx = LAContext()
-        _ = ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
-        return ctx.biometryType
-    }
+    /// Shared context reused for biometric availability checks so we don't
+    /// allocate a fresh `LAContext` on every property read — these are read in
+    /// SwiftUI view bodies (SettingsView), i.e. on every render pass. Re-created
+    /// by `refreshBiometricState()` after a real biometric interaction.
+    private var biometricContext = LAContext()
 
-    var canUseBiometrics: Bool {
-        LAContext().canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
-    }
+    /// Cached biometric availability. Evaluated once at init via the shared
+    /// context and refreshed after each authentication attempt — not on every
+    /// access.
+    private(set) var biometricType: LABiometryType = .none
+    private(set) var canUseBiometrics: Bool = false
 
     init() {
         let enabled = UserDefaults.standard.bool(forKey: "anka.appLockEnabled")
@@ -41,6 +43,9 @@ final class AppLockManager {
         // properties are initialized).
         let pinExists = KeychainHelper.shared.read(forKey: "ankaPINCode") != nil
         self.isLocked = enabled && pinExists
+        // Seed the cached biometric state once (all stored properties are now
+        // initialized, so calling an instance method here is valid).
+        refreshBiometricState()
     }
 
     // MARK: - State transitions
@@ -74,6 +79,10 @@ final class AppLockManager {
         guard ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
             return false
         }
+        // Once the auth attempt completes (success or failure), refresh the
+        // cached biometric state so it reflects anything that changed during
+        // the interaction.
+        defer { refreshBiometricState() }
         do {
             return try await ctx.evaluatePolicy(
                 .deviceOwnerAuthenticationWithBiometrics,
@@ -82,5 +91,17 @@ final class AppLockManager {
         } catch {
             return false
         }
+    }
+
+    /// Re-creates the shared `LAContext` and re-evaluates the cached biometric
+    /// availability. A fresh context is required because `LAContext` caches its
+    /// policy evaluation, so reusing the old instance wouldn't pick up changes
+    /// (e.g. the user enrolling Face/Touch ID or toggling it in iOS Settings).
+    private func refreshBiometricState() {
+        biometricContext = LAContext()
+        canUseBiometrics = biometricContext.canEvaluatePolicy(
+            .deviceOwnerAuthenticationWithBiometrics, error: nil
+        )
+        biometricType = biometricContext.biometryType
     }
 }

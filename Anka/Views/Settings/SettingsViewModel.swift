@@ -6,7 +6,6 @@ import SwiftData
 final class SettingsViewModel {
     var categories: [Category] = []
     var defaultCurrency: String = "IDR"
-    var darkModeEnabled: Bool = true
     var showAddCategory: Bool = false
     var editingCategory: Category?
 

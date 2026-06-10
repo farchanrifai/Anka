@@ -3,7 +3,12 @@ import SwiftData
 
 @main
 struct AnkaApp: App {
-    let modelContainer: ModelContainer
+    /// Outcome of building the on-disk store. Held in `@State` (not a plain
+    /// `let`) so the error screen's "Try Again" can rebuild the container
+    /// without relaunching the app. Previously this used `try!`, which
+    /// hard-crashed on any store-open failure (corruption, migration, disk
+    /// full) with no recovery path.
+    @State private var containerResult: Result<ModelContainer, Error>
 
     /// ML predictor stays at app-root so the bundled + user models are loaded
     /// once for the app's lifetime — not on every AddTransaction sheet open.
@@ -20,12 +25,33 @@ struct AnkaApp: App {
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
+        _containerResult = State(initialValue: Result { try Self.makeContainer() })
+    }
+
+    /// Builds the on-disk `ModelContainer` and seeds/migrates the default
+    /// categories. Throws (rather than crashing) if the store can't be opened
+    /// so the caller can surface a recovery UI.
+    private static func makeContainer() throws -> ModelContainer {
         let config = ModelConfiguration()
-        let container = try! ModelContainer(for: Transaction.self, Category.self, configurations: config)
+        let container = try ModelContainer(for: Transaction.self, Category.self, configurations: config)
+        seedOrMigrateCategories(in: container.mainContext)
+        return container
+    }
 
-        Self.seedOrMigrateCategories(in: container.mainContext)
+    /// "Try Again" — re-attempt opening the existing store.
+    private func retryLoadingContainer() {
+        containerResult = Result { try Self.makeContainer() }
+    }
 
-        self.modelContainer = container
+    /// "Reset App Data" — delete the store file (and its -wal/-shm sidecars)
+    /// then build a fresh, empty container.
+    private func resetStore() {
+        let fm = FileManager.default
+        let base = ModelConfiguration().url.path
+        for path in [base, base + "-wal", base + "-shm"] {
+            try? fm.removeItem(atPath: path)
+        }
+        containerResult = Result { try Self.makeContainer() }
     }
 
     /// First launch: seeds the 10/6 default taxonomy.
@@ -88,24 +114,18 @@ struct AnkaApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ZStack {
-                AppRouter()
-                    .environment(predictor)
-                    .environment(lockManager)
-                    .environment(appearance)
-
-                if lockManager.isLocked {
-                    AppLockView()
-                        .environment(lockManager)
-                        .environment(appearance)
-                        .transition(.opacity)
-                        .zIndex(1)
-                }
+            switch containerResult {
+            case .success(let container):
+                rootView
+                    .modelContainer(container)
+            case .failure:
+                DataLoadErrorView(
+                    onRetry: retryLoadingContainer,
+                    onReset: resetStore
+                )
+                .preferredColorScheme(appearance.mode.preferredColorScheme)
             }
-            .animation(.easeInOut(duration: 0.25), value: lockManager.isLocked)
-            .preferredColorScheme(appearance.mode.preferredColorScheme)
         }
-        .modelContainer(modelContainer)
         .onChange(of: scenePhase) { _, newPhase in
             // Lock on background/inactive so the app contents aren't visible
             // in the iOS app switcher. Only re-lock if lock is enabled AND a
@@ -119,6 +139,93 @@ struct AnkaApp: App {
             @unknown default:
                 break
             }
+        }
+    }
+
+    /// The normal app UI, shown once the store opens successfully.
+    private var rootView: some View {
+        ZStack {
+            AppRouter()
+                .environment(predictor)
+                .environment(lockManager)
+                .environment(appearance)
+
+            if lockManager.isLocked {
+                AppLockView()
+                    .environment(lockManager)
+                    .environment(appearance)
+                    .transition(.opacity)
+                    .zIndex(1)
+            }
+        }
+        .animation(.easeInOut(duration: 0.25), value: lockManager.isLocked)
+        .preferredColorScheme(appearance.mode.preferredColorScheme)
+    }
+}
+
+// MARK: - Data Load Error Screen
+
+/// Shown when the on-disk `ModelContainer` fails to open. Offers a non-fatal
+/// recovery path: retry, or wipe the store and start fresh. Uses DSColor
+/// tokens only (no `@Environment` appearance available this early at root).
+private struct DataLoadErrorView: View {
+    let onRetry: () -> Void
+    let onReset: () -> Void
+
+    @State private var showResetConfirm = false
+
+    var body: some View {
+        ZStack {
+            DSColor.bgPrimary.ignoresSafeArea()
+
+            VStack(spacing: 20) {
+                Image(systemName: "exclamationmark.triangle")
+                    .font(.system(size: 48))
+                    .foregroundStyle(DSColor.accent)
+
+                VStack(spacing: 8) {
+                    Text("Something went wrong loading your data.")
+                        .font(.dsHeadline)
+                        .foregroundStyle(DSColor.textPrimary)
+                        .multilineTextAlignment(.center)
+
+                    Text("You can try again, or reset the app's data to start fresh.")
+                        .font(.dsBody)
+                        .foregroundStyle(DSColor.textSecondary)
+                        .multilineTextAlignment(.center)
+                }
+
+                VStack(spacing: 12) {
+                    Button(action: onRetry) {
+                        Text("Try Again")
+                            .font(.dsSubhead)
+                            .foregroundStyle(DSColor.textOnAccent)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(DSColor.accent, in: Capsule())
+                    }
+                    .buttonStyle(.plain)
+
+                    Button(role: .destructive) {
+                        showResetConfirm = true
+                    } label: {
+                        Text("Reset App Data")
+                            .font(.dsSubhead)
+                            .foregroundStyle(DSColor.negative)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                    }
+                    .buttonStyle(.plain)
+                }
+                .padding(.top, 8)
+            }
+            .padding(.horizontal, 32)
+        }
+        .alert("Reset App Data?", isPresented: $showResetConfirm) {
+            Button("Reset", role: .destructive, action: onReset)
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This permanently deletes all transactions and categories on this device. This cannot be undone.")
         }
     }
 }

@@ -318,11 +318,6 @@ struct AddTransactionView: View {
         // skip ML so we don't overwrite the saved category.
         guard existingTransaction == nil || focusedField == .description else { return }
 
-        // Capture previous text from the VM before we proceed — UIKit
-        // editingChanged fires AFTER the new value is committed to the
-        // binding, so we read the previous value from latestPrediction.
-        let old = vm.descriptionText
-
         if newValue.isEmpty {
             withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) {
                 if vm.isMLAssigned { vm.selectedCategory = nil }
@@ -331,14 +326,11 @@ struct AddTransactionView: View {
             vm.latestMLCategory = nil
             vm.cancelMLPrediction()
         } else {
-            if let pred = predictor.latestPrediction, pred.shouldShowChip {
-                predictor.logCorrection(
-                    note: old,
-                    amount: vm.parsedAmount,
-                    predicted: pred.category,
-                    actual: nil
-                )
-            }
+            // NOTE: a negative correction (actual: nil) is intentionally NOT
+            // logged here. Firing on every keystroke/backspace over-weighted
+            // negative signals and degraded the model over time. Negative
+            // corrections are logged only on explicit deselect of an ML-picked
+            // category — see `sparkleButton`.
             vm.triggerMLPrediction(note: newValue, predictor: predictor)
         }
     }

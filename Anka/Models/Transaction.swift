@@ -22,7 +22,7 @@ final class Transaction {
         createdAt: Date = Date(),
         note: String? = nil,
         category: Category? = nil,
-        currencyCode: String = "USD",
+        currencyCode: String = AppCurrency.code,
         tags: [String] = [],
         paymentMethod: String? = nil
     ) {
