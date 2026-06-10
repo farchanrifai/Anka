@@ -126,7 +126,10 @@ struct TodayView: View {
                 // Settings lives in the top-bar trailing slot so it crossfades
                 // out (iOS Settings-style) when Stats is pushed.
                 .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) { settingsToolbarButton }
+                    ToolbarItemGroup(placement: .topBarTrailing) {
+                        statsToolbarButton
+                        settingsToolbarButton
+                    }
 
                     ToolbarItem(placement: .bottomBar) { filterToolbarButton }
                     ToolbarSpacer(.flexible, placement: .bottomBar)
@@ -258,7 +261,10 @@ struct TodayView: View {
 
     private var stickyHeader: some View {
         VStack(alignment: .leading, spacing: 16) {
-            // ── Expense / Income / Total switcher ─────────────────────
+            // ── Period Status ──────────────────────────────────────────
+            periodIndicator
+            
+            // ── Balance Mode ───────────────────────────────────────────
             balanceModeSwitcher
 
             // ── Currency prefix + amount ──────────────────────────────
@@ -291,13 +297,6 @@ struct TodayView: View {
                     }
                 }
                 .allowsHitTesting(true)
-            }
-
-            // ── Period indicator + Navigate to Reports ─────────────────
-            HStack(alignment: .center, spacing: 0) {
-                periodIndicator
-                Spacer()
-                statsButton
             }
         }
         .padding(.horizontal, 20)
@@ -339,21 +338,13 @@ struct TodayView: View {
     // MARK: - Period Indicator
 
     private var periodIndicator: some View {
-        Menu {
-            ForEach(PeriodFilter.allCases, id: \.self) { period in
-                Button(period.displayString) { vm.selectedPeriod = period }
-            }
-        } label: {
-            HStack(spacing: 4) {
-                let displayText = vm.selectedPeriod.displayString
-                let capitalizedText = displayText.prefix(1).uppercased() + displayText.dropFirst()
-                Text(capitalizedText)
-                Image(systemName: "chevron.up.chevron.down")
-                    .font(.dsBadgeSemi)
-            }
-            .font(.dsFootnoteMedium)
-            .foregroundStyle(.secondary)
+        HStack(spacing: 4) {
+            let displayText = vm.selectedPeriod.displayString
+            let capitalizedText = displayText.prefix(1).uppercased() + displayText.dropFirst()
+            Text(capitalizedText)
         }
+        .font(.dsFootnoteMedium)
+        .foregroundStyle(.secondary)
     }
 
     // MARK: - Balance Mode Switcher
@@ -388,19 +379,16 @@ struct TodayView: View {
         }
     }
 
-    // MARK: - Stats Button
+    // MARK: - Stats Toolbar Button
 
-    private var statsButton: some View {
+    private var statsToolbarButton: some View {
         NavigationLink {
             StatsView()
         } label: {
-            HStack(spacing: 4) {
-                Text("Stats")
-                Image(systemName: "arrow.right")
-            }
-            .font(.dsFootnoteMedium)
-            .foregroundStyle(DSColor.accent)
+            Image(systemName: "chart.pie")
         }
+        .tint(.primary)
+        .accessibilityLabel("Stats")
     }
 
     // MARK: - Chart Section
