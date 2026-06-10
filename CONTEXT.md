@@ -41,7 +41,7 @@
 - Views own `@Query` and push data into ViewModels via `update()` methods
 - Heavy computation runs in `Task.detached` with Sendable snapshots
 - `.task(id:)` triggers recomputes, never `onAppear` for data loading
-- All ViewModels are `@Observable` and `@MainActor` _(⚠️ current deviation: `AddTransactionViewModel` is `@Observable` only — needs `@MainActor` added)_
+- All ViewModels are `@Observable` and `@MainActor` _(✅ all VMs now conform, incl. `AddTransactionViewModel`)_
 - No Firestore. No Firebase. No backend. Ever.
 - No authentication required to use the app
 - No multi-profile system
@@ -60,9 +60,9 @@ All views must use these tokens only. Never hardcode values.
 - **Secondary surface:** `#222222`
 - Adaptive light/dark via DSColor tokens
 
-### Fonts (DSFont.swift) — ported from Spendy, cleaned to 8–10 tokens
-- dsHero, dsTitle, dsHeadline, dsSubhead, dsBody, dsCaption, dsBadge
-- All use `Font.system(size:)` — no custom fonts at MVP
+### Fonts (DSFont.swift) — ported from Spendy
+- dsHero, dsTitle, dsHeadline, dsSubhead, dsBody, dsCaption, dsBadge (+ weight/size variants), plus `dsHeroAmount` (52/.black, Today hero) and `dsEmoji` (24, row emoji)
+- No custom fonts at MVP. Tokens declared with a `relativeTo:` text style are **UIFontMetrics-scaled** (Dynamic Type); the bare `Font.system(size:)` ones are fixed-size — prefer the scaled variants for new text.
 
 ### Radius (DSRadius.swift)
 - `dsSmall` = 8
@@ -70,7 +70,7 @@ All views must use these tokens only. Never hardcode values.
 - `dsLarge` = 20
 
 ### Spacing (DSSpacing.swift)
-- Scale: 4, 8, 12, 16, 24, 32, 48
+- Scale: 4, 8, 12, 16, 24, 32, 48 · plus `screenEdge` = 20 (standard horizontal screen inset)
 
 ---
 
@@ -85,7 +85,7 @@ date: Date
 createdAt: Date
 note: String?
 category: Category?
-currencyCode: String // model init defaults to "USD" ⚠️ — but app is IDR-only; entry path writes AppCurrency.code ("IDR"). Reconcile.
+currencyCode: String // defaults to AppCurrency.code ("IDR") — single source of truth in NumberFormatter+Amount.swift
 tags: [String] // optional, freeform
 paymentMethod: String? // optional, e.g. "Cash", "Visa"
 ```
@@ -138,9 +138,9 @@ transactions: [Transaction] // @Relationship(deleteRule: .cascade, inverse: \Tra
 **Current state (updated):** the entry flow is now backed by `AddTransactionViewModel` (`Views/AddTransaction/AddTransactionViewModel.swift`) and **persists to SwiftData** (Phase 2/3 done — the earlier "no ViewModel / Save just dismisses" note is obsolete). The same view handles **edit** (`existingTransaction`) and **delete** of an existing transaction. It also adds:
 - **Tags** — a morphing bottom bar with a tag-input pill (shadow-suggestion autocomplete drawn from prior transactions' tags). Tags are plain `[String]` on `Transaction`.
 - **ML auto-categorization** — debounced prediction on the description field (see ML section).
-- ⚠️ **Known deviation:** `AddTransactionViewModel` is currently `@Observable` only — it is **missing `@MainActor`**, unlike the other ViewModels (violates the Architecture Rule below). Flagged in `Anka_Code_Audit.md`.
+- ✅ `AddTransactionViewModel` is now `@MainActor @Observable` (deviation fixed).
 
-**Currency:** the app is IDR-only at present. `NumberFormatter+Amount.swift` defines `AppCurrency.code = "IDR"` as the single source of truth, and the save path writes `currencyCode: "IDR"`. ⚠️ The `Transaction` model's `init` still defaults `currencyCode` to `"USD"` — an inconsistency to reconcile (use `AppCurrency.code`). Multi-currency entry (USD/EUR/etc.) + FX conversion is Phase 9 (not started).
+**Currency:** the app is IDR-only at present. `NumberFormatter+Amount.swift` defines `AppCurrency.code = "IDR"` as the single source of truth. ✅ Both the `Transaction` model `init` default and the save path now resolve to `AppCurrency.code` (the old hardcoded `"USD"` default and `"IDR"` literal are gone). Multi-currency entry (USD/EUR/etc.) + FX conversion is Phase 9 (not started).
 
 ---
 
@@ -196,7 +196,7 @@ The OS scheme is tracked in `AppearanceManager.osScheme`, mirrored from `AppRout
 
 Settings flow: **Settings → Appearance** (NavigationLink pushes `AppearanceSettingsView`). Sub-page has two sections — Theme (System/Light/Dark) and Dark Variant (Pure Black/Soft Dark). The Dark Variant section is `.disabled` (still visible) when mode is Light, so toggling modes doesn't shift the layout.
 
-The old `darkModeEnabled` toggle in `SettingsViewModel` (a leftover from Phase 5) was non-functional and is now superseded by the AppearanceManager — the field can be removed from the VM when convenient.
+The old `darkModeEnabled` toggle in `SettingsViewModel` (a leftover from Phase 5) was non-functional and superseded by the AppearanceManager — ✅ the dead field has now been removed from the VM.
 
 ## Today View — Search behavior gotcha
 
@@ -217,7 +217,7 @@ Cosmetic UIKit warnings persist (`SearchBarHidesWhenScrolling-default` vs `-expl
 
 **Remaining gaps:** Stats has **no** category filter, no month comparison, and is expense-only. Extending Today search to tags/paymentMethod is also pending. See `Anka_Code_Audit.md` §2.
 
-⚠️ **Known bug:** the transaction rows carry `.swipeActions` for delete, but Today renders them in a `ScrollView { LazyVStack }`, not a `List` — `.swipeActions` is List-only, so **swipe-to-delete is currently a no-op**. Delete works only via tap → edit sheet → trash. See audit §4.
+**Row delete (fixed):** rows render in a `ScrollView { LazyVStack }` (not a `List`), where `.swipeActions` is a no-op. Delete + Edit now live in a **long-press `.contextMenu`** on `TransactionRow` (Edit → `onEdit`, Delete → `onDelete`); the tap-to-edit action is unchanged. A failed delete surfaces a **"Delete Failed"** alert (`TodayViewModel.deleteErrorMessage`, set from `confirmDelete`'s `do/catch`) instead of failing silently.
 
 ## Backup / Import / Export (Data section) — IMPLEMENTED
 
@@ -268,7 +268,7 @@ Cosmetic UIKit warnings persist (`SearchBarHidesWhenScrolling-default` vs `-expl
 - `descriptionField.onChange` calls `vm.triggerMLPrediction(note:predictor:)` — 400 ms debounce in a cancellable `Task`. On empty text, the ML-assigned category is cleared.
 - **Auto-type switch.** `applyMLPrediction` first looks for a name match in `selectedType`; if none, falls back to the opposite type and updates `selectedType` along with the category. Lets the user type "gaji" / "salary" / "freelance" while still on Expense mode and have the sheet flip to Income automatically.
 - `vm.sparkleActive` is computed (`!descriptionText.isEmpty`) so the sparkle icon pulses while typing.
-- On manual deselect of an ML-picked category: logs negative correction (`actual: nil`).
+- On manual deselect of an ML-picked category (the `sparkleButton` tap): logs negative correction (`actual: nil`). This is the **only** place a negative correction is logged — earlier code also logged one on every keystroke/backspace in `handleDescriptionChange`, which over-weighted negatives and degraded the model; that spurious logging has been removed.
 - On save with a user-overridden category: logs positive correction (`actual: <picked name>`).
 - After successful save: `predictor.trainIfReady(transactions: vm.trainableSnapshots())` kicks background CreateML training (gated to ≥20 transactions, +10 since last train).
 
@@ -376,30 +376,35 @@ Both `KeywordMatcher` and `StarterCategoryClassifier` were ported from Spendy an
 
 ```
 Anka/
-├── AnkaApp.swift              // entry point — ModelContainer setup + seedOrMigrateCategories (NOTE: at Anka/ root, not under App/)
+├── AnkaApp.swift              // entry point — builds ModelContainer via do/catch (held in @State
+│                              //   as Result); on failure shows DataLoadErrorView (Try Again /
+│                              //   Reset App Data). + seedOrMigrateCategories. (at Anka/ root, not App/)
 ├── App/
 │   └── AppRouter.swift        // Today-only root (Stats is pushed); mirrors OS color scheme into AppearanceManager
 ├── DesignSystem/
 │   ├── DSColor.swift
-│   ├── DSFont.swift           // Dynamic-Type-aware tokens via UIFontMetrics (ported from Spendy, expanded)
+│   ├── DSFont.swift           // Dynamic-Type-aware tokens via UIFontMetrics. Adds dsHeroAmount
+│   │                          //   (52/.black) + dsEmoji (24) — scaled, used by Today hero + row
 │   ├── DSRadius.swift
-│   ├── DSSpacing.swift        // scale: 4/8/12/16/24/32/48 — NOTE: "20" (common screen inset) has no token
+│   ├── DSSpacing.swift        // scale: 4/8/12/16/24/32/48 + screenEdge (20, standard horizontal inset)
 │   ├── Color+Hex.swift
 │   ├── DateHelpers.swift      // startOfMonth, monthInterval, month labels
 │   └── NumberFormatter+Amount.swift  // AppCurrency.code ("IDR") + idrShort / idrFormatted
 ├── Models/
-│   ├── Transaction.swift
+│   ├── Transaction.swift                 // currencyCode defaults to AppCurrency.code
 │   ├── Category.swift
 │   ├── TransactionType.swift
 │   └── SampleData.swift       // default categories + in-memory preview/test container
 ├── Views/
 │   ├── Today/
-│   │   ├── TodayView.swift              // ScrollView+LazyVStack (NOT a List — see swipe note below)
-│   │   ├── TodayViewModel.swift         // @MainActor @Observable; Task.detached aggregation
+│   │   ├── TodayView.swift              // ScrollView+LazyVStack (NOT a List); delete = context menu;
+│   │   │                               //   "Delete Failed" alert on save error
+│   │   ├── TodayViewModel.swift         // @MainActor @Observable; Task.detached aggregation;
+│   │   │                               //   confirmDelete uses do/catch → deleteErrorMessage
 │   │   └── CategoryFilterSheet.swift    // multi-select category filter + period pills + custom range
 │   ├── AddTransaction/
 │   │   ├── AddTransactionView.swift
-│   │   ├── AddTransactionViewModel.swift  // ⚠️ @Observable only — MISSING @MainActor
+│   │   ├── AddTransactionViewModel.swift  // @MainActor @Observable
 │   │   └── CategoryPickerView.swift       // CategorySlotView + CategoryPickerSheet
 │   │       // NOTE: NumpadView.swift from the original spec does not exist — the
 │   │       //       numpad concept was replaced by the system keyboard + category pills.
@@ -408,7 +413,7 @@ Anka/
 │   │   └── StatsViewModel.swift            // @MainActor; monthly aggregation, swipe-driven month nav
 │   ├── Settings/
 │   │   ├── SettingsView.swift              // native List, sectioned
-│   │   ├── SettingsViewModel.swift         // @Observable @MainActor (has dead `darkModeEnabled` field)
+│   │   ├── SettingsViewModel.swift         // @Observable @MainActor
 │   │   ├── CategoryManagementView.swift    // sub-menu: list + swipe-delete + drag-reorder
 │   │   ├── AddEditCategorySheet.swift      // modal form for add/edit/delete
 │   │   ├── AppearanceSettingsView.swift    // sub-page: Mode + Dark Variant
@@ -422,18 +427,20 @@ Anka/
 │       └── PINSetupSheet.swift             // two-step PIN enrollment
 ├── Components/               // reusable UI, no business logic
 │   ├── DonutChartView.swift            // ported verbatim from Spendy — pixel-perfect
+│   ├── TransactionRow.swift            // extracted row: emoji + name/desc + AmountLabel;
+│   │                                   //   onEdit/onDelete callbacks + matchedTransitionSource + contextMenu
+│   ├── AmountLabel.swift               // signed "Rp …" capsule; (amount: Double, type: TransactionType)
 │   ├── DateRangePicker.swift           // custom date-range UI for the "custom" period filter
-│   ├── AutoFocusTextField.swift        // UIViewRepresentable — Mail-style first-responder timing
-│   └── ComponentsPlaceholder.swift     // stub. ⚠️ TransactionRow / AmountLabel / SectionHeader
-│                                       //   were specced here but NEVER built — the transaction
-│                                       //   row is inlined in TodayView. Extraction is pending.
+│   └── AutoFocusTextField.swift        // UIViewRepresentable — Mail-style first-responder timing
+│       // NOTE: SectionHeader.swift (specced) was never built; ComponentsPlaceholder.swift removed.
 ├── Services/
 │   ├── CategoryPredictor.swift       // ported from Spendy (3-layer pipeline)
 │   ├── CategoryMLTrainer.swift       // ported from Spendy (on-device CreateML)
 │   ├── KeywordMatcher.swift          // ported from Spendy
 │   ├── PlatformPaths.swift           // App Group ID + container URL (Anka IDs)
 │   ├── TransactionFilterEngine.swift // ported, gated #if ENABLE_TRANSACTION_FILTER_ENGINE
-│   ├── AppLockManager.swift          // ported from Spendy — pinKey "ankaPINCode"
+│   ├── AppLockManager.swift          // ported from Spendy — pinKey "ankaPINCode"; biometric
+│   │                                 //   state cached (shared LAContext) via refreshBiometricState()
 │   ├── KeychainHelper.swift          // ported from Spendy — service "nc.Anka"
 │   ├── AppearanceManager.swift       // @MainActor @Observable — mode + dark variant
 │   ├── BackupService.swift           // versioned JSON export/import, dedup by transaction id
@@ -449,9 +456,6 @@ Anka/
 └── Resources/
     ├── Assets.xcassets
     └── StarterCategoryClassifier.mlmodelc  // ported from Spendy
-
-(repo root, untracked, NOT part of the target: test2.swift / test3.swift — scratch
- toolbar-search experiments. Safe to delete.)
 ```
 
 ---
@@ -499,7 +503,22 @@ Do NOT port: any View files, FirestoreSyncService, ProfileManager, InsightEngine
 
 Update status to: ⬜ Not started / 🔄 In progress / ✅ Done / ❌ Issue
 
-> **Code health:** a full audit lives in `Anka_Code_Audit.md` (repo root). Open items at audit time: swipe-to-delete no-op on Today, `try!` ModelContainer init, `AddTransactionViewModel` missing `@MainActor`, currency default inconsistency, and design-token under-adoption.
+> **Code health:** a full audit lives in `Anka_Code_Audit.md` (repo root).
+>
+> **✅ Fixed since the audit:**
+> - `try!` ModelContainer init → `do/catch` + `DataLoadErrorView` recovery screen (Try Again / Reset App Data).
+> - `AddTransactionViewModel` now `@MainActor @Observable`.
+> - Swipe-to-delete no-op on Today → replaced with `.contextMenu` (Edit/Delete) on `TransactionRow`.
+> - Currency default inconsistency → `Transaction` + save path both use `AppCurrency.code`.
+> - `AppLockManager` biometric checks no longer allocate an `LAContext` per render (cached + `refreshBiometricState()`).
+> - Removed dead `SettingsViewModel.darkModeEnabled`; deleted scratch `test2.swift` / `test3.swift`.
+> - ML negative-correction over-logging in `handleDescriptionChange` removed (now only on explicit deselect).
+> - `DSSpacing.screenEdge` token added + 14 raw `20` horizontal-padding sites migrated.
+> - `DSFont.dsHeroAmount` + `dsEmoji` (Dynamic-Type-scaled) added; Today hero amount + row emoji migrated.
+> - Extracted reusable `TransactionRow` + `AmountLabel` components; deleted `ComponentsPlaceholder.swift`.
+> - `TodayViewModel.confirmDelete` silent `try?` → `do/catch` + "Delete Failed" alert.
+>
+> **Still open:** AutoBackup auto-triggers not wired; Stats has no category filter / month comparison; Today search doesn't cover tags/paymentMethod; broader design-token adoption (remaining hardcoded font sizes outside DonutChart); `SectionHeader` component never built.
 
 ---
 
