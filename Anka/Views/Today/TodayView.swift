@@ -2,6 +2,13 @@ import SwiftUI
 import SwiftData
 
 // MARK: - TodayView
+//
+// Custom sticky-header dashboard variant (period pill + balance-mode switcher
+// + hero balance). The Mail-style collapsing-large-title variant is
+// `TodayViewV2`; `AppRouter` switches between them via
+// `appearance.todayViewVersion`. The two share their list rows, empty/skeleton
+// states, day headers, toolbar buttons, and sheet stack via the components in
+// `Views/Today/Shared/`.
 
 struct TodayView: View {
     @Environment(\.modelContext) private var modelContext
@@ -27,59 +34,12 @@ struct TodayView: View {
 
     var body: some View {
         dashboardTab
-        .sheet(isPresented: $vm.showStats) {
-            StatsView(transactions: allTransactions, categories: allCategories)
-                .presentationDragIndicator(.visible)
-        }
-        .sheet(isPresented: $vm.showSettings) {
-            SettingsView()
-        }
-        .sheet(isPresented: $vm.showAddTransaction) {
-            AddTransactionView(defaultType: vm.addDefaultType)
-                .navigationTransition(.zoom(sourceID: "addTransaction", in: animationNamespace))
-        }
-        .sheet(isPresented: $vm.showCategoryFilter) {
-            CategoryFilterSheet(
-                selection: $vm.selectedCategories,
-                selectedPeriod: $vm.selectedPeriod,
-                customStartDate: $vm.customStartDate,
-                customEndDate: $vm.customEndDate
-            )
-            .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.visible)
-                // Zoom transition originates from the filter toolbar button.
-                // The detent (.medium default, .large via drag) is honored —
-                // the zoom destination is whatever final size the sheet
-                // settles at, so this Mail-style expansion still resolves to
-                // a half-page sheet.
-                .navigationTransition(.zoom(sourceID: "filter", in: animationNamespace))
-        }
-        .sheet(isPresented: Binding(
-            get: { vm.editingTransaction != nil },
-            set: { if !$0 { vm.editingTransaction = nil } }
-        )) {
-            if let tx = vm.editingTransaction {
-                AddTransactionView(defaultType: tx.type, existingTransaction: tx)
-                    .navigationTransition(.zoom(sourceID: tx.id, in: animationNamespace))
-            }
-        }
-        .alert("Delete Transaction?", isPresented: Binding(
-            get: { vm.pendingDeleteTransaction != nil },
-            set: { if !$0 { vm.pendingDeleteTransaction = nil } }
-        )) {
-            Button("Delete", role: .destructive) { vm.confirmDelete(context: modelContext) }
-            Button("Cancel", role: .cancel) { vm.pendingDeleteTransaction = nil }
-        } message: {
-            Text("This action cannot be undone.")
-        }
-        .alert("Delete Failed", isPresented: Binding(
-            get: { vm.deleteErrorMessage != nil },
-            set: { if !$0 { vm.deleteErrorMessage = nil } }
-        )) {
-            Button("OK", role: .cancel) { vm.deleteErrorMessage = nil }
-        } message: {
-            Text(vm.deleteErrorMessage ?? "An unknown error occurred. Please try again.")
-        }
+        .todaySheets(
+            vm: vm,
+            allTransactions: allTransactions,
+            allCategories: allCategories,
+            namespace: animationNamespace
+        )
         .task(id: vm.dashboardKey) { await vm.refreshDashboard() }
         // Modern haptics for the highest-frequency interactions. Declarative
         // `.sensoryFeedback` (no generator state to manage) and system-tuned.
@@ -139,14 +99,18 @@ struct TodayView: View {
                 // multiple times per frame`).
                 .toolbar {
                     ToolbarItemGroup(placement: .topBarTrailing) {
-                        statsToolbarButton
-                        settingsToolbarButton
+                        StatsToolbarButton(vm: vm)
+                        SettingsToolbarButton(vm: vm)
                     }
 
                     DefaultToolbarItem(kind: .search, placement: .bottomBar)
-                    ToolbarItem(placement: .bottomBar) { filterToolbarButton }
+                    ToolbarItem(placement: .bottomBar) {
+                        FilterToolbarButton(vm: vm, namespace: animationNamespace)
+                    }
                     ToolbarSpacer(.flexible, placement: .bottomBar)
-                    ToolbarItem(placement: .bottomBar) { addToolbarButton }
+                    ToolbarItem(placement: .bottomBar) {
+                        AddToolbarButton(vm: vm, namespace: animationNamespace)
+                    }
                 }
                 .searchable(text: $vm.searchQuery, prompt: "Search transactions")
                 .searchToolbarBehavior(.minimize)
@@ -167,63 +131,20 @@ struct TodayView: View {
         .ignoresSafeArea(.keyboard, edges: .bottom)
     }
 
-    // MARK: - Bottom toolbar buttons
-
-    @ViewBuilder
-    private var filterToolbarButton: some View {
-        Button {
-            vm.showCategoryFilter = true
-        } label: {
-            if let label = vm.filterLabel {
-                // Active state: icon + "Filtered by <label> ⌄"
-                HStack(spacing: 8) {
-                    Image(systemName: "line.3.horizontal.decrease")
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text("Filtered by")
-                            .font(.dsCaption2)
-                            .foregroundStyle(.secondary)
-                        HStack(spacing: 3) {
-                            Text(label)
-                                .font(.dsFootnoteSemi)
-                                .lineLimit(1)
-                            Image(systemName: "chevron.down")
-                                .font(.dsCaption2Semi)
-                        }
-                    }
-                }
-            } else {
-                // Idle state: just the icon, system renders it as a circle.
-                Image(systemName: "line.3.horizontal.decrease")
-            }
-        }
-        .tint(vm.filterLabel == nil ? .primary : DSColor.accent)
-        .accessibilityLabel(vm.filterLabel == nil ? "Filter" : "Filtered by \(vm.filterLabel!). Tap to edit.")
-        // Mail-style zoom: sheet expands out of the filter button. Detent
-        // is preserved on the sheet side (`.medium` default).
-        .matchedTransitionSource(id: "filter", in: animationNamespace)
-    }
-
-    @ViewBuilder
-    private var addToolbarButton: some View {
-        Button {
-            vm.showAddTransaction = true
-        } label: {
-            Image(systemName: "plus")
-        }
-        .tint(.primary)
-        .accessibilityLabel("Add transaction")
-        .matchedTransitionSource(id: "addTransaction", in: animationNamespace)
-    }
-
     private var scrollContent: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 0, pinnedViews: .sectionHeaders) {
                 if vm.showSkeleton {
                     ForEach(0..<5, id: \.self) { _ in
-                        skeletonTransactionRow
+                        SkeletonTransactionRow()
                     }
                 } else if vm.displayedGroupedByDay.isEmpty {
-                    emptyStateView
+                    TransactionEmptyStateView(
+                        isUnfiltered: allTransactions.isEmpty,
+                        hasActiveFilter: !vm.selectedCategories.isEmpty,
+                        onAdd: { vm.showAddTransaction = true },
+                        onClearFilter: { vm.clearCategoryFilter() }
+                    )
                 } else {
                     ForEach(vm.displayedGroupedByDay, id: \.date) { group in
                         Section {
@@ -244,7 +165,12 @@ struct TodayView: View {
                                 .transition(.opacity.combined(with: .scale(scale: 0.97, anchor: .top)))
                             }
                         } header: {
-                            dayHeader(for: group)
+                            let daily = vm.dailyTotal(for: group.transactions)
+                            DayHeaderView(
+                                label: vm.shortDateLabel(for: group.date),
+                                total: daily.amount,
+                                sign: daily.sign
+                            )
                         }
                     }
                 }
@@ -273,7 +199,7 @@ struct TodayView: View {
                     let dx = value.translation.width
                     let dy = value.translation.height
                     if abs(dx) > 60, abs(dx) > abs(dy) * 1.5 {
-                        withAnimation(.snappy(duration: 0.3)) {
+                        withAnimation(.dsSnappy) {
                             vm.navigateMonth(by: dx < 0 ? 1 : -1)
                         }
                     }
@@ -312,7 +238,7 @@ struct TodayView: View {
                     Text(vm.heroAmount.idrShort)
                         .font(.dsHeroAmount)
                         .contentTransition(.numericText(value: vm.heroAmount))
-                        .animation(.snappy(duration: 0.3), value: vm.heroAmount)
+                        .animation(.dsSnappy, value: vm.heroAmount)
                         .lineLimit(1)
                         .minimumScaleFactor(0.4)
                         .foregroundStyle(.primary)
@@ -324,7 +250,7 @@ struct TodayView: View {
                         vm.clearCategoryFilter()
                     } else {
                         // No filter active — toggle balance visibility
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                        withAnimation(.dsSpring) {
                             isAmountHidden.toggle()
                         }
                     }
@@ -349,7 +275,7 @@ struct TodayView: View {
                     let next = value.translation.width < 0
                         ? modes[(idx + 1) % modes.count]
                         : modes[(idx - 1 + modes.count) % modes.count]
-                    withAnimation(.snappy(duration: 0.25)) { vm.balanceMode = next }
+                    withAnimation(.dsSnappyFast) { vm.balanceMode = next }
                 }
         )
         .background {
@@ -367,7 +293,6 @@ struct TodayView: View {
             .ignoresSafeArea(.all, edges: .top)
         }
     }
-
 
     // MARK: - Period Pill
 
@@ -387,7 +312,7 @@ struct TodayView: View {
                 .background(DSColor.accent, in: Capsule())
                 // Animate both the label transition and the pill's width as the
                 // text length changes (e.g. "May" → "September" → "3 Months").
-                .animation(.snappy(duration: 0.3), value: vm.periodPillLabel)
+                .animation(.dsSnappy, value: vm.periodPillLabel)
         }
         .buttonStyle(.pressable)
         .accessibilityLabel("Period: \(vm.periodPillLabel). Tap to change.")
@@ -399,176 +324,33 @@ struct TodayView: View {
         HStack(spacing: 8) {
             ForEach(BalanceMode.allCases, id: \.self) { mode in
                 let isActive = vm.balanceMode == mode
-                
+
                 Button {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    withAnimation(.dsSpring) {
                         vm.balanceMode = mode
                     }
                 } label: {
                     HStack(spacing: isActive ? 6 : 0) {
                         Image(systemName: mode.icon)
                             .font(.dsFootnoteMedium)
-                        
+
                         if isActive {
                             Text(mode.title)
                                 .font(.dsFootnoteMedium)
                                 .lineLimit(1)
                         }
                     }
-                    .padding(.horizontal, isActive ? 14 : 14)
+                    .padding(.horizontal, 14)
                     .padding(.vertical, 8)
                     .foregroundStyle(isActive ? DSColor.bgPrimary : .primary)
                     .background(isActive ? Color.primary : DSColor.bgSecondary, in: Capsule())
+                    // Animate the pill's width as the title shows/hides, even
+                    // when the mode change originates outside a withAnimation.
+                    .animation(.dsSpring, value: isActive)
                 }
                 .buttonStyle(.pressable)
             }
         }
-    }
-
-    // MARK: - Stats Toolbar Button
-
-    private var statsToolbarButton: some View {
-        Button { vm.showStats = true } label: {
-            Image(systemName: "chart.pie")
-        }
-        .tint(.primary)
-        .accessibilityLabel("Stats")
-    }
-
-    // MARK: - Day Header
-
-    private func dayHeader(for group: (date: Date, transactions: [Transaction])) -> some View {
-        let dailyTotal: Double
-        let sign: String
-        switch vm.balanceMode {
-        case .expense:
-            dailyTotal = group.transactions.reduce(0) { $0 + $1.amount }
-            sign = ""
-        case .income:
-            dailyTotal = group.transactions.reduce(0) { $0 + $1.amount }
-            sign = "+"
-        case .total:
-            let net = group.transactions.reduce(0) { $0 + ($1.type == .income ? $1.amount : -$1.amount) }
-            dailyTotal = abs(net)
-            sign = net >= 0 ? "+" : "-"
-        }
-
-        return HStack {
-            Text(vm.shortDateLabel(for: group.date))
-                .font(.dsFootnoteMedium)
-                .foregroundStyle(.primary)
-                .frame(height: 28)
-                .padding(.horizontal, 12)
-                .background(.ultraThinMaterial, in: Capsule())
-
-            Spacer()
-
-            if dailyTotal > 0 {
-                Text("\(sign)Rp \(dailyTotal.idrShort)")
-                    .font(.dsFootnoteMedium)
-                    .foregroundStyle(.primary)
-                    .frame(height: 28)
-                    .padding(.horizontal, 12)
-                    .background(.ultraThinMaterial, in: Capsule())
-            }
-        }
-        .padding(.horizontal, DSSpacing.screenEdge)
-        .padding(.vertical, 8)
-    }
-
-    // MARK: - Empty State
-
-    private var emptyStateView: some View {
-        VStack(spacing: 16) {
-            Image(systemName: allTransactions.isEmpty ? "tray" : "magnifyingglass")
-                .font(.system(size: 48))
-                .foregroundStyle(.tertiary)
-                // Subtle one-shot bounce when the empty state (re)appears —
-                // softens the "nothing here" moment without looping motion.
-                .symbolEffect(.bounce, options: .nonRepeating)
-                .padding(.bottom, 4)
-
-            VStack(spacing: 4) {
-                Text(allTransactions.isEmpty ? "No Transactions Yet" : "No Matches Found")
-                    .font(.dsHeadlineSemi)
-                    .foregroundStyle(.primary)
-
-                Text(allTransactions.isEmpty ? "Tap the button below to add your first expense or income." : "No transactions match the selected period or filters.")
-                    .font(.dsBody)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-            }
-
-            if allTransactions.isEmpty {
-                Button {
-                    vm.showAddTransaction = true
-                } label: {
-                    Text("Add Transaction")
-                        .font(.dsSubheadSemi)
-                        .foregroundStyle(DSColor.bgPrimary)
-                        .padding(.horizontal, DSSpacing.screenEdge)
-                        .padding(.vertical, 10)
-                        .background(Color.primary, in: Capsule())
-                }
-                .buttonStyle(.pressable)
-                .padding(.top, 8)
-            } else if !vm.selectedCategories.isEmpty {
-                Button {
-                    vm.clearCategoryFilter()
-                } label: {
-                    Text("Clear Filters")
-                        .font(.dsBodyMedium)
-                        .foregroundStyle(.primary)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(DSColor.bgSecondary, in: Capsule())
-                }
-                .buttonStyle(.pressable)
-                .padding(.top, 8)
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.top, 60)
-        .padding(.horizontal, 32)
-        .transition(.opacity.combined(with: .scale(scale: 0.96)))
-    }
-
-    // MARK: - Skeleton Row (shown while refreshDashboard is running)
-
-    private var skeletonTransactionRow: some View {
-        HStack(spacing: 12) {
-            RoundedRectangle(cornerRadius: 27)
-                .fill(DSColor.bgSecondary)
-                .frame(width: 54, height: 54)
-
-            VStack(alignment: .leading, spacing: 6) {
-                RoundedRectangle(cornerRadius: 4)
-                    .fill(DSColor.bgSecondary)
-                    .frame(width: 80, height: 10)
-                RoundedRectangle(cornerRadius: 4)
-                    .fill(DSColor.bgSecondary)
-                    .frame(width: 120, height: 12)
-            }
-
-            Spacer()
-
-            RoundedRectangle(cornerRadius: 12)
-                .fill(DSColor.bgSecondary)
-                .frame(width: 64, height: 28)
-        }
-        .padding(.horizontal, DSSpacing.screenEdge)
-        .frame(height: 68)
-        .redacted(reason: .placeholder)
-    }
-
-    // MARK: - Settings Button
-
-    private var settingsToolbarButton: some View {
-        Button { vm.showSettings = true } label: {
-            Image(systemName: "gearshape")
-        }
-        .tint(.primary)
-        .accessibilityLabel("Settings")
     }
 }
 

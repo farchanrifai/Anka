@@ -13,8 +13,21 @@ struct ExportSheet: View {
     }
 
     @State private var period: ExportPeriod = .allTime
-    @State private var customStart: Date = Calendar.current.date(byAdding: .month, value: -1, to: .now)!
+    @State private var customStart: Date = Date.now.addingMonths(-1)
     @State private var customEnd: Date = .now
+
+    /// Cached result of `Self.filter(...)`. Recomputed only when the period or
+    /// custom range changes (or the transaction set updates) — previously this
+    /// was a computed property re-run several times per render.
+    @State private var filtered: [Transaction] = []
+
+    // Cached formatters — DateFormatter is expensive to allocate.
+    private static let monthFormatter: DateFormatter = {
+        let f = DateFormatter(); f.dateFormat = "yyyy-MM"; return f
+    }()
+    private static let yearFormatter: DateFormatter = {
+        let f = DateFormatter(); f.dateFormat = "yyyy"; return f
+    }()
 
     var body: some View {
         NavigationStack {
@@ -69,11 +82,24 @@ struct ExportSheet: View {
                 }
             }
         }
+        .onAppear { recomputeFiltered() }
+        .onChange(of: period) { recomputeFiltered() }
+        .onChange(of: customStart) { recomputeFiltered() }
+        .onChange(of: customEnd) { recomputeFiltered() }
+        .onChange(of: transactions) { recomputeFiltered() }
     }
 
     // MARK: - Filtering
 
-    private var filtered: [Transaction] {
+    private func recomputeFiltered() {
+        filtered = Self.filter(transactions, period: period,
+                               customStart: customStart, customEnd: customEnd)
+    }
+
+    /// Pure filter so it can run off the view-update path. Uses the safe date
+    /// helpers (no force-unwrapped Calendar arithmetic).
+    private static func filter(_ transactions: [Transaction], period: ExportPeriod,
+                               customStart: Date, customEnd: Date) -> [Transaction] {
         let cal = Calendar.current
         let now = Date.now
         switch period {
@@ -82,10 +108,10 @@ struct ExportSheet: View {
         case .thisMonth:
             return transactions.filter { $0.date >= now.startOfMonth && $0.date <= now }
         case .lastMonth:
-            let last = cal.date(byAdding: .month, value: -1, to: now)!
+            let last = now.addingMonths(-1)
             return transactions.filter { $0.date >= last.startOfMonth && $0.date <= last.endOfMonth }
         case .thisYear:
-            let yearStart = cal.date(from: DateComponents(year: cal.component(.year, from: now), month: 1, day: 1))!
+            let yearStart = now.startOfYear
             return transactions.filter { $0.date >= yearStart && $0.date <= now }
         case .custom:
             let end = cal.date(bySettingHour: 23, minute: 59, second: 59, of: customEnd) ?? customEnd
@@ -111,20 +137,14 @@ struct ExportSheet: View {
     }
 
     private func filename() -> String {
-        let f = DateFormatter()
-        f.dateFormat = "yyyy-MM"
         switch period {
         case .allTime:   return "anka-all.csv"
-        case .thisMonth: return "anka-\(f.string(from: .now)).csv"
-        case .lastMonth:
-            let last = Calendar.current.date(byAdding: .month, value: -1, to: .now)!
-            return "anka-\(f.string(from: last)).csv"
-        case .thisYear:
-            f.dateFormat = "yyyy"
-            return "anka-\(f.string(from: .now)).csv"
+        case .thisMonth: return "anka-\(Self.monthFormatter.string(from: .now)).csv"
+        case .lastMonth: return "anka-\(Self.monthFormatter.string(from: Date.now.addingMonths(-1))).csv"
+        case .thisYear:  return "anka-\(Self.yearFormatter.string(from: .now)).csv"
         case .custom:
-            let start = f.string(from: customStart)
-            let end = f.string(from: customEnd)
+            let start = Self.monthFormatter.string(from: customStart)
+            let end = Self.monthFormatter.string(from: customEnd)
             return "anka-\(start)-to-\(end).csv"
         }
     }
