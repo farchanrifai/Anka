@@ -302,7 +302,12 @@ struct AddTransactionView: View {
             autoFocusOnAppear: true,
             returnKeyType: .next,
             onChange: { newValue in handleDescriptionChange(newValue) },
-            onSubmit: { focusedField = .amount }
+            onSubmit: {
+                // NLP commit: split "5 dollar for coffee" → amount 5 (USD) +
+                // note "coffee" + ML category, then move on to the amount field.
+                vm.applyParsedDescription(predictor: predictor)
+                focusedField = .amount
+            }
         )
         // Match the original frame so layout stays the same.
         .frame(height: 44)

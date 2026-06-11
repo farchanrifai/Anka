@@ -22,6 +22,14 @@ final class AddTransactionViewModel {
     var isMLAssigned: Bool = false
     var latestMLCategory: Category? = nil
 
+    // MARK: - NLP parse state
+    /// Currency code extracted by the natural-language parser (e.g. "USD").
+    /// Persisted on save; falls back to `AppCurrency.code` when nil.
+    var parsedCurrencyCode: String? = nil
+    /// Confidence (0–1) of the last description parse. Exposed for potential
+    /// UI feedback — the parse itself is silent.
+    var parseConfidence: Double = 0
+
     /// Pulses the sparkle icon while the user is actively describing.
     var sparkleActive: Bool { !descriptionText.trimmingCharacters(in: .whitespaces).isEmpty }
 
@@ -168,7 +176,7 @@ final class AddTransactionViewModel {
                 date: selectedDate,
                 note: trimmedNote.isEmpty ? nil : trimmedNote,
                 category: selectedCategory,
-                currencyCode: AppCurrency.code,
+                currencyCode: parsedCurrencyCode ?? AppCurrency.code,
                 tags: selectedTags
             )
             context.insert(tx)
@@ -181,6 +189,59 @@ final class AddTransactionViewModel {
         guard let tx = existingTransaction else { return }
         context.delete(tx)
         try context.save()
+    }
+
+    // MARK: - NLP parsing
+
+    /// Parse the description into amount + currency + cleaned note, applying the
+    /// results to the editable fields, then re-run ML on the cleaned note.
+    ///
+    /// Called on **commit** (the description field's return key) rather than on
+    /// every keystroke: mutating the bound text mid-typing fights the user's
+    /// cursor, and `AddTransactionView`'s focus state has documented transient
+    /// blips that make per-keystroke / focus-change parsing unsafe.
+    ///
+    /// Non-destructive: only runs for new entries, only fills the amount when
+    /// the user hasn't typed one, and leaves the live ML pass alone when there's
+    /// nothing to extract.
+    func applyParsedDescription(predictor: CategoryPredictor) {
+        // Never rewrite a loaded transaction's fields.
+        guard existingTransaction == nil else { return }
+        let raw = descriptionText
+        guard !raw.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+
+        let parsed = TransactionParser.shared.parse(raw)
+        parseConfidence = parsed.confidence
+
+        // Nothing extractable and the note is unchanged → leave the live ML alone.
+        if parsed.amount == nil && parsed.note == raw { return }
+
+        // Auto-fill the amount only when the user hasn't entered one yet.
+        if let amount = parsed.amount, amountText.isEmpty {
+            amountText = Self.amountText(from: amount)
+            parsedCurrencyCode = parsed.currencyCode
+        }
+
+        // Replace the note with the cleaned text (programmatic set — does not
+        // re-fire the field's onChange, so no recursion).
+        if parsed.note != raw {
+            descriptionText = parsed.note
+        }
+
+        // Re-categorize on the cleaned note.
+        if parsed.note.isEmpty {
+            cancelMLPrediction()
+        } else {
+            triggerMLPrediction(note: parsed.note, predictor: predictor)
+        }
+    }
+
+    /// Formats a parsed amount into the `amountText` representation (whole
+    /// numbers without a trailing ".0", matching `loadExisting`).
+    private static func amountText(from amount: Double) -> String {
+        amount.truncatingRemainder(dividingBy: 1) == 0
+            ? String(Int(amount))
+            : String(amount)
     }
 
     // MARK: - ML Prediction

@@ -307,6 +307,33 @@ Both `KeywordMatcher` and `StarterCategoryClassifier` were ported from Spendy an
 
 ---
 
+## NLP Description Parsing (Phase 9+)
+
+`Services/TransactionParser.swift` turns the Add-Transaction description into structured fields. Pure, stateless, non-actor (`final class … : Sendable`, `static let shared`) so it's callable anywhere and unit-testable. `parse(_:) -> ParsedTransaction(amount:currencyCode:note:confidence:)`.
+
+**What it extracts** (examples → amount / currency / note / confidence):
+- "5 dollar for grabfood" → 5 / USD / "grabfood" / 0.9
+- "100 eur hotel in paris" → 100 / EUR / "hotel in paris" / 0.9
+- "5k transport" → 5000 / IDR / "transport" / 0.7  (magnitude shorthand defaults to IDR)
+- "2.5m rent" → 2,500,000 / IDR / "rent" / 0.7
+- "1b acquisition" → 1,000,000,000 / IDR / "acquisition" / 0.7
+- "5.50 coffee" → 5.5 / nil / "coffee" / 0.6  (bare number; currency left to the caller's default)
+- "just coffee" → nil / nil / "just coffee" / 0
+
+Rules: comma = thousands separator, dot = decimal (IDR locale). **Magnitude suffixes** (case-insensitive) multiply the number — English `k`/`m`/`b` and Indonesian `rb`/`ribu` (×1,000), `jt`/`juta` (×1,000,000), `miliar`/`milyar` (×1,000,000,000). They only count when adjacent to the digits AND not followed by another letter, so "5km"/"5min" keep the letter as note text (amount 5, note "km …") instead of misreading the suffix. A named currency still wins over the IDR shorthand default ("10m usd" → 10,000,000 USD). Currency tokens are word-boundary + case-insensitive matched against a conservative map (usd/dollar, eur/euro, gbp/pound, jpy/yen, idr/rupiah/rp, sgd, aud, cad) — deliberately **no** bare "us"/"singapore"/"australian" so note words aren't eaten. Note cleaning strips the number+suffix token, currency words, and joiners "for/at/on" (keeps "in", etc.).
+
+**Integration** (`AddTransactionViewModel.applyParsedDescription(predictor:)` + `parsedCurrencyCode` / `parseConfidence`):
+- ⚠️ **Parses on COMMIT (the description field's return/"next" key), not per-keystroke.** The spec proposed live `onChange` parsing, but mutating the bound text mid-typing fights the cursor, and `AddTransactionView`'s `@FocusState` has documented transient blips that make focus-change parsing unsafe. `AutoFocusTextField.onSubmit` calls `applyParsedDescription` then advances focus to the amount field.
+- Non-destructive: only for **new** entries (never rewrites a loaded transaction), fills the amount **only when `amountText` is empty**, and skips work when there's nothing to extract (leaves the live ML pass alone).
+- Re-runs the existing ML pipeline (`triggerMLPrediction`) on the **cleaned** note.
+- Writing the cleaned note back to `descriptionText` is a programmatic set, which does **not** re-fire the field's `onChange` (that's wired to `.editingChanged` = user input only) — so no recursion.
+
+**Currency persistence caveat.** A parsed currency is stored on `Transaction.currencyCode` (`parsedCurrencyCode ?? AppCurrency.code`), matching the model's design intent (per-transaction currency for later FX). But there is **no FX conversion yet** — the whole UI renders amounts with an "Rp" prefix and sums them raw, so a `5 USD` transaction currently displays as "Rp 5" and adds 5 to IDR totals. Real conversion + display is Phase 9 (Multi-Currency & FX Rates, below). Until then, non-IDR parses are recorded correctly but shown/summed naively.
+
+Tests: `AnkaTests/TransactionParserTests.swift` (Swift Testing) — the 6 spec-table cases + 4 edge cases (uppercase code, `k`+explicit-currency, substring-not-matched, empty). All pass.
+
+---
+
 ## Multi-Currency & FX Rates (Phase 9)
 
 **Design:**
@@ -501,6 +528,7 @@ Do NOT port: any View files, FirestoreSyncService, ProfileManager, InsightEngine
 | Backup & Restore (rolling JSON, manual trigger) | ✅ Done (auto-triggers not wired) |
 | Import & Export (CSV + JSON, with preview) | ✅ Done |
 | Onboarding (Welcome → Speed → Clarity → Trial; `Views/Onboarding/`, gated by `anka.hasCompletedOnboarding`) | ✅ Done — paywall prices + "Start Trial" + Demo Mode are **placeholders** (StoreKit 2 is Phase 9, demo-mode 24h reset not built; both buttons just complete onboarding). Settings → **Developer → Replay Onboarding** flips the flag back to re-show it (dev tool while in active development; only mutates the flag, never SwiftData — existing transactions/categories are preserved). |
+| NLP description parsing (`Services/TransactionParser.swift`) | ✅ Done — see "NLP Description Parsing" section. Parses amount (+ English `k`/`m`/`b` and Indonesian `rb`/`jt`/`miliar` magnitude shorthand) + currency + note out of the Add-Transaction description on commit; ML re-categorizes the cleaned note. 22 unit tests in `AnkaTests/TransactionParserTests.swift` (all pass). |
 
 Update status to: ⬜ Not started / 🔄 In progress / ✅ Done / ❌ Issue
 
