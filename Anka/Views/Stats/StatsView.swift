@@ -19,16 +19,22 @@ struct StatsView: View {
     /// capsule). First frame shows a cheap ring placeholder instead; the real
     /// chart fades in once the push has landed.
     @State private var chartReady = false
+    /// Shared delay before both the donut and weekly trend charts fade in
+    /// together (see `chartSection`'s `.task`).
+    private let chartReadyDelay: TimeInterval = 0.38
 
     private static let chartHeight: CGFloat = 336  // matches Spendy MainView
 
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
+                periodHeader
                 chartSection
-                topCategoriesSection
+                weeklyTrendSection
             }
-            .padding(.top, 8)
+            // Extra top padding clears the sheet's grab handle so it doesn't
+            // crowd the period label.
+            .padding(.top, DSSpacing.lg)
             .padding(.bottom, 24)
         }
         .background(DSColor.bgPrimary.ignoresSafeArea())
@@ -73,7 +79,7 @@ struct StatsView: View {
         .task {
             guard !chartReady else { return }
             // Let the push animation finish before paying the Charts build cost.
-            try? await Task.sleep(nanoseconds: 380_000_000)
+            try? await Task.sleep(nanoseconds: UInt64(chartReadyDelay * 1_000_000_000))
             withAnimation(.easeOut(duration: 0.2)) { chartReady = true }
         }
     }
@@ -91,82 +97,42 @@ struct StatsView: View {
         }
     }
 
-    // MARK: - Top Categories
+    // MARK: - Period Header
 
-    private var topCategoriesSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            if !vm.categorySpend.isEmpty {
-                Text("Top Categories")
-                    .font(.dsFootnoteMedium)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.horizontal, DSSpacing.screenEdge)
-
-                categoriesList
-            } else {
-                emptyState
-            }
-        }
-    }
-
-    private var categoriesList: some View {
-        let items = Array(vm.categorySpend.prefix(5))
-        return VStack(spacing: 0) {
-            ForEach(items.indices, id: \.self) { index in
-                let item = items[index]
-                categoryRow(item)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 8)
-                if index < items.count - 1 {
-                    Divider().padding(.leading, 68)
-                }
-            }
-        }
-        .background(DSColor.bgSecondary, in: RoundedRectangle(cornerRadius: 16))
-        .padding(.horizontal, DSSpacing.screenEdge)
-    }
-
-    private func categoryRow(_ item: CategorySpendData) -> some View {
-        HStack(spacing: 12) {
-            ZStack {
-                Circle()
-                    .fill(item.color.opacity(0.15))
-                    .frame(width: 40, height: 40)
-                Circle()
-                    .fill(item.color)
-                    .frame(width: 10, height: 10)
-            }
-            VStack(alignment: .leading, spacing: 2) {
-                Text(item.name)
-                    .font(.dsBodySemi)
-                    .foregroundStyle(.primary)
-                let pct = vm.monthTotal > 0 ? item.amount / vm.monthTotal * 100 : 0
-                Text(String(format: "%.0f%% of total", pct))
-                    .font(.dsCaption)
-                    .foregroundStyle(.secondary)
-            }
-            Spacer()
-            Text("Rp \(item.amount.idrShort)")
-                .font(.dsFootnoteMedium)
-                .foregroundStyle(.primary)
-        }
-    }
-
-    private var emptyState: some View {
-        VStack(spacing: 10) {
-            Image(systemName: "tray")
-                .font(.system(size: 32))
-                .foregroundStyle(.secondary)
-            Text("No expenses for \(vm.monthLabel)")
-                .font(.dsBodyMedium)
-            Text("Swipe the donut left or right to navigate months.")
+    private var periodHeader: some View {
+        VStack(spacing: 4) {
+            Text(vm.monthLabel)
+                .font(.dsTitle3)
+                .foregroundStyle(DSColor.textPrimary)
+            Text(vm.periodType)
                 .font(.dsCaption)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 24)
+                .foregroundStyle(DSColor.textSecondary)
         }
         .frame(maxWidth: .infinity)
-        .padding(36)
+    }
+
+    // MARK: - Weekly Trend
+
+    // Shares `chartReady` with `chartSection` so both charts fade in together
+    // once the push/sheet transition has settled.
+    @ViewBuilder
+    private var weeklyTrendSection: some View {
+        if chartReady {
+            WeeklyTrendChartView(weeklyData: vm.weeklySpend)
+                .transition(.opacity)
+        } else {
+            VStack(alignment: .leading, spacing: DSSpacing.md) {
+                Text("Weekly trend")
+                    .font(.dsHeadline)
+                    .foregroundStyle(DSColor.textPrimary)
+                    .padding(.horizontal, DSSpacing.screenEdge)
+
+                RoundedRectangle(cornerRadius: DSRadius.medium)
+                    .fill(DSColor.bgSecondary)
+                    .frame(height: 180)
+                    .padding(.horizontal, DSSpacing.screenEdge)
+            }
+        }
     }
 }
 

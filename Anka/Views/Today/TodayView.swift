@@ -29,6 +29,7 @@ struct TodayView: View {
         dashboardTab
         .sheet(isPresented: $vm.showStats) {
             StatsView(transactions: allTransactions, categories: allCategories)
+                .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $vm.showSettings) {
             SettingsView()

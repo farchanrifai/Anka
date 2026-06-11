@@ -49,6 +49,7 @@ final class StatsViewModel {
 
     private(set) var categorySpend: [CategorySpendData] = []
     private(set) var monthTotal: Double = 0
+    private(set) var weeklySpend: [WeeklySpendData] = []
     var isLoading: Bool = false
 
     /// Encodes every dependency of the cached vars so `.task(id:)` reruns
@@ -59,6 +60,12 @@ final class StatsViewModel {
 
     var monthLabel: String { currentMonth.monthYearLabel }
     var shortMonthLabel: String { currentMonth.monthName }
+
+    /// Subtitle under the month label — distinguishes the live month (still
+    /// accumulating) from a fully-elapsed past month browsed via swipe.
+    var periodType: String {
+        isOnCurrentMonth ? "Month to date" : "Monthly summary"
+    }
 
     // MARK: - Navigation
 
@@ -112,7 +119,25 @@ final class StatsViewModel {
                 total += snap.amount
             }
             let sorted = totals.sorted { $0.value > $1.value }
-            return (sorted, total)
+
+            // Weekly aggregation, spanning every week that overlaps the
+            // selected month — including weeks with zero spend, so the trend
+            // chart's x-axis stays consistent across months.
+            var weeklyAgg: [Date: Double] = [:]
+            for snap in monthExpenses {
+                weeklyAgg[snap.date.startOfWeek, default: 0] += snap.amount
+            }
+            var weeklyData: [WeeklySpendData] = []
+            var weekStart = interval.start.startOfWeek
+            var weekNumber = 1
+            while weekStart < interval.end {
+                let weekEnd = Calendar.current.date(byAdding: .day, value: 7, to: weekStart) ?? weekStart
+                weeklyData.append(WeeklySpendData(weekStart: weekStart, weekEnd: weekEnd, total: weeklyAgg[weekStart] ?? 0, weekNumber: weekNumber))
+                weekStart = weekEnd
+                weekNumber += 1
+            }
+
+            return (sorted, total, weeklyData)
         }.value
 
         guard !Task.isCancelled else { return }
@@ -132,6 +157,7 @@ final class StatsViewModel {
         withAnimation(.snappy(duration: 0.3)) {
             monthTotal = result.1
             categorySpend = newSpend
+            weeklySpend = result.2
         }
     }
 }

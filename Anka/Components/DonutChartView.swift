@@ -70,7 +70,11 @@ struct DonutChartView: View {
                     .contentShape(Rectangle())
                     .onAppear { chartSize = geo.size }
                     .onChange(of: geo.size) { _, s in chartSize = s }
-                    .gesture(donutGesture)
+                    // Simultaneous (not exclusive) so a vertical drag that
+                    // starts on the donut can still be claimed by the
+                    // enclosing sheet's swipe-to-dismiss — donutGesture's
+                    // own onEnded already no-ops for non-horizontal drags.
+                    .simultaneousGesture(donutGesture)
             }
 
             VStack(spacing: 4) {
