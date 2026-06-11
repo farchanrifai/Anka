@@ -1,15 +1,6 @@
 import SwiftUI
 import SwiftData
 
-// MARK: - Scroll Offset PreferenceKey
-
-private struct ScrollOffsetKey: PreferenceKey {
-    static var defaultValue: CGFloat = 0
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = nextValue()
-    }
-}
-
 // MARK: - TodayView
 
 struct TodayView: View {
@@ -21,7 +12,6 @@ struct TodayView: View {
     @State private var vm = TodayViewModel()
 
     // View-local state (pure UI / animation — no data dependency)
-    @State private var scrollOffset: CGFloat = 0
     @State private var isAmountHidden  = false
     @State private var hasInitializedVisibility = false
     /// True while a horizontal month-swipe is in progress — suppresses the
@@ -86,10 +76,13 @@ struct TodayView: View {
         } message: {
             Text(vm.deleteErrorMessage ?? "An unknown error occurred. Please try again.")
         }
-        .onChange(of: vm.selectedCategories) { _, _ in
-            vm.onCategoryFilterChanged(scrollOffset: scrollOffset)
-        }
         .task(id: vm.dashboardKey) { await vm.refreshDashboard() }
+        // Modern haptics for the highest-frequency interactions. Declarative
+        // `.sensoryFeedback` (no generator state to manage) and system-tuned.
+        .sensoryFeedback(.selection, trigger: vm.balanceMode)
+        .sensoryFeedback(.impact(weight: .light), trigger: vm.selectedMonth)
+        .sensoryFeedback(.impact(flexibility: .soft), trigger: isAmountHidden)
+        .sensoryFeedback(.success, trigger: vm.deleteSuccessCount)
         .onAppear {
             feedVM()
             setupAmountVisibility()
@@ -222,17 +215,7 @@ struct TodayView: View {
     private var scrollContent: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 0, pinnedViews: .sectionHeaders) {
-                GeometryReader { geo in
-                    Color.clear.preference(
-                        key: ScrollOffsetKey.self,
-                        value: -geo.frame(in: .named("dashScroll")).minY
-                    )
-                }
-                .frame(height: 0)
-
-                // Bar chart hidden for now.
-
-                if vm.isLoading {
+                if vm.showSkeleton {
                     ForEach(0..<5, id: \.self) { _ in
                         skeletonTransactionRow
                     }
@@ -252,6 +235,10 @@ struct TodayView: View {
                                     },
                                     onDelete: { vm.requestDelete(tx) }
                                 )
+                                // Pairs with the `withAnimation` in
+                                // `refreshDashboard()` — inserted/removed rows
+                                // fade + settle instead of snapping.
+                                .transition(.opacity.combined(with: .scale(scale: 0.97, anchor: .top)))
                             }
                         } header: {
                             dayHeader(for: group)
@@ -261,11 +248,6 @@ struct TodayView: View {
 
                 Color.clear.frame(height: 24)
             }
-        }
-        .coordinateSpace(name: "dashScroll")
-        .onPreferenceChange(ScrollOffsetKey.self) { offset in
-            scrollOffset = offset       // view owns the raw offset (presentational)
-            vm.handleScrollOffset(offset) // VM derives isChartVisible from it
         }
         // Horizontal swipe over the list navigates months (swipe left → next
         // month, right → previous). `.simultaneousGesture` so vertical scroll
@@ -404,7 +386,7 @@ struct TodayView: View {
                 // text length changes (e.g. "May" → "September" → "3 Months").
                 .animation(.snappy(duration: 0.3), value: vm.periodPillLabel)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
         .accessibilityLabel("Period: \(vm.periodPillLabel). Tap to change.")
     }
 
@@ -435,7 +417,7 @@ struct TodayView: View {
                     .foregroundStyle(isActive ? DSColor.bgPrimary : .primary)
                     .background(isActive ? Color.primary : DSColor.bgSecondary, in: Capsule())
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.pressable)
             }
         }
     }
@@ -450,54 +432,6 @@ struct TodayView: View {
         }
         .tint(.primary)
         .accessibilityLabel("Stats")
-    }
-
-    // MARK: - Chart Section
-
-    private var chartSection: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(alignment: .bottom, spacing: 12) {
-                ForEach(Array(vm.chartData.enumerated()), id: \.element.category.id) { index, item in
-                    let isMax = index == 0
-                    let maxTotal = vm.chartData.first?.total ?? 1
-                    let barHeight = max(45, CGFloat(item.total / maxTotal) * 200)
-                    chartColumn(category: item.category, total: item.total, barHeight: barHeight, isMax: isMax)
-                }
-            }
-            .padding(.horizontal, DSSpacing.screenEdge)
-        }
-    }
-
-    private func chartColumn(
-        category: Category, total: Double, barHeight: CGFloat, isMax: Bool
-    ) -> some View {
-        Button {
-            vm.addCategory(category)
-        } label: {
-            ZStack(alignment: .bottom) {
-                Color.clear.frame(width: 72, height: 200)
-
-                ZStack(alignment: .bottom) {
-                    RoundedRectangle(cornerRadius: 14)
-                        .fill(isMax ? Color.primary.opacity(0.25) : Color.primary.opacity(0.12))
-
-                    VStack(spacing: 2) {
-                        Text(category.emoji)
-                            .font(.dsTitle3)
-                        Text(vm.abbreviatedAmount(total))
-                            .font(.dsCaption2Bold)
-                            .foregroundStyle(.primary)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.7)
-                    }
-                    .padding(.horizontal, 4)
-                    .padding(.bottom, 8)
-                }
-                .frame(width: 72, height: barHeight)
-            }
-            .frame(width: 72)
-        }
-        .buttonStyle(.plain)
     }
 
     // MARK: - Day Header
@@ -548,6 +482,9 @@ struct TodayView: View {
             Image(systemName: allTransactions.isEmpty ? "tray" : "magnifyingglass")
                 .font(.system(size: 48))
                 .foregroundStyle(.tertiary)
+                // Subtle one-shot bounce when the empty state (re)appears —
+                // softens the "nothing here" moment without looping motion.
+                .symbolEffect(.bounce, options: .nonRepeating)
                 .padding(.bottom, 4)
 
             VStack(spacing: 4) {
@@ -572,6 +509,7 @@ struct TodayView: View {
                         .padding(.vertical, 10)
                         .background(Color.primary, in: Capsule())
                 }
+                .buttonStyle(.pressable)
                 .padding(.top, 8)
             } else if !vm.selectedCategories.isEmpty {
                 Button {
@@ -584,12 +522,14 @@ struct TodayView: View {
                         .padding(.vertical, 8)
                         .background(DSColor.bgSecondary, in: Capsule())
                 }
+                .buttonStyle(.pressable)
                 .padding(.top, 8)
             }
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 60)
         .padding(.horizontal, 32)
+        .transition(.opacity.combined(with: .scale(scale: 0.96)))
     }
 
     // MARK: - Skeleton Row (shown while refreshDashboard is running)

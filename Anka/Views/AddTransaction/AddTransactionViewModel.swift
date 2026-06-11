@@ -53,10 +53,16 @@ final class AddTransactionViewModel {
         self.tagInput = ""
     }
 
+    /// All distinct tags on past transactions, lowercased — rebuilt once per
+    /// data feed so `shadowSuggestion` doesn't flatMap the entire transaction
+    /// set on every keystroke.
+    @ObservationIgnored private var knownTags: Set<String> = []
+
     // MARK: - Data feed
     func update(categories: [Category], allTransactions: [Transaction]) {
         self.allCategories = categories
         self.allTransactions = allTransactions
+        self.knownTags = Set(allTransactions.flatMap { $0.tags }.map { $0.lowercased() })
     }
 
     // MARK: - Derived
@@ -74,24 +80,43 @@ final class AddTransactionViewModel {
         return Double(cleaned) ?? 0
     }
 
-    var formattedAmountDisplay: String {
-        let value = parsedAmount
-        guard value > 0 else { return amountText }
+    /// Cached display formatters — NumberFormatter is expensive to construct
+    /// and this runs on every keystroke of the amount field.
+    private static let wholeAmountFormatter: NumberFormatter = {
         let f = NumberFormatter()
         f.numberStyle = .decimal
         f.groupingSeparator = ","
-        f.maximumFractionDigits = amountText.contains(".") ? 2 : 0
+        f.maximumFractionDigits = 0
         f.minimumFractionDigits = 0
+        return f
+    }()
+    private static let fractionalAmountFormatter: NumberFormatter = {
+        let f = NumberFormatter()
+        f.numberStyle = .decimal
+        f.groupingSeparator = ","
+        f.maximumFractionDigits = 2
+        f.minimumFractionDigits = 0
+        return f
+    }()
+
+    var formattedAmountDisplay: String {
+        let value = parsedAmount
+        guard value > 0 else { return amountText }
+        let f = amountText.contains(".") ? Self.fractionalAmountFormatter : Self.wholeAmountFormatter
         return f.string(from: NSNumber(value: value)) ?? amountText
     }
+
+    private static let chipDateFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "d MMM"
+        return f
+    }()
 
     var dateChipLabel: String {
         let cal = Calendar.current
         if cal.isDateInToday(selectedDate) { return "Today" }
         if cal.isDateInYesterday(selectedDate) { return "Yesterday" }
-        let f = DateFormatter()
-        f.dateFormat = "d MMM"
-        return f.string(from: selectedDate)
+        return Self.chipDateFormatter.string(from: selectedDate)
     }
 
     var isValid: Bool {
@@ -115,7 +140,7 @@ final class AddTransactionViewModel {
     var shadowSuggestion: String {
         let prefix = tagInput.lowercased()
         guard !prefix.isEmpty else { return "" }
-        let known = Set(allTransactions.flatMap { $0.tags }.map { $0.lowercased() })
+        let known = knownTags
         let alreadyPicked = Set(selectedTags.map { $0.lowercased() })
         if let match = known.first(where: {
             $0.hasPrefix(prefix) && $0 != prefix && !alreadyPicked.contains($0)

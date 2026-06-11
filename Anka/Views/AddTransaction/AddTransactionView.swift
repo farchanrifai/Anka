@@ -86,6 +86,9 @@ struct AddTransactionView: View {
     @State private var showDatePicker: Bool = false
     @State private var datePickerOpacity: Double = 0
     @State private var shakeOffset: CGFloat = 0
+    /// Haptic triggers — incremented to fire `.sensoryFeedback`.
+    @State private var saveSuccessCount = 0
+    @State private var validationErrorCount = 0
     @State private var showDeleteAlert = false
     @State private var saveErrorMessage: String? = nil
     @State private var isTagInputActive: Bool = false
@@ -203,6 +206,8 @@ struct AddTransactionView: View {
                 }
             }
         }
+        .sensoryFeedback(.success, trigger: saveSuccessCount)
+        .sensoryFeedback(.error, trigger: validationErrorCount)
         // Always pass a concrete scheme — `effectiveScheme` resolves `.system`
         // to the live OS scheme tracked by AppearanceManager via UIScreen.
         // See SettingsView for the full rationale (nil-doesn't-reset bug +
@@ -399,7 +404,7 @@ struct AddTransactionView: View {
                                 .background(DSColor.bgCard, in: RoundedRectangle(cornerRadius: 999))
                                 .overlay(RoundedRectangle(cornerRadius: 999).stroke(Color(.separator), lineWidth: 0.5))
                             }
-                            .buttonStyle(.plain)
+                            .buttonStyle(.pressable)
                         }
                     }
                     .padding(.vertical, 2)
@@ -488,7 +493,7 @@ struct AddTransactionView: View {
                 )
             )
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
         .allowsHitTesting(vm.sparkleActive || vm.selectedCategory != nil)
         .animation(.spring(response: 0.45, dampingFraction: 0.75), value: vm.selectedCategory?.id)
         .animation(.spring(response: 0.35, dampingFraction: 0.7), value: vm.sparkleActive)
@@ -514,6 +519,7 @@ struct AddTransactionView: View {
                 // Background train using the now-updated transaction set.
                 // Training is gated internally (≥20 transactions, +10 since last).
                 predictor.trainIfReady(transactions: vm.trainableSnapshots())
+                saveSuccessCount += 1
                 dismiss()
             } else {
                 triggerShake()
@@ -709,6 +715,7 @@ struct AddTransactionView: View {
     }
 
     private func triggerShake() {
+        validationErrorCount += 1
         withAnimation(.spring(response: 0.2, dampingFraction: 0.3)) { shakeOffset = 10 }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.10) {
             withAnimation(.spring(response: 0.2, dampingFraction: 0.3)) { shakeOffset = -10 }

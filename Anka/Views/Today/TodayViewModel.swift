@@ -101,7 +101,6 @@ enum BalanceMode: String, CaseIterable, Hashable {
     var customEndDate: Date? = nil
     var selectedCategories: [Category] = []
     var balanceMode: BalanceMode = .expense
-    var isChartVisible: Bool = true
 
     /// Default transaction type for the Add sheet — Total falls back to expense.
     var addDefaultType: TransactionType { balanceMode == .income ? .income : .expense }
@@ -172,10 +171,19 @@ enum BalanceMode: String, CaseIterable, Hashable {
         }
     }
 
-    /// Category totals for the chart bar, sorted descending.
-    private(set) var chartData: [(category: Category, total: Double)] = []
-
     var isLoading: Bool = false
+
+    /// True after the first refresh completes. Gates the skeleton rows: they
+    /// only show on cold start — subsequent refreshes (month swipe, mode
+    /// toggle, save) keep the previous content visible and animate to the new
+    /// result instead of flashing placeholders.
+    private(set) var hasLoadedOnce = false
+
+    /// Skeleton rows are a cold-start affordance only.
+    var showSkeleton: Bool { isLoading && !hasLoadedOnce }
+
+    /// Incremented on each successful delete — drives the success haptic.
+    private(set) var deleteSuccessCount = 0
 
     // MARK: - Derived: Period (cheap — operate on cached periodTransactions)
 
@@ -317,74 +325,42 @@ enum BalanceMode: String, CaseIterable, Hashable {
             let sortedDays = dayDict.map { ($0.key, $0.value) }
                                     .sorted { $0.0 > $1.0 }
 
-            // Chart aggregation
-            var chartBuckets: [UUID: Double] = [:]
-            for snap in periodSnaps where capturedType == nil || snap.type == capturedType {
-                if let catID = snap.categoryID {
-                    chartBuckets[catID, default: 0] += snap.amount
-                }
-            }
-            let sortedChart = chartBuckets.map { ($0.key, $0.value) }
-                                          .sorted { $0.1 > $1.1 }
-
             return (
-                periodIDs:    Set(periodSnaps.map(\.id)),
-                dayGroups:    sortedDays,
-                chartBuckets: sortedChart
+                periodIDs: Set(periodSnaps.map(\.id)),
+                dayGroups: sortedDays
             )
         }.value
 
         // 3. Back on main: check cancellation, merge IDs with model objects.
         guard !Task.isCancelled else { return }
 
-        let txByID  = Dictionary(transactions.map  { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
-        let catByID = Dictionary(categories.map    { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+        let txByID = Dictionary(transactions.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
 
-        periodTransactions = transactions.filter { result.periodIDs.contains($0.id) }
-
-        groupedByDay = result.dayGroups.compactMap { date, ids in
+        let newGroups: [(date: Date, transactions: [Transaction])] = result.dayGroups.compactMap { date, ids in
             let txs = ids.compactMap { txByID[$0] }
             return txs.isEmpty ? nil : (date: date, transactions: txs)
         }
 
-        chartData = result.chartBuckets.compactMap { catID, total in
-            guard let cat = catByID[catID] else { return nil }
-            return (category: cat, total: total)
+        // Animate the list to its new contents (insertions/removals slide
+        // instead of snapping). On cold start, apply without animation so the
+        // skeleton → content swap is a clean replace.
+        if hasLoadedOnce {
+            withAnimation(.snappy(duration: 0.3)) {
+                periodTransactions = transactions.filter { result.periodIDs.contains($0.id) }
+                groupedByDay = newGroups
+            }
+        } else {
+            periodTransactions = transactions.filter { result.periodIDs.contains($0.id) }
+            groupedByDay = newGroups
+            hasLoadedOnce = true
         }
     }
 
     // MARK: - Actions
 
-    func handleScrollOffset(_ offset: CGFloat) {
-        guard selectedCategories.isEmpty else { return }
-        withAnimation(.easeInOut(duration: 0.2)) {
-            isChartVisible = offset <= 180
-        }
-    }
-
-    func onCategoryFilterChanged(scrollOffset: CGFloat) {
-        withAnimation(.easeInOut(duration: 0.2)) {
-            isChartVisible = selectedCategories.isEmpty && scrollOffset <= 180
-        }
-    }
-
     func clearCategoryFilter() {
         withAnimation(.easeInOut(duration: 0.2)) {
             selectedCategories = []
-        }
-    }
-
-    func addCategory(_ cat: Category) {
-        withAnimation(.easeInOut(duration: 0.2)) {
-            if !selectedCategories.contains(where: { $0.id == cat.id }) {
-                selectedCategories.append(cat)
-            }
-        }
-    }
-
-    func removeCategory(_ cat: Category) {
-        withAnimation(.easeInOut(duration: 0.2)) {
-            selectedCategories.removeAll { $0.id == cat.id }
         }
     }
 
@@ -397,6 +373,7 @@ enum BalanceMode: String, CaseIterable, Hashable {
         context.delete(tx)
         do {
             try context.save()
+            deleteSuccessCount += 1
         } catch {
             deleteErrorMessage = "Failed to delete transaction. Please try again."
         }
@@ -404,22 +381,6 @@ enum BalanceMode: String, CaseIterable, Hashable {
     }
 
     // MARK: - Helpers
-
-    func abbreviatedAmount(_ value: Double) -> String {
-        if value >= 1_000_000 {
-            let m = value / 1_000_000
-            return m.truncatingRemainder(dividingBy: 1) == 0
-                ? String(format: "%.0fJt", m)
-                : String(format: "%.1fJt", m)
-        }
-        if value >= 1_000 {
-            let k = value / 1_000
-            return k.truncatingRemainder(dividingBy: 1) == 0
-                ? String(format: "%.0fK", k)
-                : String(format: "%.1fK", k)
-        }
-        return value.idrShort
-    }
 
     private static let compactDateFormatter: DateFormatter = {
         let f = DateFormatter()

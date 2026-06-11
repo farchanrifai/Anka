@@ -12,13 +12,18 @@ struct AmountLabel: View {
     let type: TransactionType
 
     var body: some View {
-        let sign = type == .expense ? "" : "+ "
-        Text("\(sign)Rp \(amount.idrShort)")
+        let isIncome = type == .income
+        Text("\(isIncome ? "+ " : "")Rp \(amount.idrShort)")
             .font(.dsFootnoteMedium)
-            .foregroundStyle(.primary)
+            // Income reads green so the list scans at a glance; expenses stay
+            // neutral (they're the common case — coloring them would be noise).
+            .foregroundStyle(isIncome ? DSColor.positive : Color.primary)
             .padding(.horizontal, DSSpacing.md)
             .padding(.vertical, 6)
-            .background(DSColor.bgSecondary, in: Capsule())
+            .background(
+                isIncome ? DSColor.positive.opacity(0.12) : DSColor.bgSecondary,
+                in: Capsule()
+            )
     }
 }
 

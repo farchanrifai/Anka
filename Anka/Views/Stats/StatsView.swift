@@ -22,6 +22,7 @@ struct StatsView: View {
         .background(DSColor.bgPrimary.ignoresSafeArea())
         .navigationTitle("Stats")
         .navigationBarTitleDisplayMode(.inline)
+        .sensoryFeedback(.impact(weight: .light), trigger: vm.currentMonth)
         .onAppear { feedVM() }
         .onChange(of: allTransactions) { feedVM() }
         .onChange(of: allCategories)   { feedVM() }
