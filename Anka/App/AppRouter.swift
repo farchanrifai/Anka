@@ -9,7 +9,12 @@ struct AppRouter: View {
     @Environment(AppearanceManager.self) private var appearance
 
     var body: some View {
-        TodayView()
+        Group {
+            switch appearance.todayViewVersion {
+            case .v1: TodayView()
+            case .v2: TodayViewV2()
+            }
+        }
             // AppRouter sits inside the WindowGroup's
             // `.preferredColorScheme(mode.preferredColorScheme)` modifier.
             // When mode is `.system`, that resolves to nil → window follows

@@ -20,6 +20,7 @@ import UIKit
 final class AppearanceManager {
     static let darkVariantKey = "anka.darkVariant"
     static let appearanceModeKey = "anka.appearanceMode"
+    static let todayViewVersionKey = "anka.todayViewVersion"
 
     enum Mode: String, CaseIterable, Codable {
         case system, light, dark
@@ -49,6 +50,17 @@ final class AppearanceManager {
         }
     }
 
+    enum TodayViewVersion: String, CaseIterable, Codable {
+        case v1, v2
+
+        var displayName: String {
+            switch self {
+            case .v1: "Original"
+            case .v2: "Mail-style header"
+            }
+        }
+    }
+
     enum DarkVariant: String, CaseIterable, Codable {
         case black, gray
 
@@ -73,6 +85,10 @@ final class AppearanceManager {
 
     var darkVariant: DarkVariant {
         didSet { UserDefaults.standard.set(darkVariant.rawValue, forKey: Self.darkVariantKey) }
+    }
+
+    var todayViewVersion: TodayViewVersion {
+        didSet { UserDefaults.standard.set(todayViewVersion.rawValue, forKey: Self.todayViewVersionKey) }
     }
 
     /// Current OS color scheme. Written by `AppRouter` on every
@@ -107,6 +123,9 @@ final class AppearanceManager {
 
         let variantRaw = UserDefaults.standard.string(forKey: Self.darkVariantKey) ?? DarkVariant.black.rawValue
         self.darkVariant = DarkVariant(rawValue: variantRaw) ?? .black
+
+        let todayVersionRaw = UserDefaults.standard.string(forKey: Self.todayViewVersionKey) ?? TodayViewVersion.v1.rawValue
+        self.todayViewVersion = TodayViewVersion(rawValue: todayVersionRaw) ?? .v1
     }
 
     /// True when the dark variant control is meaningful — Light mode disables it.

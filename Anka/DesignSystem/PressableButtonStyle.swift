@@ -15,8 +15,8 @@ struct PressableButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .scaleEffect(configuration.isPressed ? scale : 1)
-            .opacity(configuration.isPressed ? 0.85 : 1)
-            .animation(.spring(response: 0.28, dampingFraction: 0.7), value: configuration.isPressed)
+            .opacity(configuration.isPressed ? DSOpacity.pressed : 1)
+            .animation(.dsSpring, value: configuration.isPressed)
     }
 }
 

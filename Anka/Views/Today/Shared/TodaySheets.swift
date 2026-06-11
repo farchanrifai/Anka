@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 /// The Today screen's sheet + alert stack (Stats, Settings, Add, Filter, Edit,
 /// plus the delete-confirm and delete-failed alerts). Identical across the

@@ -23,6 +23,20 @@ extension Date {
         Calendar.current.date(byAdding: DateComponents(month: 1, second: -1), to: startOfMonth) ?? self
     }
 
+    /// First instant of the calendar year containing this date. Falls back to
+    /// `startOfMonth` if the calendar can't resolve the components (it always
+    /// can for the Gregorian calendar, but this avoids a force-unwrap).
+    var startOfYear: Date {
+        let comps = Calendar.current.dateComponents([.year], from: self)
+        return Calendar.current.date(from: comps) ?? startOfMonth
+    }
+
+    /// `self` shifted by `months`, falling back to `self` if the shift can't be
+    /// computed. Use instead of force-unwrapping `Calendar.date(byAdding:)`.
+    func addingMonths(_ months: Int) -> Date {
+        Calendar.current.date(byAdding: .month, value: months, to: self) ?? self
+    }
+
     var monthInterval: DateInterval {
         DateInterval(start: startOfMonth, end: endOfMonth)
     }

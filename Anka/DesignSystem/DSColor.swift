@@ -9,7 +9,7 @@ import SwiftUI
 struct DSColor {
     // MARK: — Accent
     static let accent        = Color(hex: "F26666")      // coral — primary brand
-    static let accentSoft    = Color(hex: "F26666").opacity(0.15)
+    static let accentSoft    = Color(hex: "F26666").opacity(DSOpacity.subtle)
 
     // MARK: — Backgrounds (system defaults — variant override lives in AppearanceManager)
     static let bgPrimary     = Color(UIColor.systemBackground)

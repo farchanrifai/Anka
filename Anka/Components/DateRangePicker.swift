@@ -5,7 +5,7 @@ struct DateRangePicker: View {
     @Binding var endDate: Date?
     
     // Internal state for which month is currently visible
-    @State private var displayedMonth: Date = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: Date()))!
+    @State private var displayedMonth: Date = Date().startOfMonth
     
     private let calendar = Calendar.current
     
@@ -120,7 +120,9 @@ private struct MonthGrid: View {
     let columns = Array(repeating: GridItem(.flexible(), spacing: 0), count: 7)
     
     private var days: [Date?] {
-        let range = calendar.range(of: .day, in: .month, for: monthDate)!
+        // Fall back to a 28-day month if the calendar can't resolve the range
+        // (never happens for the Gregorian calendar, but avoids a force-unwrap).
+        let range = calendar.range(of: .day, in: .month, for: monthDate) ?? 1..<29
         let firstWeekday = calendar.component(.weekday, from: monthDate)
         
         var generatedDays: [Date?] = []

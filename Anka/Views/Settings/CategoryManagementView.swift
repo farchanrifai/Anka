@@ -79,7 +79,7 @@ struct CategoryManagementView: View {
             HStack(spacing: DSSpacing.md) {
                 ZStack {
                     Circle()
-                        .fill(Color(hex: category.colorHex).opacity(0.15))
+                        .fill(Color(hex: category.colorHex).opacity(DSOpacity.subtle))
                         .frame(width: 32, height: 32)
                     Text(category.emoji)
                         .font(.system(size: 18))

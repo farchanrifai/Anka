@@ -32,18 +32,14 @@ enum PeriodFilter: String, CaseIterable, Hashable {
     /// state). `.month` and `.custom` are resolved on the view model instead,
     /// since they need `selectedMonth` / the custom date bindings.
     var dateInterval: DateInterval {
-        let cal = Calendar.current
         let now = Date()
         switch self {
         case .last3Months:
-            let start = cal.date(byAdding: .month, value: -3, to: now.startOfMonth)!
-            return DateInterval(start: start, end: now)
+            return DateInterval(start: now.startOfMonth.addingMonths(-3), end: now)
         case .last6Months:
-            let start = cal.date(byAdding: .month, value: -6, to: now.startOfMonth)!
-            return DateInterval(start: start, end: now)
+            return DateInterval(start: now.startOfMonth.addingMonths(-6), end: now)
         case .thisYear:
-            let start = cal.date(from: DateComponents(year: cal.component(.year, from: now)))!
-            return DateInterval(start: start, end: now)
+            return DateInterval(start: now.startOfYear, end: now)
         case .month, .custom:
             // Anchored variants — resolved by TodayViewModel.periodInterval.
             return now.monthInterval
@@ -347,7 +343,7 @@ enum BalanceMode: String, CaseIterable, Hashable {
         // instead of snapping). On cold start, apply without animation so the
         // skeleton → content swap is a clean replace.
         if hasLoadedOnce {
-            withAnimation(.snappy(duration: 0.3)) {
+            withAnimation(.dsSnappy) {
                 periodTransactions = transactions.filter { result.periodIDs.contains($0.id) }
                 groupedByDay = newGroups
             }
@@ -361,7 +357,7 @@ enum BalanceMode: String, CaseIterable, Hashable {
     // MARK: - Actions
 
     func clearCategoryFilter() {
-        withAnimation(.easeInOut(duration: 0.2)) {
+        withAnimation(.dsEase) {
             selectedCategories = []
         }
     }
@@ -395,6 +391,22 @@ enum BalanceMode: String, CaseIterable, Hashable {
         if cal.isDateInToday(date)     { return "Today" }
         if cal.isDateInYesterday(date) { return "Yesterday" }
         return Self.compactDateFormatter.string(from: date)
+    }
+
+    /// Daily total + sign for a day-section header, honoring the active balance
+    /// mode: Expense/Income sum the day's rows; Total shows the signed net.
+    /// Centralized here so the header view stays pure presentation and the math
+    /// isn't duplicated across the Today view variants.
+    func dailyTotal(for transactions: [Transaction]) -> (amount: Double, sign: String) {
+        switch balanceMode {
+        case .expense:
+            return (transactions.reduce(0) { $0 + $1.amount }, "")
+        case .income:
+            return (transactions.reduce(0) { $0 + $1.amount }, "+")
+        case .total:
+            let net = transactions.reduce(0) { $0 + ($1.type == .income ? $1.amount : -$1.amount) }
+            return (abs(net), net >= 0 ? "+" : "-")
+        }
     }
 }
 

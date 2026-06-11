@@ -70,7 +70,7 @@ struct CategoryFilterSheet: View {
             }
         } label: {
             HStack(spacing: 12) {
-                Text(cat.emoji).font(.system(size: 22))
+                Text(cat.emoji).font(.system(size: 22, relativeTo: .title2))
                 Text(cat.name)
                     .font(.dsBody)
                     .foregroundStyle(.primary)
@@ -108,7 +108,7 @@ struct CategoryFilterSheet: View {
                         Button {
                             let impact = UIImpactFeedbackGenerator(style: .light)
                             impact.impactOccurred()
-                            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                            withAnimation(.dsSpring) {
                                 selectedPeriod = period
                                 customStartDate = nil
                                 customEndDate = nil

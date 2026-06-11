@@ -23,7 +23,7 @@ struct TransactionRow: View {
                 let cat = transaction.category
                 ZStack {
                     Circle()
-                        .fill((cat.map { Color(hex: $0.colorHex) } ?? .gray).opacity(0.15))
+                        .fill((cat.map { Color(hex: $0.colorHex) } ?? .gray).opacity(DSOpacity.subtle))
                         .frame(width: 54, height: 54)
                     Text(cat?.emoji ?? "💳")
                         .font(.dsEmoji)
@@ -34,7 +34,8 @@ struct TransactionRow: View {
                         .font(.dsCaption)
                         .foregroundStyle(.secondary)
 
-                    let desc = transaction.note?.isEmpty == false ? transaction.note! : (cat?.name ?? transaction.type.displayName)
+                    let trimmedNote = transaction.note.flatMap { $0.isEmpty ? nil : $0 }
+                    let desc = trimmedNote ?? (cat?.name ?? transaction.type.displayName)
                     Text(desc)
                         .font(.dsBodySemi)
                         .foregroundStyle(.primary)

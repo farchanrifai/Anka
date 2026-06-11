@@ -71,13 +71,13 @@ final class StatsViewModel {
 
     func navigateMonth(by delta: Int) {
         guard let next = Calendar.current.date(byAdding: .month, value: delta, to: currentMonth) else { return }
-        withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
+        withAnimation(.dsSpringSoft) {
             currentMonth = next.startOfMonth
         }
     }
 
     func resetToCurrentMonth() {
-        withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
+        withAnimation(.dsSpringSoft) {
             currentMonth = Date().startOfMonth
         }
     }
@@ -154,7 +154,7 @@ final class StatsViewModel {
 
         // Animate the donut crossfade + top-categories list to the new month's
         // data (the chart's internal transition needs an enclosing animation).
-        withAnimation(.snappy(duration: 0.3)) {
+        withAnimation(.dsSnappy) {
             monthTotal = result.1
             categorySpend = newSpend
             weeklySpend = result.2

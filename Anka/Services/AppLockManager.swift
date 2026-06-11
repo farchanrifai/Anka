@@ -20,9 +20,10 @@ final class AppLockManager {
     /// Transient: is the lock screen currently covering the UI?
     var isLocked: Bool
 
-    var hasPIN: Bool {
-        KeychainHelper.shared.read(forKey: pinKey) != nil
-    }
+    /// Cached "is a PIN set?" flag. Read in SwiftUI view bodies (SettingsView),
+    /// i.e. on every render — so it's kept in sync by `savePIN`/`removePIN`
+    /// rather than hitting the Keychain on each access.
+    private(set) var hasPIN: Bool
 
     /// Shared context reused for biometric availability checks so we don't
     /// allocate a fresh `LAContext` on every property read — these are read in
@@ -42,6 +43,7 @@ final class AppLockManager {
         // hasPIN read inline (can't reference self.hasPIN before all stored
         // properties are initialized).
         let pinExists = KeychainHelper.shared.read(forKey: "ankaPINCode") != nil
+        self.hasPIN = pinExists
         self.isLocked = enabled && pinExists
         // Seed the cached biometric state once (all stored properties are now
         // initialized, so calling an instance method here is valid).
@@ -61,10 +63,12 @@ final class AppLockManager {
 
     func savePIN(_ pin: String) {
         KeychainHelper.shared.save(pin, forKey: pinKey)
+        hasPIN = true
     }
 
     func removePIN() {
         KeychainHelper.shared.delete(forKey: pinKey)
+        hasPIN = false
     }
 
     func verifyPIN(_ pin: String) -> Bool {

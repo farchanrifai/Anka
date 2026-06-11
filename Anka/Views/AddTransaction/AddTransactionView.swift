@@ -1,6 +1,26 @@
 import SwiftUI
 import SwiftData
 
+// MARK: - Shake effect
+//
+// Declarative horizontal shake for invalid-save feedback. Incrementing the
+// trigger inside a single `withAnimation` drives `animatableData` from its
+// old value to the new one; the `sin` curve turns that into a damped left-
+// right wobble. Replaces a hand-timed sequence of four
+// `DispatchQueue.main.asyncAfter` callbacks, which was prone to timing drift.
+private struct ShakeEffect: GeometryEffect {
+    /// Peak horizontal travel in points.
+    var travel: CGFloat = 10
+    /// Number of left-right oscillations per trigger.
+    var shakes: CGFloat = 3
+    var animatableData: CGFloat
+
+    func effectValue(size: CGSize) -> ProjectionTransform {
+        let dx = travel * sin(animatableData * .pi * shakes)
+        return ProjectionTransform(CGAffineTransform(translationX: dx, y: 0))
+    }
+}
+
 // MARK: - Per-character slot animation (mirrors Spendy CategorySlotView's SlotChar)
 private struct SlotCharEffect: ViewModifier {
     let revealed: Bool
@@ -85,7 +105,8 @@ struct AddTransactionView: View {
     @State private var showCategoryPicker: Bool = false
     @State private var showDatePicker: Bool = false
     @State private var datePickerOpacity: Double = 0
-    @State private var shakeOffset: CGFloat = 0
+    /// Incremented to trigger the invalid-save shake (see `ShakeEffect`).
+    @State private var shakeTrigger: Int = 0
     /// Haptic triggers — incremented to fire `.sensoryFeedback`.
     @State private var saveSuccessCount = 0
     @State private var validationErrorCount = 0
@@ -429,7 +450,7 @@ struct AddTransactionView: View {
             }
         }
         .frame(height: 44)
-        .offset(x: shakeOffset)
+        .modifier(ShakeEffect(animatableData: CGFloat(shakeTrigger)))
         .animation(.spring(response: 0.45, dampingFraction: 0.75), value: vm.selectedCategory?.id)
     }
 
@@ -637,7 +658,7 @@ struct AddTransactionView: View {
                                     }
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 4)
-                                    .background(DSColor.accent.opacity(0.15), in: Capsule())
+                                    .background(DSColor.accent.opacity(DSOpacity.subtle), in: Capsule())
                                     .transition(.scale(scale: 0.8).combined(with: .opacity))
                                     .id(tag)
                                 }
@@ -716,16 +737,7 @@ struct AddTransactionView: View {
 
     private func triggerShake() {
         validationErrorCount += 1
-        withAnimation(.spring(response: 0.2, dampingFraction: 0.3)) { shakeOffset = 10 }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.10) {
-            withAnimation(.spring(response: 0.2, dampingFraction: 0.3)) { shakeOffset = -10 }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.20) {
-            withAnimation(.spring(response: 0.2, dampingFraction: 0.3)) { shakeOffset = 10 }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.30) {
-            withAnimation(.spring(response: 0.2, dampingFraction: 0.3)) { shakeOffset = 0 }
-        }
+        withAnimation(.linear(duration: 0.4)) { shakeTrigger += 1 }
     }
 }
 

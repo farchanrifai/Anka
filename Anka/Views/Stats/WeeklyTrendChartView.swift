@@ -16,7 +16,7 @@ struct WeeklyTrendChartView: View {
             if weeklyData.isEmpty || weeklyData.allSatisfy({ $0.total == 0 }) {
                 VStack(spacing: DSSpacing.md) {
                     Image(systemName: "calendar")
-                        .font(.system(size: 32))
+                        .font(.system(size: 32, relativeTo: .title))
                         .foregroundStyle(DSColor.textMuted)
                     Text("No expenses this period")
                         .font(.dsBody)

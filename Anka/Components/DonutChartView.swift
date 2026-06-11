@@ -2,10 +2,12 @@ import SwiftUI
 import UIKit
 import Charts
 
-// Ported verbatim from Spendy (DonutChartView.swift). Only the coral accent
-// constant changed (Color.spendyCoral → DSColor.accent — both are #F26666).
-// Animations, gestures, fonts, ratios, haptics, and tap/swipe detection are
-// preserved exactly so the visual + interaction feel matches Spendy.
+// Ported from Spendy (DonutChartView.swift). The coral accent constant
+// changed (Color.spendyCoral → DSColor.accent — both are #F26666), and the
+// center labels now use Dynamic-Type-aware fonts (UIFontMetrics-scaled) so
+// they respect the user's text-size setting. Animations, gestures, ratios,
+// haptics, and tap/swipe detection are otherwise preserved so the visual +
+// interaction feel matches Spendy.
 
 struct CategorySpendData: Identifiable {
     let id: String
@@ -57,7 +59,7 @@ struct DonutChartView: View {
                 )
                 .foregroundStyle(slice.color)
                 .cornerRadius(3)
-                .opacity(selectedCategory == nil || selectedCategory?.id == slice.id ? 1 : 0.35)
+                .opacity(selectedCategory == nil || selectedCategory?.id == slice.id ? 1 : DSOpacity.muted)
             }
             .id(dataSignature)
             .transition(.opacity)
@@ -79,14 +81,14 @@ struct DonutChartView: View {
 
             VStack(spacing: 4) {
                 Text(displayLabel)
-                    .font(.system(size: 13, weight: .regular))
+                    .font(.system(size: 13, weight: .regular, relativeTo: .footnote))
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
-                    .animation(.easeInOut(duration: 0.2), value: displayLabel)
+                    .animation(.dsEase, value: displayLabel)
 
                 Text(displayAmount.idrShort)
-                    .font(.system(size: 23, weight: .bold))
+                    .font(.system(size: 23, weight: .bold, relativeTo: .title2))
                     .minimumScaleFactor(0.5)
                     .lineLimit(1)
                     .contentTransition(.numericText())
@@ -95,21 +97,21 @@ struct DonutChartView: View {
                 if let selected = selectedCategory {
                     let pct = totalSpent > 0 ? selected.amount / totalSpent * 100 : 0
                     Text(String(format: "%.0f%%", pct))
-                        .font(.system(size: 12, weight: .regular))
+                        .font(.system(size: 12, weight: .regular, relativeTo: .caption))
                         .foregroundStyle(.secondary)
                         .contentTransition(.numericText())
                         .animation(.spring(response: 0.25, dampingFraction: 0.75), value: pct)
                 } else {
                     Button(action: onSetBudget) {
                         Text(budget > 0 ? "Budget: \(budget.idrFormatted)" : "Set Budget >")
-                            .font(.system(size: 12, weight: .regular))
+                            .font(.system(size: 12, weight: .regular, relativeTo: .caption))
                             .foregroundStyle(budget > 0 ? Color.secondary : DSColor.accent)
                     }
                 }
             }
             .padding(.horizontal, 60)
         }
-        .animation(.easeInOut(duration: 0.25), value: dataSignature)
+        .animation(.dsEaseSlow, value: dataSignature)
         .onChange(of: totalSpent) { _, _ in
             selectedCategory = nil
         }

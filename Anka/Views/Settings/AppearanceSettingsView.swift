@@ -38,6 +38,17 @@ struct AppearanceSettingsView: View {
             }
             .disabled(!appearance.isDarkVariantApplicable)
             .listRowBackground(appearance.bgCard(scheme))
+
+            Section {
+                ForEach(AppearanceManager.TodayViewVersion.allCases, id: \.self) { version in
+                    todayViewRow(version, binding: $appearance.todayViewVersion)
+                }
+            } header: {
+                Text("Today View")
+            } footer: {
+                Text("Choose the layout of the main Today screen's header.")
+            }
+            .listRowBackground(appearance.bgCard(scheme))
         }
         .scrollContentBackground(.hidden)
         .background(appearance.bgGrouped(scheme))
@@ -94,6 +105,33 @@ struct AppearanceSettingsView: View {
                 Spacer()
 
                 if binding.wrappedValue == variant {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(DSColor.accent)
+                }
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func todayViewRow(_ version: AppearanceManager.TodayViewVersion, binding: Binding<AppearanceManager.TodayViewVersion>) -> some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                binding.wrappedValue = version
+            }
+        } label: {
+            HStack(spacing: DSSpacing.md) {
+                Image(systemName: version == .v1 ? "rectangle.topthird.inset.filled" : "rectangle.compress.vertical")
+                    .frame(width: 28)
+                    .foregroundStyle(DSColor.accent)
+
+                Text(version.displayName)
+                    .foregroundStyle(DSColor.textPrimary)
+
+                Spacer()
+
+                if binding.wrappedValue == version {
                     Image(systemName: "checkmark")
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(DSColor.accent)
