@@ -2,11 +2,23 @@ import SwiftUI
 import SwiftData
 
 struct StatsView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query(sort: \Transaction.date, order: .reverse) private var allTransactions: [Transaction]
-    @Query(sort: \Category.sortOrder) private var allCategories: [Category]
+    // Data is passed in from TodayView (which already queried it) rather than
+    // re-fetched here. A self-owned `@Query` fired a second full fetch on the
+    // main thread *during the push transition*; on-device that blocked the
+    // toolbar morph (empty-capsule freeze). Taking the already-materialized
+    // arrays makes the first frame allocation-free so the push never stalls.
+    let transactions: [Transaction]
+    let categories: [Category]
 
     @State private var vm = StatsViewModel()
+
+    /// Swift Charts construction is expensive (~hundreds of ms in Debug) and
+    /// SwiftUI must render the destination's first frame *before* the push
+    /// animation can start — building the donut up front stalled the
+    /// transition, leaving the Today toolbar frozen mid-morph (empty glass
+    /// capsule). First frame shows a cheap ring placeholder instead; the real
+    /// chart fades in once the push has landed.
+    @State private var chartReady = false
 
     private static let chartHeight: CGFloat = 336  // matches Spendy MainView
 
@@ -24,33 +36,59 @@ struct StatsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .sensoryFeedback(.impact(weight: .light), trigger: vm.currentMonth)
         .onAppear { feedVM() }
-        .onChange(of: allTransactions) { feedVM() }
-        .onChange(of: allCategories)   { feedVM() }
+        .onChange(of: transactions) { feedVM() }
+        .onChange(of: categories)   { feedVM() }
         .task(id: vm.refreshKey) { await vm.refresh() }
     }
 
     private func feedVM() {
-        vm.update(transactions: allTransactions, categories: allCategories)
+        vm.update(transactions: transactions, categories: categories)
     }
 
     // MARK: - Chart Section
 
+    // No `.id(vm.refreshKey)` here — that forced a full Swift Charts teardown
+    // + rebuild on every data version bump, including 2–3 times during the
+    // push transition itself (the slow/janky open). DonutChartView already
+    // crossfades its slices internally when the data signature changes;
+    // month swipes and data updates animate without recreating the chart.
     private var chartSection: some View {
         ZStack {
-            DonutChartView(
-                categoryData: vm.categorySpend,
-                totalSpent:   vm.monthTotal,
-                budget:       0, // budgets not implemented yet; "Set Budget >" shown but inert
-                monthName:    vm.shortMonthLabel,
-                onSetBudget:  {},
-                onSwipe:      { vm.navigateMonth(by: $0) }
-            )
-            .id(vm.refreshKey)
-            .transition(.opacity.combined(with: .scale(scale: 0.97, anchor: .center)))
+            if chartReady {
+                DonutChartView(
+                    categoryData: vm.categorySpend,
+                    totalSpent:   vm.monthTotal,
+                    budget:       0, // budgets not implemented yet; "Set Budget >" shown but inert
+                    monthName:    vm.shortMonthLabel,
+                    onSetBudget:  {},
+                    onSwipe:      { vm.navigateMonth(by: $0) }
+                )
+                .transition(.opacity)
+            } else {
+                chartPlaceholder
+            }
         }
         .frame(height: Self.chartHeight)
-        .animation(.spring(response: 0.35, dampingFraction: 0.85), value: vm.refreshKey)
         .padding(.horizontal, DSSpacing.screenEdge)
+        .task {
+            guard !chartReady else { return }
+            // Let the push animation finish before paying the Charts build cost.
+            try? await Task.sleep(nanoseconds: 380_000_000)
+            withAnimation(.easeOut(duration: 0.2)) { chartReady = true }
+        }
+    }
+
+    /// Visually matches DonutChartView's empty/placeholder state (gray ring,
+    /// inner radius ratio 0.78) at near-zero render cost.
+    private var chartPlaceholder: some View {
+        GeometryReader { geo in
+            let side = min(geo.size.width, geo.size.height)
+            let ringWidth = side / 2 * (1 - 0.78)
+            Circle()
+                .stroke(Color(.systemGray5), lineWidth: ringWidth)
+                .frame(width: side - ringWidth, height: side - ringWidth)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
     }
 
     // MARK: - Top Categories
@@ -132,9 +170,20 @@ struct StatsView: View {
     }
 }
 
-#Preview {
-    NavigationStack {
-        StatsView()
+/// Preview wrapper: owns the `@Query` (like TodayView does in the real app)
+/// and feeds the results into StatsView.
+private struct StatsPreviewHost: View {
+    @Query private var transactions: [Transaction]
+    @Query(sort: \Category.sortOrder) private var categories: [Category]
+
+    var body: some View {
+        NavigationStack {
+            StatsView(transactions: transactions, categories: categories)
+        }
     }
-    .modelContainer(SampleData.container())
+}
+
+#Preview {
+    StatsPreviewHost()
+        .modelContainer(SampleData.container())
 }

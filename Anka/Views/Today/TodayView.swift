@@ -27,6 +27,9 @@ struct TodayView: View {
 
     var body: some View {
         dashboardTab
+        .sheet(isPresented: $vm.showStats) {
+            StatsView(transactions: allTransactions, categories: allCategories)
+        }
         .sheet(isPresented: $vm.showSettings) {
             SettingsView()
         }
@@ -119,10 +122,6 @@ struct TodayView: View {
                 .safeAreaInset(edge: .top, spacing: 0) {
                     stickyHeader
                 }
-                // Keep the nav bar present (but invisible) so pushing Stats
-                // crossfades the back button in place — matching the iOS
-                // Settings app — instead of sliding a fresh bar in with the
-                // pushed view.
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbarBackground(.hidden, for: .navigationBar)
                 .background(DSColor.bgPrimary.ignoresSafeArea())
@@ -132,8 +131,11 @@ struct TodayView: View {
                 //   - active:   filter-pill | flex | search-circle | +
                 // (when active the trailing flex is dropped so the search
                 //  circle sits right next to + with standard toolbar padding.)
-                // Settings lives in the top-bar trailing slot so it crossfades
-                // out (iOS Settings-style) when Stats is pushed.
+                // Stats + Settings present as sheets (not pushes) so they don't
+                // contend with the bottom-bar search item for the Liquid Glass
+                // toolbar's trailing item group — that contention is what caused
+                // the empty-glass-capsule freeze (`glassEffect() tried to update
+                // multiple times per frame`).
                 .toolbar {
                     ToolbarItemGroup(placement: .topBarTrailing) {
                         statsToolbarButton
@@ -425,9 +427,7 @@ struct TodayView: View {
     // MARK: - Stats Toolbar Button
 
     private var statsToolbarButton: some View {
-        NavigationLink {
-            StatsView()
-        } label: {
+        Button { vm.showStats = true } label: {
             Image(systemName: "chart.pie")
         }
         .tint(.primary)

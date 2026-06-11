@@ -82,6 +82,11 @@ final class StatsViewModel {
     // MARK: - Async refresh
 
     func refresh() async {
+        // `.task(id: refreshKey)` fires once with the pre-feed key (dataVersion
+        // 0, empty data) before onAppear's update() restarts it — skip that
+        // no-op pass instead of spinning up a detached task during the push.
+        guard dataVersion > 0 else { return }
+
         isLoading = true
         defer { isLoading = false }
 
@@ -112,8 +117,7 @@ final class StatsViewModel {
 
         guard !Task.isCancelled else { return }
 
-        monthTotal = result.1
-        categorySpend = result.0.compactMap { catID, amount in
+        let newSpend: [CategorySpendData] = result.0.compactMap { catID, amount in
             guard let meta = catMeta[catID] else { return nil }
             return CategorySpendData(
                 id: catID.uuidString,
@@ -121,6 +125,13 @@ final class StatsViewModel {
                 color: Color(hex: meta.colorHex),
                 amount: amount
             )
+        }
+
+        // Animate the donut crossfade + top-categories list to the new month's
+        // data (the chart's internal transition needs an enclosing animation).
+        withAnimation(.snappy(duration: 0.3)) {
+            monthTotal = result.1
+            categorySpend = newSpend
         }
     }
 }

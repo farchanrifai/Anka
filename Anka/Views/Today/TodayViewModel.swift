@@ -110,6 +110,8 @@ enum BalanceMode: String, CaseIterable, Hashable {
     var showSettings = false
     var showAddTransaction = false
     var showCategoryFilter = false
+    /// Drives the push to StatsView (`.navigationDestination(isPresented:)`).
+    var showStats = false
     var editingTransaction: Transaction? = nil
     var pendingDeleteTransaction: Transaction? = nil
 
