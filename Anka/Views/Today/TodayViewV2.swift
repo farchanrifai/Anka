@@ -96,7 +96,7 @@ struct TodayViewV2: View {
                     }
 
                     ToolbarItemGroup(placement: .topBarTrailing) {
-                        StatsToolbarButton(vm: vm)
+                        StatsToolbarButton(vm: vm, namespace: animationNamespace)
                         SettingsToolbarButton(vm: vm)
                     }
 

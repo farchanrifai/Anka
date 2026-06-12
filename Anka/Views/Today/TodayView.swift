@@ -99,7 +99,7 @@ struct TodayView: View {
                 // multiple times per frame`).
                 .toolbar {
                     ToolbarItemGroup(placement: .topBarTrailing) {
-                        StatsToolbarButton(vm: vm)
+                        StatsToolbarButton(vm: vm, namespace: animationNamespace)
                         SettingsToolbarButton(vm: vm)
                     }
 

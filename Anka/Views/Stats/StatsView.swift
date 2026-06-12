@@ -9,8 +9,18 @@ struct StatsView: View {
     // arrays makes the first frame allocation-free so the push never stalls.
     let transactions: [Transaction]
     let categories: [Category]
+    /// Month Stats opens on, inherited one-way from Today's selected month
+    /// (falls back to the current month when Today is on a multi-month period).
+    let initialMonth: Date
 
     @State private var vm = StatsViewModel()
+
+    /// Applies `initialMonth` to the VM exactly once, on first appearance.
+    @State private var didApplyInitialMonth = false
+
+    /// Shared category selection — written by both the donut (tap a slice) and
+    /// the breakdown list (tap a row), so the two stay in sync.
+    @State private var selectedCategoryID: String?
 
     /// Swift Charts construction is expensive (~hundreds of ms in Debug) and
     /// SwiftUI must render the destination's first frame *before* the push
@@ -19,31 +29,49 @@ struct StatsView: View {
     /// capsule). First frame shows a cheap ring placeholder instead; the real
     /// chart fades in once the push has landed.
     @State private var chartReady = false
-    /// Shared delay before both the donut and weekly trend charts fade in
-    /// together (see `chartSection`'s `.task`).
+    /// Delay before the charts + breakdown fade in together, after the
+    /// present transition has settled.
     private let chartReadyDelay: TimeInterval = 0.38
 
-    private static let chartHeight: CGFloat = 336  // matches Spendy MainView
+    // Tightened from Spendy's 336 — the sheet reads more compact, in line with
+    // the app's overall scale.
+    private static let chartHeight: CGFloat = 280
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 16) {
-                periodHeader
-                chartSection
+            VStack(spacing: DSSpacing.xl) {
+                monthStepper
+                summaryHero
+                statsContent
                 weeklyTrendSection
             }
             // Extra top padding clears the sheet's grab handle so it doesn't
             // crowd the period label.
             .padding(.top, DSSpacing.lg)
-            .padding(.bottom, 24)
+            .padding(.bottom, DSSpacing.xl)
+            // Flip `chartReady` once, after the present transition has settled.
+            // Lives on the stable VStack (not the conditional chart subview) so
+            // it always runs, even when the month is empty.
+            .task {
+                guard !chartReady else { return }
+                try? await Task.sleep(nanoseconds: UInt64(chartReadyDelay * 1_000_000_000))
+                withAnimation(.easeOut(duration: 0.2)) { chartReady = true }
+            }
         }
         .background(DSColor.bgPrimary.ignoresSafeArea())
         .navigationTitle("Stats")
         .navigationBarTitleDisplayMode(.inline)
         .sensoryFeedback(.impact(weight: .light), trigger: vm.currentMonth)
-        .onAppear { feedVM() }
+        .onAppear {
+            if !didApplyInitialMonth {
+                vm.currentMonth = initialMonth.startOfMonth
+                didApplyInitialMonth = true
+            }
+            feedVM()
+        }
         .onChange(of: transactions) { feedVM() }
         .onChange(of: categories)   { feedVM() }
+        .onChange(of: vm.currentMonth) { selectedCategoryID = nil }
         .task(id: vm.refreshKey) { await vm.refresh() }
     }
 
@@ -51,37 +79,188 @@ struct StatsView: View {
         vm.update(transactions: transactions, categories: categories)
     }
 
-    // MARK: - Chart Section
+    // MARK: - Month stepper
 
-    // No `.id(vm.refreshKey)` here — that forced a full Swift Charts teardown
-    // + rebuild on every data version bump, including 2–3 times during the
-    // push transition itself (the slow/janky open). DonutChartView already
-    // crossfades its slices internally when the data signature changes;
-    // month swipes and data updates animate without recreating the chart.
-    private var chartSection: some View {
-        ZStack {
-            if chartReady {
-                DonutChartView(
-                    categoryData: vm.categorySpend,
-                    totalSpent:   vm.monthTotal,
-                    budget:       0, // budgets not implemented yet; "Set Budget >" shown but inert
-                    monthName:    vm.shortMonthLabel,
-                    onSetBudget:  {},
-                    onSwipe:      { vm.navigateMonth(by: $0) }
-                )
-                .transition(.opacity)
-            } else {
-                chartPlaceholder
+    private var monthStepper: some View {
+        HStack(spacing: DSSpacing.lg) {
+            stepperButton(systemName: "chevron.left", delta: -1, disabled: false)
+
+            VStack(spacing: 2) {
+                Text(vm.monthLabel)
+                    .font(.dsHeadlineSemi)
+                    .foregroundStyle(DSColor.textPrimary)
+                    .contentTransition(.numericText())
+                Text(vm.periodType)
+                    .font(.dsCaption2)
+                    .foregroundStyle(DSColor.textSecondary)
+            }
+            .frame(minWidth: 150)
+
+            stepperButton(systemName: "chevron.right", delta: 1, disabled: vm.isOnCurrentMonth)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, DSSpacing.screenEdge)
+    }
+
+    private func stepperButton(systemName: String, delta: Int, disabled: Bool) -> some View {
+        Button {
+            vm.navigateMonth(by: delta)
+        } label: {
+            Image(systemName: systemName)
+                .font(.dsHeadlineSemi)
+                .foregroundStyle(disabled ? DSColor.textMuted : DSColor.accent)
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .disabled(disabled)
+        .accessibilityLabel(delta < 0 ? "Previous month" : "Next month")
+    }
+
+    // MARK: - Summary hero
+
+    private var summaryHero: some View {
+        VStack(spacing: DSSpacing.md) {
+            Text(rp(vm.monthTotal))
+                .font(.dsTitle2Bold)
+                .foregroundStyle(DSColor.textPrimary)
+                .contentTransition(.numericText())
+                .minimumScaleFactor(0.6)
+                .lineLimit(1)
+
+            HStack(spacing: DSSpacing.md) {
+                if let delta = vm.expenseDeltaPercent {
+                    deltaPill(delta)
+                }
+                Text("\(vm.dailyAverage.idrShort)/day")
+                    .font(.dsCaption)
+                    .foregroundStyle(DSColor.textSecondary)
+            }
+
+            HStack(spacing: DSSpacing.md) {
+                summaryChip(label: "Income", value: rp(vm.incomeTotal), color: DSColor.positive)
+                summaryChip(label: "Net", value: signedAmount(vm.netTotal),
+                            color: vm.netTotal >= 0 ? DSColor.positive : DSColor.negative)
+            }
+            .padding(.top, DSSpacing.xs)
+        }
+        .padding(.horizontal, DSSpacing.screenEdge)
+    }
+
+    private func deltaPill(_ delta: Double) -> some View {
+        // Spending *less* than last month is good → green/down.
+        let isDown = delta <= 0
+        let color: Color = isDown ? DSColor.positive : DSColor.negative
+        return HStack(spacing: 3) {
+            Image(systemName: isDown ? "arrow.down" : "arrow.up")
+                .font(.dsCaption2Bold)
+            Text("\(abs(Int(delta.rounded())))% vs \(vm.previousMonthShortLabel)")
+                .font(.dsCaptionSemi)
+        }
+        .foregroundStyle(color)
+        .padding(.horizontal, DSSpacing.md)
+        .padding(.vertical, DSSpacing.xs)
+        .background(color.opacity(DSOpacity.subtle), in: Capsule())
+    }
+
+    private func summaryChip(label: String, value: String, color: Color) -> some View {
+        VStack(spacing: 2) {
+            Text(label)
+                .font(.dsCaption2)
+                .foregroundStyle(DSColor.textSecondary)
+            Text(value)
+                .font(.dsSubheadSemi)
+                .foregroundStyle(color)
+                .contentTransition(.numericText())
+                .minimumScaleFactor(0.6)
+                .lineLimit(1)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, DSSpacing.md)
+        .background(DSColor.bgSecondary, in: RoundedRectangle(cornerRadius: DSRadius.medium))
+    }
+
+    /// "Rp 1,234,567" — matches the app's amount convention (never "IDR …").
+    private func rp(_ value: Double) -> String { "Rp \(value.idrShort)" }
+
+    /// "+Rp 1,200,000" / "-Rp 300,000" — signed, for the Net chip.
+    private func signedAmount(_ value: Double) -> String {
+        (value < 0 ? "-" : "+") + "Rp \(abs(value).idrShort)"
+    }
+
+    // MARK: - Chart + breakdown content
+
+    // `chartSection`'s donut is never torn down via `.id(refreshKey)` — that
+    // forced a full Swift Charts rebuild on every data bump (the slow/janky
+    // open). DonutChartView crossfades its slices internally instead.
+    @ViewBuilder
+    private var statsContent: some View {
+        if !chartReady {
+            chartPlaceholder
+                .frame(height: Self.chartHeight)
+                .padding(.horizontal, DSSpacing.screenEdge)
+        } else if vm.categorySpend.isEmpty {
+            emptyState
+        } else {
+            DonutChartView(
+                categoryData: vm.categorySpend,
+                totalSpent:   vm.monthTotal,
+                budget:       0, // budgets not implemented yet
+                monthName:    vm.shortMonthLabel,
+                onSetBudget:  {},
+                onSwipe:      { vm.navigateMonth(by: $0) },
+                selectedID:   $selectedCategoryID
+            )
+            .frame(height: Self.chartHeight)
+            .padding(.horizontal, DSSpacing.screenEdge)
+            .transition(.opacity)
+
+            categoryBreakdown
+        }
+    }
+
+    private var categoryBreakdown: some View {
+        VStack(alignment: .leading, spacing: DSSpacing.md) {
+            Text("Spending by category")
+                .font(.dsSubheadSemi)
+                .foregroundStyle(DSColor.textSecondary)
+
+            ForEach(vm.categorySpend) { data in
+                Button {
+                    withAnimation(.dsSnappy) {
+                        selectedCategoryID = (selectedCategoryID == data.id) ? nil : data.id
+                    }
+                } label: {
+                    CategoryBreakdownRow(
+                        data: data,
+                        fraction: vm.monthTotal > 0 ? data.amount / vm.monthTotal : 0,
+                        isDimmed: selectedCategoryID != nil && selectedCategoryID != data.id
+                    )
+                }
+                .buttonStyle(.plain)
             }
         }
+        .padding(.horizontal, DSSpacing.screenEdge)
+        .transition(.opacity)
+    }
+
+    private var emptyState: some View {
+        VStack(spacing: DSSpacing.md) {
+            Image(systemName: "chart.pie")
+                .font(.system(size: 34, relativeTo: .title))
+                .foregroundStyle(DSColor.textMuted)
+            Text("No expenses in \(vm.shortMonthLabel)")
+                .font(.dsSubhead)
+                .foregroundStyle(DSColor.textPrimary)
+            Text("Add an expense or step to another month.")
+                .font(.dsCaption)
+                .foregroundStyle(DSColor.textSecondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
         .frame(height: Self.chartHeight)
         .padding(.horizontal, DSSpacing.screenEdge)
-        .task {
-            guard !chartReady else { return }
-            // Let the push animation finish before paying the Charts build cost.
-            try? await Task.sleep(nanoseconds: UInt64(chartReadyDelay * 1_000_000_000))
-            withAnimation(.easeOut(duration: 0.2)) { chartReady = true }
-        }
+        .transition(.opacity)
     }
 
     /// Visually matches DonutChartView's empty/placeholder state (gray ring,
@@ -97,34 +276,20 @@ struct StatsView: View {
         }
     }
 
-    // MARK: - Period Header
+    // MARK: - Weekly trend
 
-    private var periodHeader: some View {
-        VStack(spacing: 4) {
-            Text(vm.monthLabel)
-                .font(.dsTitle3)
-                .foregroundStyle(DSColor.textPrimary)
-            Text(vm.periodType)
-                .font(.dsCaption)
-                .foregroundStyle(DSColor.textSecondary)
-        }
-        .frame(maxWidth: .infinity)
-    }
-
-    // MARK: - Weekly Trend
-
-    // Shares `chartReady` with `chartSection` so both charts fade in together
-    // once the push/sheet transition has settled.
+    // Shares `chartReady` so the trend fades in with the rest once the present
+    // transition has settled.
     @ViewBuilder
     private var weeklyTrendSection: some View {
         if chartReady {
-            WeeklyTrendChartView(weeklyData: vm.weeklySpend)
+            WeeklyTrendChartView(weeklyData: vm.weeklySpend, average: vm.weeklyAverage)
                 .transition(.opacity)
         } else {
             VStack(alignment: .leading, spacing: DSSpacing.md) {
                 Text("Weekly trend")
-                    .font(.dsHeadline)
-                    .foregroundStyle(DSColor.textPrimary)
+                    .font(.dsSubheadSemi)
+                    .foregroundStyle(DSColor.textSecondary)
                     .padding(.horizontal, DSSpacing.screenEdge)
 
                 RoundedRectangle(cornerRadius: DSRadius.medium)
@@ -144,7 +309,7 @@ private struct StatsPreviewHost: View {
 
     var body: some View {
         NavigationStack {
-            StatsView(transactions: transactions, categories: categories)
+            StatsView(transactions: transactions, categories: categories, initialMonth: Date())
         }
     }
 }

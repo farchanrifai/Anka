@@ -12,6 +12,7 @@ import Charts
 struct CategorySpendData: Identifiable {
     let id: String
     let name: String
+    let emoji: String
     let color: Color
     let amount: Double
 }
@@ -23,17 +24,25 @@ struct DonutChartView: View {
     let monthName: String
     let onSetBudget: () -> Void
     var onSwipe: ((Int) -> Void)? = nil
+    /// Selection is owned by the parent so the donut and the category
+    /// breakdown list stay in sync — tapping a slice or a row both write here.
+    @Binding var selectedID: String?
 
-    @State private var selectedCategory: CategorySpendData? = nil
     @State private var chartSize: CGSize = .zero
     @State private var dragIsSwipe = false
     @State private var haptic = UIImpactFeedbackGenerator(style: .light)
 
     private let innerRatio: CGFloat = 0.78
 
+    /// The currently-selected category, derived from the shared `selectedID`.
+    private var selectedCategory: CategorySpendData? {
+        guard let selectedID else { return nil }
+        return categoryData.first { $0.id == selectedID }
+    }
+
     private var slices: [CategorySpendData] {
         categoryData.isEmpty
-            ? [CategorySpendData(id: "_placeholder", name: "_placeholder", color: Color(.systemGray5), amount: 1)]
+            ? [CategorySpendData(id: "_placeholder", name: "_placeholder", emoji: "", color: Color(.systemGray5), amount: 1)]
             : categoryData
     }
 
@@ -113,7 +122,7 @@ struct DonutChartView: View {
         }
         .animation(.dsEaseSlow, value: dataSignature)
         .onChange(of: totalSpent) { _, _ in
-            selectedCategory = nil
+            selectedID = nil
         }
     }
 
@@ -137,7 +146,7 @@ struct DonutChartView: View {
                 guard !movedFar else { return }
                 guard let hit = sector(at: value.startLocation) else { return }
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.85)) {
-                    selectedCategory = (selectedCategory?.id == hit.id) ? nil : hit
+                    selectedID = (selectedID == hit.id) ? nil : hit.id
                 }
                 haptic.impactOccurred()
             }
@@ -174,14 +183,15 @@ struct DonutChartView: View {
 #Preview {
     DonutChartView(
         categoryData: [
-            CategorySpendData(id: "1", name: "Groceries", color: Color(hex: "#FF6B6B"), amount: 400000),
-            CategorySpendData(id: "2", name: "Car",       color: Color(hex: "#42A5F5"), amount: 200000),
-            CategorySpendData(id: "3", name: "Coffee",    color: Color(hex: "#FF8A65"), amount:  44271),
+            CategorySpendData(id: "1", name: "Groceries", emoji: "🛒", color: Color(hex: "#FF6B6B"), amount: 400000),
+            CategorySpendData(id: "2", name: "Car",       emoji: "🚗", color: Color(hex: "#42A5F5"), amount: 200000),
+            CategorySpendData(id: "3", name: "Coffee",    emoji: "☕", color: Color(hex: "#FF8A65"), amount:  44271),
         ],
         totalSpent: 644271,
         budget: 5_000_000,
         monthName: "May",
-        onSetBudget: {}
+        onSetBudget: {},
+        selectedID: .constant(nil)
     )
     .frame(height: 280)
     .padding()

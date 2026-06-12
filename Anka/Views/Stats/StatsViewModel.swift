@@ -49,8 +49,37 @@ final class StatsViewModel {
 
     private(set) var categorySpend: [CategorySpendData] = []
     private(set) var monthTotal: Double = 0
+    private(set) var incomeTotal: Double = 0
+    private(set) var previousMonthExpenseTotal: Double = 0
     private(set) var weeklySpend: [WeeklySpendData] = []
+    private(set) var weeklyAverage: Double = 0
     var isLoading: Bool = false
+
+    /// Income minus expenses for the selected month (signed).
+    var netTotal: Double { incomeTotal - monthTotal }
+
+    /// Expense change vs the previous month, as a percentage. `nil` when the
+    /// previous month had no expenses (no meaningful baseline to compare).
+    var expenseDeltaPercent: Double? {
+        guard previousMonthExpenseTotal > 0 else { return nil }
+        return (monthTotal - previousMonthExpenseTotal) / previousMonthExpenseTotal * 100
+    }
+
+    /// Average expense per elapsed day. For the live month this divides by the
+    /// number of days *so far*; for a past month it divides by the month's full
+    /// day count.
+    var dailyAverage: Double {
+        let days: Int
+        if isOnCurrentMonth {
+            days = max(Date().dayOfMonth, 1)
+        } else {
+            days = Calendar.current.range(of: .day, in: .month, for: currentMonth)?.count ?? 30
+        }
+        return monthTotal / Double(days)
+    }
+
+    /// Short month name of the previous month — e.g. "May" — for the delta pill.
+    var previousMonthShortLabel: String { currentMonth.addingMonths(-1).shortMonthName }
 
     /// Encodes every dependency of the cached vars so `.task(id:)` reruns
     /// whenever the data or selected month changes.
@@ -98,10 +127,11 @@ final class StatsViewModel {
         defer { isLoading = false }
 
         // 1. Snapshot value types on the main actor.
-        let txSnaps  = transactions.map(StatsTxSnap.init)
-        let interval = currentMonth.monthInterval
-        let catMeta: [UUID: (name: String, colorHex: String)] = Dictionary(
-            uniqueKeysWithValues: categories.map { ($0.id, ($0.name, $0.colorHex)) }
+        let txSnaps      = transactions.map(StatsTxSnap.init)
+        let interval     = currentMonth.monthInterval
+        let prevInterval = currentMonth.addingMonths(-1).monthInterval
+        let catMeta: [UUID: (name: String, colorHex: String, emoji: String)] = Dictionary(
+            uniqueKeysWithValues: categories.map { ($0.id, ($0.name, $0.colorHex, $0.emoji)) }
         )
 
         // 2. Heavy aggregation off-main.
@@ -110,6 +140,16 @@ final class StatsViewModel {
             let monthExpenses = txSnaps.filter {
                 $0.type == .expense && interval.contains($0.date)
             }
+
+            // Income total for the month's summary line (not charted).
+            let income = txSnaps
+                .filter { $0.type == .income && interval.contains($0.date) }
+                .reduce(0) { $0 + $1.amount }
+
+            // Previous-month expense total, for the change-vs-last-month pill.
+            let prevTotal = txSnaps
+                .filter { $0.type == .expense && prevInterval.contains($0.date) }
+                .reduce(0) { $0 + $1.amount }
 
             var totals: [UUID: Double] = [:]
             var total: Double = 0
@@ -127,17 +167,26 @@ final class StatsViewModel {
             for snap in monthExpenses {
                 weeklyAgg[snap.date.startOfWeek, default: 0] += snap.amount
             }
-            var weeklyData: [WeeklySpendData] = []
+            // Plain Sendable tuples — the `WeeklySpendData` value objects are
+            // built on the main actor below (its initializer is main-actor
+            // isolated under the project's default-actor-isolation setting, so
+            // it can't be constructed inside this detached closure).
+            var weeklyRaw: [(weekStart: Date, weekEnd: Date, total: Double, weekNumber: Int)] = []
             var weekStart = interval.start.startOfWeek
             var weekNumber = 1
             while weekStart < interval.end {
                 let weekEnd = Calendar.current.date(byAdding: .day, value: 7, to: weekStart) ?? weekStart
-                weeklyData.append(WeeklySpendData(weekStart: weekStart, weekEnd: weekEnd, total: weeklyAgg[weekStart] ?? 0, weekNumber: weekNumber))
+                weeklyRaw.append((weekStart, weekEnd, weeklyAgg[weekStart] ?? 0, weekNumber))
                 weekStart = weekEnd
                 weekNumber += 1
             }
 
-            return (sorted, total, weeklyData)
+            // Mean of weeks that actually had spend — the trend chart's
+            // reference line (zero-spend weeks would drag the average down).
+            let spentWeeks = weeklyRaw.filter { $0.total > 0 }
+            let weeklyAvg = spentWeeks.isEmpty ? 0 : spentWeeks.reduce(0) { $0 + $1.total } / Double(spentWeeks.count)
+
+            return (sorted, total, weeklyRaw, income, prevTotal, weeklyAvg)
         }.value
 
         guard !Task.isCancelled else { return }
@@ -147,9 +196,14 @@ final class StatsViewModel {
             return CategorySpendData(
                 id: catID.uuidString,
                 name: meta.name,
+                emoji: meta.emoji,
                 color: Color(hex: meta.colorHex),
                 amount: amount
             )
+        }
+
+        let newWeekly: [WeeklySpendData] = result.2.map {
+            WeeklySpendData(weekStart: $0.weekStart, weekEnd: $0.weekEnd, total: $0.total, weekNumber: $0.weekNumber)
         }
 
         // Animate the donut crossfade + top-categories list to the new month's
@@ -157,7 +211,10 @@ final class StatsViewModel {
         withAnimation(.dsSnappy) {
             monthTotal = result.1
             categorySpend = newSpend
-            weeklySpend = result.2
+            weeklySpend = newWeekly
+            incomeTotal = result.3
+            previousMonthExpenseTotal = result.4
+            weeklyAverage = result.5
         }
     }
 }

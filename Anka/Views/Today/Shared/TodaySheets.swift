@@ -15,8 +15,15 @@ struct TodaySheetsModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .sheet(isPresented: $vm.showStats) {
-                StatsView(transactions: allTransactions, categories: allCategories)
-                    .presentationDragIndicator(.visible)
+                // Stats inherits Today's month one-way: the selected month when
+                // Today is in single-month mode, else the real current month.
+                StatsView(
+                    transactions: allTransactions,
+                    categories: allCategories,
+                    initialMonth: vm.selectedPeriod == .month ? vm.selectedMonth : Date().startOfMonth
+                )
+                .presentationDragIndicator(.visible)
+                .navigationTransition(.zoom(sourceID: "stats", in: namespace))
             }
             .sheet(isPresented: $vm.showSettings) {
                 SettingsView()

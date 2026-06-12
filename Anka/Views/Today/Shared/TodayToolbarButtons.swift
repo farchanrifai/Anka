@@ -55,16 +55,19 @@ struct AddToolbarButton: View {
             vm.showAddTransaction = true
         } label: {
             Image(systemName: "plus")
+                .foregroundStyle(DSColor.textOnAccent)
         }
-        .tint(.primary)
+        .buttonStyle(.borderedProminent)
+        .tint(DSColor.accent)
         .accessibilityLabel("Add transaction")
         .matchedTransitionSource(id: "addTransaction", in: namespace)
     }
 }
 
-/// Top-bar Stats control.
+/// Top-bar Stats control. Sources the Stats sheet's zoom transition.
 struct StatsToolbarButton: View {
     let vm: TodayViewModel
+    let namespace: Namespace.ID
 
     var body: some View {
         Button { vm.showStats = true } label: {
@@ -72,6 +75,7 @@ struct StatsToolbarButton: View {
         }
         .tint(.primary)
         .accessibilityLabel("Stats")
+        .matchedTransitionSource(id: "stats", in: namespace)
     }
 }
 

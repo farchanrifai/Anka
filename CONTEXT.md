@@ -10,7 +10,7 @@
 - **Name:** Anka
 - **Platform:** iOS only (no macOS, no Android)
 - **Minimum iOS:** 26.0 (uses Liquid Glass tab bar APIs: `role: .search` detached Add button, `.tabBarMinimizeBehavior`)
-- **Bundle ID:** com.nc.anka
+- **Bundle ID:** nc.Anka (widget extension: nc.Anka.AnkaWidgets)
 - **App Group:** group.com.nc.Anka
 - **Purpose:** Personal expense tracker — manual-entry first, fast logging, beautiful design
 - **Target user:** Global audience, single user, no collaboration
@@ -114,7 +114,7 @@ transactions: [Transaction] // @Relationship(deleteRule: .cascade, inverse: \Tra
 ## App Navigation
 
 **Liquid Glass tab bar (iOS 26):**
-- Left pill/island: **Today** only — the Reports tab was removed; **Stats** is reached via the "Stats →" button in the Today hero, pushed onto Today's `NavigationStack`
+- Left pill/island: **Today** only — the Reports tab was removed; **Stats** is reached via the `chart.pie` button in Today's top-bar trailing toolbar group (`StatsToolbarButton`), presented as a **sheet** that zooms out of the icon (`matchedTransitionSource(id: "stats")` + `.navigationTransition(.zoom)`). It inherits Today's selected month one-way (`initialMonth`).
 - Right detached button: **Add** — `role: .search` detaches it from the pill; intercepted via `onChange` (opens sheet, restores previous tab, does NOT navigate)
 - `.tabBarMinimizeBehavior(.onScrollDown)` — bar minimizes as content scrolls down
 
@@ -215,7 +215,7 @@ Cosmetic UIKit warnings persist (`SearchBarHidesWhenScrolling-default` vs `-expl
 - **Period filter** — pills in the filter sheet: This Month / Last Month / Last 3 Months / This Year / **Custom**. Custom pushes `DateRangePicker` and drives `customStartDate`/`customEndDate`. `PeriodFilter.dateInterval` resolves the range (⚠️ force-unwraps Calendar math — safe in practice).
 - **Balance mode** — Expense / Income / Total pill switcher in the hero (also swipeable). Drives which transactions + totals are shown.
 
-**Remaining gaps:** Stats has **no** category filter, no month comparison, and is expense-only. Extending Today search to tags/paymentMethod is also pending. See `Anka_Code_Audit.md` §2.
+**Remaining gaps:** Stats has **no** category filter (month-over-month comparison + an income/net summary line were added in the Stats redesign; the donut + breakdown are still expense-focused by design). Extending Today search to tags/paymentMethod is also pending. See `Anka_Code_Audit.md` §2.
 
 **Row delete (fixed):** rows render in a `ScrollView { LazyVStack }` (not a `List`), where `.swipeActions` is a no-op. Delete + Edit now live in a **long-press `.contextMenu`** on `TransactionRow` (Edit → `onEdit`, Delete → `onDelete`); the tap-to-edit action is unchanged. A failed delete surfaces a **"Delete Failed"** alert (`TodayViewModel.deleteErrorMessage`, set from `confirmDelete`'s `do/catch`) instead of failing silently.
 
@@ -436,8 +436,13 @@ Anka/
 │   │       // NOTE: NumpadView.swift from the original spec does not exist — the
 │   │       //       numpad concept was replaced by the system keyboard + category pills.
 │   ├── Stats/
-│   │   ├── StatsView.swift                 // donut chart + top categories per month
-│   │   └── StatsViewModel.swift            // @MainActor; monthly aggregation, swipe-driven month nav
+│   │   ├── StatsView.swift                 // month stepper + summary hero (delta pill, daily avg,
+│   │   │                                   //   income/net) + donut + category breakdown + weekly trend;
+│   │   │                                   //   inherits Today's month one-way via `initialMonth`
+│   │   ├── StatsViewModel.swift            // @MainActor; monthly aggregation off-main, month nav,
+│   │   │                                   //   income/prev-month delta/daily avg/weekly avg
+│   │   ├── CategoryBreakdownRow.swift      // ranked row: emoji + name + proportion bar + amount + %
+│   │   └── WeeklyTrendChartView.swift      // horizontal bar chart + avg RuleMark + tap-to-select week
 │   ├── Settings/
 │   │   ├── SettingsView.swift              // native List, sectioned
 │   │   ├── SettingsViewModel.swift         // @Observable @MainActor
@@ -453,7 +458,9 @@ Anka/
 │       ├── AppLockView.swift               // biometric primary, PIN fallback
 │       └── PINSetupSheet.swift             // two-step PIN enrollment
 ├── Components/               // reusable UI, no business logic
-│   ├── DonutChartView.swift            // ported verbatim from Spendy — pixel-perfect
+│   ├── DonutChartView.swift            // ported from Spendy; selection lifted to a `selectedID`
+│   │                                   //   binding (syncs with Stats breakdown rows) + emoji on
+│   │                                   //   CategorySpendData. Gestures/ratios/haptics still verbatim.
 │   ├── TransactionRow.swift            // extracted row: emoji + name/desc + AmountLabel;
 │   │                                   //   onEdit/onDelete callbacks + matchedTransitionSource + contextMenu
 │   ├── AmountLabel.swift               // signed "Rp …" capsule; (amount: Double, type: TransactionType)
@@ -497,7 +504,7 @@ Copy these verbatim from the Spendy project — do not rewrite:
 - `AppLockManager.swift` → update Keychain key to `"ankaPINCode"`
 - `DSFont.swift` → clean up tokens to 8–10 only
 - `StarterCategoryClassifier.mlmodelc` → drag into Resources/
-- `DonutChartView.swift` (Spendy `Views/Charts/`) → only swap `Color.spendyCoral` → `DSColor.accent`; preserve `innerRatio: 0.78`, drag-vs-swipe deadzone (12pt), spring/easeInOut timings, haptic, raw font sizes (13/23/12) — these define the chart's feel
+- `DonutChartView.swift` (Spendy `Views/Charts/`) → swap `Color.spendyCoral` → `DSColor.accent`; preserve `innerRatio: 0.78`, drag-vs-swipe deadzone (12pt), spring/easeInOut timings, haptic, raw font sizes (13/23/12) — these define the chart's feel. **Stats-redesign deviation (approved):** selection state is no longer internal `@State` — it's a `@Binding var selectedID: String?` so the donut + Stats category list stay in sync, and `CategorySpendData` gained an `emoji` field. Gesture math / ratios / haptics / timings are untouched.
 
 Do NOT port: any View files, FirestoreSyncService, ProfileManager, InsightEngine, RecurringDetector, BackupService, CSVService, DashboardV2/V3.
 
@@ -511,7 +518,7 @@ Do NOT port: any View files, FirestoreSyncService, ProfileManager, InsightEngine
 | 1 | Data Models | ✅ Done |
 | 2 | Add Transaction | ✅ Done (Spendy V2-adapted layout, SwiftData persistence wired; tags + ML + edit/delete added) |
 | 3 | Today View | ✅ Done (Expense/Income/Total switcher, pinned hero, Stats button) |
-| 4 | Stats View | ✅ Done (Spendy donut chart ported pixel-perfect; replaces old Reports) |
+| 4 | Stats View | ✅ Done · **Redesigned** (month stepper, summary hero w/ MoM delta + daily avg + income/net, donut with row↔slice sync, category breakdown list, weekly trend w/ avg line; inherits Today's month one-way, zooms from the pie toolbar icon) |
 | 5 | Settings + Categories | ✅ Done |
 | 6 | ML Auto-Categorization | ✅ Done |
 | 7 | Widgets | ✅ Done |
@@ -547,7 +554,7 @@ Update status to: ⬜ Not started / 🔄 In progress / ✅ Done / ❌ Issue
 > - Extracted reusable `TransactionRow` + `AmountLabel` components; deleted `ComponentsPlaceholder.swift`.
 > - `TodayViewModel.confirmDelete` silent `try?` → `do/catch` + "Delete Failed" alert.
 >
-> **Still open:** AutoBackup auto-triggers not wired; Stats has no category filter / month comparison; Today search doesn't cover tags/paymentMethod; broader design-token adoption (remaining hardcoded font sizes outside DonutChart); `SectionHeader` component never built.
+> **Still open:** AutoBackup auto-triggers not wired; Stats has no category filter (month comparison + income/net summary now shipped in the Stats redesign); Today search doesn't cover tags/paymentMethod; broader design-token adoption (remaining hardcoded font sizes outside DonutChart); `SectionHeader` component never built.
 
 ---
 
