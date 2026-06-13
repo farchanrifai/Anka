@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 import UIKit
+import Combine
 
 /// Experimental Messages-style inline composer (Phase 8.5 / V3), rendered in
 /// **Liquid Glass** (iOS 26 `glassEffect`). A capsule field + leading category
@@ -14,9 +15,14 @@ struct InlineTransactionEntryView: View {
 
     @State private var vm = InlineTransactionEntryViewModel()
     @State private var sendCount = 0
+    @State private var keyboardUp = false
     @FocusState private var focused: Bool
     @Namespace private var glassNS
 
+    /// Bumped by the host on every open. Drives `.task(id:)` so focus is
+    /// re-asserted even when a rapid close→reopen *reuses* this view instance
+    /// (the bar shows but the keyboard request would otherwise be skipped).
+    var openID: Int = 0
     /// Called after each successful save with the created transaction.
     var onTransactionCreated: (Transaction) -> Void = { _ in }
     /// Closes the composer (also called on save).
@@ -52,11 +58,23 @@ struct InlineTransactionEntryView: View {
         .padding(.vertical, DSSpacing.sm)
         .animation(.dsSnappy, value: vm.parseResult)
         .sensoryFeedback(.success, trigger: sendCount)
-        .task {
-            // Focus immediately so the keyboard starts rising in the same beat as
-            // the composer appears — the composer then rides up *with* the
-            // keyboard (one motion) rather than sliding up first and being pushed
-            // again 250ms later.
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardDidShowNotification)) { _ in
+            keyboardUp = true
+        }
+        // `id: openID` so this re-runs on every open, even a reused instance.
+        .task(id: openID) {
+            // Focus immediately so the keyboard rises in the same beat as the bar
+            // (one motion, no stagger).
+            keyboardUp = false
+            focused = true
+            // Rapid close→reopen can swallow that focus while the previous
+            // keyboard is still dismissing — the bar shows but no keyboard comes
+            // up. If it hasn't appeared shortly after, re-assert it.
+            try? await Task.sleep(for: .milliseconds(250))
+            guard !Task.isCancelled, !keyboardUp else { return }
+            focused = false
+            try? await Task.sleep(for: .milliseconds(50))
+            guard !Task.isCancelled else { return }
             focused = true
         }
     }
@@ -201,9 +219,15 @@ struct InlineTransactionEntryView: View {
 /// dismisses it (there's no grabber); saving also dismisses it.
 struct InlineComposerModifier: ViewModifier {
     @Bindable var vm: TodayViewModel
+    /// Incremented on every open so the composer re-asserts keyboard focus even
+    /// if a rapid close→reopen reuses the same view instance.
+    @State private var openID = 0
 
     func body(content: Content) -> some View {
         content
+            .onChange(of: vm.showInlineComposer) { _, isOpen in
+                if isOpen { openID += 1 }
+            }
             // Tap-catcher over the content above the composer — tap to dismiss.
             // Applied before the inset so it only covers the list, not the bar.
             .overlay {
@@ -220,7 +244,7 @@ struct InlineComposerModifier: ViewModifier {
                     // the keyboard lifts the safe-area inset.
                     // Close: shrink back into the bottom-trailing corner (where
                     // the `+` sits). Asymmetric so only the close zooms.
-                    InlineTransactionEntryView(onDismiss: dismiss)
+                    InlineTransactionEntryView(openID: openID, onDismiss: dismiss)
                         .transition(.asymmetric(
                             insertion: .opacity,
                             removal: .scale(scale: 0.2, anchor: .bottomTrailing)
