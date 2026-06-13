@@ -32,11 +32,13 @@ struct InlineTransactionEntryView: View {
     }
 
     var body: some View {
-        VStack(spacing: DSSpacing.sm) {
-            // Own container: appearing/disappearing here must not force the
-            // composer row's container (below) to recompute its merged glass
-            // shape, which was causing the category/field/send bubbles to
-            // visibly reset whenever a parse result appeared.
+        // `.bottom`-aligned ZStack rather than a VStack: the summary bubble
+        // is overlaid *above* the composer row via bottom padding, instead
+        // of being laid out as a sibling that grows the stack's height. A
+        // VStack sibling would shift/resize the row's own container on
+        // every appearance, which was causing the category/field/send
+        // bubbles to visibly reset whenever a parse result appeared.
+        ZStack(alignment: .bottom) {
             if let result = vm.parseResult {
                 GlassEffectContainer(spacing: DSSpacing.sm) {
                     summaryBubble(result)
@@ -49,6 +51,9 @@ struct InlineTransactionEntryView: View {
                                 .combined(with: .opacity)
                         ))
                 }
+                // Lift above the composer row (its height + the stack's
+                // own inter-row spacing).
+                .padding(.bottom, 44 + DSSpacing.sm)
             }
 
             GlassEffectContainer(spacing: DSSpacing.sm) {
