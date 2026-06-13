@@ -39,13 +39,22 @@ struct InlineTransactionEntryView: View {
         allCategories.filter { $0.type == .expense }
     }
 
+    /// Height reserved for the summary bubble's row (its own height + the
+    /// gap above the composer row), used to give the `ZStack` below a
+    /// CONSTANT total height whether or not the summary bubble is showing.
+    /// Without this, the `ZStack`'s natural height changes from 44pt to
+    /// ~88pt when the bubble appears, which resizes the `safeAreaInset` that
+    /// hosts this view — THAT resize, not glass-effect recomputation, is what
+    /// was shifting the composer row each time the bubble appeared.
+    private static let summaryRowHeight: CGFloat = 44
+
     var body: some View {
-        // `.bottom`-aligned ZStack rather than a VStack: the summary bubble
-        // is overlaid *above* the composer row via bottom padding, instead
-        // of being laid out as a sibling that grows the stack's height. A
-        // VStack sibling would shift/resize the row's own container on
-        // every appearance, which was causing the category/field/send
-        // bubbles to visibly reset whenever a parse result appeared.
+        // `.bottom`-aligned ZStack so the summary bubble overlays *above* the
+        // composer row via bottom padding, instead of being a sibling that
+        // changes the stack's height. The whole stack is then pinned to a
+        // fixed height (see `summaryRowHeight`) so its size — and therefore
+        // the `safeAreaInset` that hosts it — never changes, regardless of
+        // whether the summary bubble is present.
         ZStack(alignment: .bottom) {
             if let result = vm.parseResult {
                 GlassEffectContainer(spacing: DSSpacing.sm) {
@@ -72,6 +81,7 @@ struct InlineTransactionEntryView: View {
                 }
             }
         }
+        .frame(height: 44 + DSSpacing.sm + Self.summaryRowHeight, alignment: .bottom)
         .padding(.horizontal, DSSpacing.screenEdge)
         .padding(.vertical, DSSpacing.sm)
         .animation(.dsSnappy, value: vm.parseResult)
