@@ -211,7 +211,16 @@ struct InlineTransactionEntryView: View {
         guard let tx = vm.save(context: modelContext) else { return }  // resets → bubble flies up
         sendCount += 1
         onTransactionCreated(tx)
-        guard saveClosesComposer else { return }  // keep open for the next entry
+        guard saveClosesComposer else {
+            // Keep the composer open for the next entry. Sending via the
+            // keyboard's return/send key can resign the field's focus as
+            // part of the submit (unlike tapping the in-composer send
+            // button), which would leave the bar open but the keyboard
+            // closed. Re-assert focus so the keyboard always stays up while
+            // the composer is visible, regardless of how send was triggered.
+            focus.wrappedValue = true
+            return
+        }
         // Let the bubble shrink-and-fly-up play, then close. `onDismiss` removes
         // the composer, which dismisses the keyboard — so the bar and keyboard
         // slide down together (no separate `focused = false` beat).
