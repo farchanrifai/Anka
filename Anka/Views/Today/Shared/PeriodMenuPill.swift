@@ -77,7 +77,7 @@ struct BackToCurrentMonthChip: View {
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
-            .foregroundStyle(DSColor.accent)
+            .foregroundStyle(DSColor.accentText)
             .background(DSColor.accent.opacity(DSOpacity.subtle), in: Capsule())
         }
         .buttonStyle(.pressable)

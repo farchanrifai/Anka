@@ -98,7 +98,7 @@ struct StatsView: View {
                         .contentTransition(.numericText())
                     Text(vm.isOnCurrentMonth ? vm.periodType : "Tap to return to this month")
                         .font(.dsCaption2)
-                        .foregroundStyle(vm.isOnCurrentMonth ? DSColor.textSecondary : DSColor.accent)
+                        .foregroundStyle(vm.isOnCurrentMonth ? DSColor.textSecondary : DSColor.accentText)
                 }
                 .frame(minWidth: 150)
                 .contentShape(Rectangle())

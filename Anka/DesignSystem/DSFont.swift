@@ -7,10 +7,12 @@ import UIKit
 // with the user's accessibility text-size setting (Settings → Accessibility
 // → Display & Text Size → Larger Text).
 //
-// Each token is anchored to the closest semantic iOS text style via a
-// UIFontMetrics-based helper. At the default text size the values are
-// identical to the raw sizes they replace; they only differ when the
-// user has changed their preferred content size category.
+// Every token is anchored to the closest semantic iOS text style via a
+// UIFontMetrics-based helper (`relativeTo:`). At the default text size the
+// values are identical to the raw sizes they replace; they only differ when
+// the user has changed their preferred content size category. (Earlier some
+// tokens were declared without `relativeTo:` and so were fixed-size — AC1 in
+// the audit; they are all scaled now.)
 //
 // Usage:
 //   Text("Hello").font(.dsBody)         // replaces .system(size: 14)
@@ -29,22 +31,22 @@ extension Font {
     // MARK: Display / Hero (amounts, large numbers)
 
     /// 57 pt — hero amount on dashboard.
-    static let dsHero         = Font.system(size: 57)
+    static let dsHero         = Font.system(size: 57, relativeTo: .largeTitle)
     /// 52 pt — Today dashboard hero balance amount. Dynamic-Type-aware
     /// (UIFontMetrics-scaled relative to .largeTitle), unlike the fixed-size `dsHero`.
     static let dsHeroAmount   = Font.system(size: 52, weight: .black, relativeTo: .largeTitle)
     /// 53 pt — large emoji/icon display.
-    static let dsDisplay      = Font.system(size: 53)
+    static let dsDisplay      = Font.system(size: 53, relativeTo: .largeTitle)
     /// 37 pt — large text field inputs (description, amount).
-    static let dsLargeTitle   = Font.system(size: 37)
-    static let dsLargeTitleBold = Font.system(size: 37, weight: .bold)
+    static let dsLargeTitle   = Font.system(size: 37, relativeTo: .largeTitle)
+    static let dsLargeTitleBold = Font.system(size: 37, weight: .bold, relativeTo: .largeTitle)
     /// 34 pt — section hero numbers.
-    static let dsTitle        = Font.system(size: 34, weight: .bold, design: .default)
+    static let dsTitle        = Font.system(size: 34, weight: .bold, relativeTo: .title)
     /// 26 pt
-    static let dsTitle2       = Font.system(size: 26)
-    static let dsTitle2Bold   = Font.system(size: 26, weight: .bold)
+    static let dsTitle2       = Font.system(size: 26, relativeTo: .title)
+    static let dsTitle2Bold   = Font.system(size: 26, weight: .bold, relativeTo: .title)
     /// 24 pt
-    static let dsTitle3       = Font.system(size: 24)
+    static let dsTitle3       = Font.system(size: 24, relativeTo: .title2)
     /// 24 pt — category emoji in transaction rows. Dynamic-Type-aware
     /// (UIFontMetrics-scaled relative to .title2), unlike the fixed-size `dsTitle3`.
     static let dsEmoji        = Font.system(size: 24, weight: .regular, relativeTo: .title2)
@@ -70,18 +72,18 @@ extension Font {
     // MARK: Body
 
     /// 20 pt — primary headings
-    static let dsHeadline     = Font.system(size: 20, weight: .semibold, design: .default)
+    static let dsHeadline     = Font.system(size: 20, weight: .semibold, relativeTo: .title3)
     static let dsHeadlineSemi = Font.system(size: 17, weight: .semibold, relativeTo: .headline)
     static let dsHeadlineBold = Font.system(size: 17, weight: .bold, relativeTo: .headline)
 
     /// 17 pt — subheadline
-    static let dsSubhead      = Font.system(size: 17, weight: .semibold, design: .default)
+    static let dsSubhead      = Font.system(size: 17, weight: .semibold, relativeTo: .headline)
     static let dsSubheadSemi  = Font.system(size: 15, weight: .semibold, relativeTo: .body)
     static let dsSubheadBold  = Font.system(size: 15, weight: .bold, relativeTo: .body)
 
     /// 16 pt — body text
-    static let dsBody         = Font.system(size: 16, weight: .regular, design: .default)
-    static let dsBodyMedium   = Font.system(size: 16, weight: .medium, design: .default)
+    static let dsBody         = Font.system(size: 16, weight: .regular, relativeTo: .body)
+    static let dsBodyMedium   = Font.system(size: 16, weight: .medium, relativeTo: .body)
     static let dsBodySemi     = Font.system(size: 14, weight: .semibold, relativeTo: .body)
     static let dsBodyBold     = Font.system(size: 14, weight: .bold, relativeTo: .body)
 
@@ -94,7 +96,7 @@ extension Font {
     static let dsFootnoteBold   = Font.system(size: 13, weight: .bold, relativeTo: .callout)
 
     /// 13 pt — captions (legacy alias)
-    static let dsCaption        = Font.system(size: 13, weight: .regular, design: .default)
+    static let dsCaption        = Font.system(size: 13, weight: .regular, relativeTo: .footnote)
     static let dsCaptionMedium  = Font.system(size: 12, weight: .medium, relativeTo: .callout)
     static let dsCaptionSemi    = Font.system(size: 12, weight: .semibold, relativeTo: .callout)
 
@@ -104,7 +106,7 @@ extension Font {
     static let dsCaption2Bold   = Font.system(size: 11, weight: .bold, relativeTo: .caption)
 
     /// 11 pt — badge text
-    static let dsBadge          = Font.system(size: 11, weight: .medium, design: .default)
+    static let dsBadge          = Font.system(size: 11, weight: .medium, relativeTo: .caption)
     /// 10 pt — badge text (small)
     static let dsBadgeSemi      = Font.system(size: 10, weight: .semibold, relativeTo: .caption)
     static let dsBadgeBold      = Font.system(size: 10, weight: .bold, relativeTo: .caption)

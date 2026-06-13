@@ -87,6 +87,14 @@ struct CategoryManagementView: View {
         } message: {
             Text(deleteDialogMessage)
         }
+        .alert("Something Went Wrong", isPresented: Binding(
+            get: { viewModel.categoryErrorMessage != nil },
+            set: { if !$0 { viewModel.categoryErrorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) { viewModel.categoryErrorMessage = nil }
+        } message: {
+            Text(viewModel.categoryErrorMessage ?? "An unknown error occurred. Please try again.")
+        }
     }
 
     // MARK: - Delete confirmation copy
@@ -143,7 +151,11 @@ struct CategoryManagementView: View {
 
     private func delete(_ category: Category) {
         modelContext.delete(category)
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            viewModel.categoryErrorMessage = "Couldn't delete the category. Please try again."
+        }
     }
 
     private func move(in list: [Category], from source: IndexSet, to destination: Int) {
@@ -152,7 +164,11 @@ struct CategoryManagementView: View {
         for (index, category) in ordered.enumerated() {
             category.sortOrder = index
         }
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            viewModel.categoryErrorMessage = "Couldn't reorder categories. Please try again."
+        }
     }
 }
 

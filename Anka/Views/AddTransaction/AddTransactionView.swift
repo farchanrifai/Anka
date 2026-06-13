@@ -94,6 +94,7 @@ struct AddTransactionView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(CategoryPredictor.self) private var predictor
     @Environment(AppearanceManager.self) private var appearance
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     @Query(sort: \Category.sortOrder) private var categories: [Category]
     @Query(sort: \Transaction.date, order: .reverse) private var allTransactions: [Transaction]
@@ -485,7 +486,8 @@ struct AddTransactionView: View {
                         .symbolEffect(
                             .variableColor.iterative.reversing,
                             options: .repeating.speed(0.4),
-                            isActive: vm.sparkleActive && vm.selectedCategory == nil
+                            // Suppress the continuous pulse under Reduce Motion (AC5).
+                            isActive: !reduceMotion && vm.sparkleActive && vm.selectedCategory == nil
                         )
                         .foregroundStyle(
                             vm.selectedCategory != nil ? .white :
@@ -737,6 +739,9 @@ struct AddTransactionView: View {
 
     private func triggerShake() {
         validationErrorCount += 1
+        // Reduce Motion users still get the error haptic (validationErrorCount),
+        // but skip the horizontal shake animation (AC5).
+        guard !reduceMotion else { return }
         withAnimation(.linear(duration: 0.4)) { shakeTrigger += 1 }
     }
 }

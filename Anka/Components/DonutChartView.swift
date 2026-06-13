@@ -114,7 +114,7 @@ struct DonutChartView: View {
                     Button(action: onSetBudget) {
                         Text(budget > 0 ? "Budget: \(budget.idrFormatted)" : "Set Budget >")
                             .font(.system(size: 12, weight: .regular, relativeTo: .caption))
-                            .foregroundStyle(budget > 0 ? Color.secondary : DSColor.accent)
+                            .foregroundStyle(budget > 0 ? Color.secondary : DSColor.accentText)
                     }
                 }
             }
@@ -123,6 +123,19 @@ struct DonutChartView: View {
         .animation(.dsEaseSlow, value: dataSignature)
         .onChange(of: totalSpent) { _, _ in
             selectedID = nil
+        }
+        // The donut is a custom gesture-driven view, so its slices are invisible
+        // to VoiceOver. Replace its accessibility tree with one element per
+        // category (label + amount + percent) so the chart is navigable (AC2).
+        .accessibilityRepresentation {
+            VStack {
+                ForEach(categoryData) { cat in
+                    let pct = totalSpent > 0 ? cat.amount / totalSpent * 100 : 0
+                    Text(cat.name)
+                        .accessibilityValue("\(cat.amount.rupiah), \(Int(pct.rounded())) percent")
+                }
+            }
+            .accessibilityLabel("Spending by category for \(monthName). Total \(totalSpent.rupiah).")
         }
     }
 

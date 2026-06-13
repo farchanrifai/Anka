@@ -59,6 +59,11 @@ struct CategoryBreakdownRow: View {
         }
         .opacity(isDimmed ? DSOpacity.muted : 1)
         .contentShape(Rectangle())
+        // Collapse the row's sub-elements into one VoiceOver element that reads
+        // "Groceries, Rp 1,840,000, 38 percent" (AUDIT.md AC2).
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(data.name)
+        .accessibilityValue("\(data.amount.rupiah), \(Int((fraction * 100).rounded())) percent")
     }
 }
 

@@ -8,6 +8,7 @@ struct AddEditCategorySheet: View {
     @Bindable var viewModel: SettingsViewModel
 
     @State private var showDeleteConfirm = false
+    @State private var saveErrorMessage: String?
 
     private var isEditing: Bool { viewModel.editingCategory != nil }
     private var title: String { isEditing ? "Edit Category" : "Add Category" }
@@ -20,6 +21,7 @@ struct AddEditCategorySheet: View {
                 VStack(spacing: DSSpacing.lg) {
                     emojiField
                     nameField
+                    colorField
                     typePicker
                     Spacer()
                     actionButtons
@@ -46,6 +48,14 @@ struct AddEditCategorySheet: View {
                 Button("Cancel", role: .cancel) {}
             } message: {
                 Text(deleteDialogMessage)
+            }
+            .alert("Save Failed", isPresented: Binding(
+                get: { saveErrorMessage != nil },
+                set: { if !$0 { saveErrorMessage = nil } }
+            )) {
+                Button("OK", role: .cancel) { saveErrorMessage = nil }
+            } message: {
+                Text(saveErrorMessage ?? "An unknown error occurred. Please try again.")
             }
         }
     }
@@ -81,6 +91,18 @@ struct AddEditCategorySheet: View {
                 .padding(DSSpacing.md)
                 .background(DSColor.bgCard)
                 .cornerRadius(DSRadius.medium)
+                // Keep only the last entered grapheme so the field holds a
+                // single emoji (U11). Validity (emoji vs. letter/digit) is
+                // enforced by `viewModel.isEmojiValid` gating Save.
+                .onChange(of: viewModel.newCategoryEmoji) { _, new in
+                    if new.count > 1 {
+                        viewModel.newCategoryEmoji = String(new.suffix(1))
+                    }
+                }
+
+            if !viewModel.newCategoryEmoji.isEmpty, !viewModel.isEmojiValid {
+                fieldNote("Pick a single emoji.", color: DSColor.negative)
+            }
         }
     }
 
@@ -96,7 +118,49 @@ struct AddEditCategorySheet: View {
                 .padding(DSSpacing.md)
                 .background(DSColor.bgCard)
                 .cornerRadius(DSRadius.medium)
+
+            if viewModel.isDuplicateName {
+                fieldNote("A category named \"\(viewModel.trimmedName)\" already exists.", color: DSColor.negative)
+            } else if viewModel.willBreakMLMatching {
+                fieldNote("Renaming a default category turns off its smart auto-categorization.", color: DSColor.accentText)
+            }
         }
+    }
+
+    private var colorField: some View {
+        VStack(alignment: .leading, spacing: DSSpacing.sm) {
+            Text("Color")
+                .font(.dsCaption)
+                .foregroundStyle(DSColor.textMuted)
+
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: DSSpacing.md), count: 6),
+                      spacing: DSSpacing.md) {
+                ForEach(SettingsViewModel.categoryColorOptions, id: \.self) { hex in
+                    let isSelected = viewModel.newCategoryColor.caseInsensitiveCompare(hex) == .orderedSame
+                    Circle()
+                        .fill(Color(hex: hex))
+                        .frame(width: 32, height: 32)
+                        .overlay {
+                            Circle()
+                                .strokeBorder(DSColor.textPrimary, lineWidth: isSelected ? 2.5 : 0)
+                                .padding(-3)
+                        }
+                        .contentShape(Circle())
+                        .onTapGesture {
+                            withAnimation(.dsSnappy) { viewModel.newCategoryColor = hex }
+                        }
+                        .accessibilityLabel("Color option")
+                        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
+                }
+            }
+        }
+    }
+
+    private func fieldNote(_ text: String, color: Color) -> some View {
+        Text(text)
+            .font(.dsCaption2)
+            .foregroundStyle(color)
+            .fixedSize(horizontal: false, vertical: true)
     }
 
     private var typePicker: some View {
@@ -149,9 +213,9 @@ struct AddEditCategorySheet: View {
     // MARK: - Persistence
 
     private func save() {
-        let name = viewModel.newCategoryName.trimmingCharacters(in: .whitespaces)
-        let emoji = viewModel.newCategoryEmoji.trimmingCharacters(in: .whitespaces)
-        guard !name.isEmpty, !emoji.isEmpty else { return }
+        guard viewModel.isFormValid else { return }
+        let name = viewModel.trimmedName
+        let emoji = viewModel.newCategoryEmoji.trimmingCharacters(in: .whitespacesAndNewlines)
 
         if let existing = viewModel.editingCategory {
             existing.name = name
@@ -170,7 +234,14 @@ struct AddEditCategorySheet: View {
             modelContext.insert(newCategory)
         }
 
-        try? modelContext.save()
+        // Surface save failures instead of swallowing them (A5). Keep the sheet
+        // open so the user can retry rather than losing their edits silently.
+        do {
+            try modelContext.save()
+        } catch {
+            saveErrorMessage = "Couldn't save the category. Please try again."
+            return
+        }
         viewModel.cancelEdit()
         dismiss()
     }
@@ -178,7 +249,12 @@ struct AddEditCategorySheet: View {
     private func deleteEditing() {
         guard let category = viewModel.editingCategory else { return }
         modelContext.delete(category)
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            saveErrorMessage = "Couldn't delete the category. Please try again."
+            return
+        }
         viewModel.cancelEdit()
         dismiss()
     }

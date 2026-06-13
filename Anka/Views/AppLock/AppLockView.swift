@@ -157,7 +157,7 @@ struct AppLockView: View {
                 } label: {
                     Text(lock.canUseBiometrics ? "Use PIN instead" : "Enter PIN")
                         .font(.dsCaption)
-                        .foregroundStyle(DSColor.accent)
+                        .foregroundStyle(DSColor.accentText)
                 }
             }
         }
@@ -222,7 +222,7 @@ struct AppLockView: View {
                 } label: {
                     Text("Back to \(biometricLabel.replacingOccurrences(of: "Unlock with ", with: ""))")
                         .font(.dsCaption)
-                        .foregroundStyle(DSColor.accent)
+                        .foregroundStyle(DSColor.accentText)
                 }
             }
         }

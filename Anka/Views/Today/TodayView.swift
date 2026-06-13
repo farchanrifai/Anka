@@ -263,6 +263,18 @@ struct TodayView: View {
                     }
                 }
                 .allowsHitTesting(true)
+                // The blur only hides the amount visually — VoiceOver would
+                // still read it aloud. Mark it privacy-sensitive and swap in a
+                // "Balance hidden" label so the value isn't spoken when hidden,
+                // and expose the tap as an explicit a11y action (AC3).
+                .privacySensitive(isAmountHidden)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(isAmountHidden ? "Balance hidden" : "\(vm.balanceMode.title) balance")
+                .accessibilityValue(isAmountHidden ? "" : vm.heroAmount.rupiah)
+                .accessibilityHint(vm.selectedCategories.isEmpty
+                    ? (isAmountHidden ? "Double tap to show the balance." : "Double tap to hide the balance.")
+                    : "Double tap to clear the category filter.")
+                .accessibilityAddTraits(.isButton)
             }
         }
         .padding(.horizontal, DSSpacing.screenEdge)

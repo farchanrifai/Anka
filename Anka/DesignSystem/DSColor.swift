@@ -11,6 +11,18 @@ struct DSColor {
     static let accent        = Color(hex: "F26666")      // coral — primary brand
     static let accentSoft    = Color(hex: "F26666").opacity(DSOpacity.subtle)
 
+    /// Contrast-safe coral for **small text on light backgrounds**. The brand
+    /// coral (#F26666) on white is only ≈3.2:1 — below WCAG AA for body/caption
+    /// sizes (AUDIT.md AC6). This darkens to ≈4.8:1 in light mode while keeping
+    /// the brighter brand coral in dark mode (where #F26666 on near-black already
+    /// passes). Use for caption/footnote-sized coral labels; the filled coral
+    /// buttons (white text on coral) are unaffected and keep `accent`.
+    static let accentText = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0xF2/255, green: 0x66/255, blue: 0x66/255, alpha: 1)   // #F26666
+            : UIColor(red: 0xC4/255, green: 0x45/255, blue: 0x3B/255, alpha: 1)   // #C4453B
+    })
+
     // MARK: — Backgrounds (system defaults — variant override lives in AppearanceManager)
     static let bgPrimary     = Color(UIColor.systemBackground)
     static let bgSecondary   = Color(UIColor.secondarySystemBackground)

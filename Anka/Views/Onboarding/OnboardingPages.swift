@@ -45,6 +45,8 @@ struct OnboardingWelcomePage: View {
 struct AnkaSparkMark: View {
     var size: CGFloat = 120
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     @State private var bloomed = false
     @State private var spinning = false
 
@@ -65,11 +67,14 @@ struct AnkaSparkMark: View {
             }
         }
         .frame(width: size, height: size)
+        // The perpetual slow spin is decorative — skip it under Reduce Motion
+        // (AC5). The petals still settle into place (no rotation), they just
+        // don't bloom-scale or spin.
         .rotationEffect(.degrees(spinning ? 360 : 0))
-        .animation(.linear(duration: 90).repeatForever(autoreverses: false), value: spinning)
+        .animation(reduceMotion ? nil : .linear(duration: 90).repeatForever(autoreverses: false), value: spinning)
         .onAppear {
             bloomed = true
-            spinning = true
+            spinning = !reduceMotion
         }
     }
 }
