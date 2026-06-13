@@ -52,7 +52,10 @@ struct InlineTransactionEntryView: View {
         .animation(.dsSnappy, value: vm.parseResult)
         .sensoryFeedback(.success, trigger: sendCount)
         .task {
-            try? await Task.sleep(for: .milliseconds(250))
+            // Focus immediately so the keyboard starts rising in the same beat as
+            // the composer appears — the composer then rides up *with* the
+            // keyboard (one motion) rather than sliding up first and being pushed
+            // again 250ms later.
             focused = true
         }
     }
@@ -176,9 +179,9 @@ struct InlineTransactionEntryView: View {
         guard let tx = vm.save(context: modelContext) else { return }  // resets → bubble flies up
         sendCount += 1
         onTransactionCreated(tx)
-        focused = false
-        // Let the bubble shrink-and-fly-up play, then close the composer so we
-        // return to the default bottom bar.
+        // Let the bubble shrink-and-fly-up play, then close. `onDismiss` removes
+        // the composer, which dismisses the keyboard — so the bar and keyboard
+        // slide down together (no separate `focused = false` beat).
         Task {
             try? await Task.sleep(for: .milliseconds(240))
             onDismiss()
@@ -208,8 +211,11 @@ struct InlineComposerModifier: ViewModifier {
             }
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 if vm.showInlineComposer {
+                    // Opacity-only (no slide). The vertical motion comes entirely
+                    // from the keyboard lifting the safe-area inset, so the bar
+                    // and keyboard move as one instead of staggering.
                     InlineTransactionEntryView(onDismiss: { vm.showInlineComposer = false })
-                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                        .transition(.opacity)
                 }
             }
             .animation(.dsSnappy, value: vm.showInlineComposer)
