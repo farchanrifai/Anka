@@ -216,11 +216,16 @@ struct InlineComposerModifier: ViewModifier {
             }
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 if vm.showInlineComposer {
-                    // Opacity-only (no slide). The vertical motion comes entirely
-                    // from the keyboard lifting the safe-area inset, so the bar
-                    // and keyboard move as one instead of staggering.
+                    // Zoom out of / shrink back into the bottom-trailing corner —
+                    // where the `+` toolbar button sits — to echo V1's sheet
+                    // zoom from the add button. No vertical *move* (that comes
+                    // from the keyboard lifting the safe-area inset), so the bar
+                    // still rides up/down with the keyboard while it scales.
                     InlineTransactionEntryView(onDismiss: dismiss)
-                        .transition(.opacity)
+                        .transition(
+                            .scale(scale: 0.2, anchor: .bottomTrailing)
+                                .combined(with: .opacity)
+                        )
                 }
             }
             .animation(.dsSnappy, value: vm.showInlineComposer)
