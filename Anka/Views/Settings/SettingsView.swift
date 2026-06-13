@@ -23,6 +23,9 @@ struct SettingsView: View {
     /// Experimental Add-Transaction entry layout (Phase 8.5). Drives whether the
     /// `+` opens the classic sheet (V1/V2) or the inline composer (V3).
     @AppStorage(TransactionEntryLayout.storageKey) private var entryLayoutRaw = TransactionEntryLayout.v1.rawValue
+    /// V3 only: whether sending a transaction closes the inline composer or keeps
+    /// it open for the next quick entry.
+    @AppStorage(InlineComposerPrefs.saveClosesKey) private var saveClosesComposer = true
 
     var body: some View {
         @Bindable var vm = viewModel
@@ -199,10 +202,15 @@ struct SettingsView: View {
 
     @ViewBuilder
     private var inputMethodSection: some View {
+        let layout = TransactionEntryLayout.current(from: entryLayoutRaw)
+
         Section {
-            Picker(selection: $entryLayoutRaw) {
+            Picker(selection: Binding(
+                get: { layout },
+                set: { entryLayoutRaw = $0.rawValue }
+            )) {
                 ForEach(TransactionEntryLayout.allCases) { layout in
-                    Text(layout.displayName).tag(layout.rawValue)
+                    Text(layout.displayName).tag(layout)
                 }
             } label: {
                 Label {
@@ -214,11 +222,23 @@ struct SettingsView: View {
             }
             .pickerStyle(.menu)
             .tint(DSColor.textSecondary)
+
+            if layout == .v3 {
+                Toggle(isOn: $saveClosesComposer) {
+                    Label {
+                        Text("Close After Saving")
+                    } icon: {
+                        Image(systemName: "rectangle.bottomthird.inset.filled")
+                            .foregroundStyle(DSColor.accent)
+                    }
+                }
+                .tint(DSColor.accent)
+            }
         } header: {
             Text("Input Method")
         } footer: {
-            if entryLayoutRaw == TransactionEntryLayout.v3.rawValue {
-                Text("Fast natural-language entry. Type things like \"5k coffee\" or \"100k grabfood yesterday\" — the amount, category and date are detected for you.")
+            if layout == .v3 {
+                Text("Fast natural-language entry. Type things like \"5k coffee\" or \"100k grabfood yesterday\". When \"Close After Saving\" is off, the composer stays open for rapid multi-entry.")
             }
         }
     }

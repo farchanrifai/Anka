@@ -2,24 +2,37 @@ import Observation
 import SwiftData
 import SwiftUI
 
-/// Which Add-Transaction entry UI to use. `v1`/`v2` both present the classic
-/// numpad sheet (`AddTransactionView`); `v3` is the experimental inline
-/// natural-language composer (Phase 8.5). Persisted under `storageKey`.
+/// Which Add-Transaction entry UI to use. `v1` presents the classic numpad sheet
+/// (`AddTransactionView`); `v3` is the inline natural-language composer (Phase
+/// 8.5). Persisted under `storageKey`. (A redundant `v2` sheet variant existed
+/// briefly and was removed — `current(from:)` maps any stale `"v2"` to `v1`.)
 enum TransactionEntryLayout: String, CaseIterable, Identifiable {
-    case v1, v2, v3
+    case v1, v3
 
     var id: String { rawValue }
     static let storageKey = "transactionEntryLayout"
 
     var isInline: Bool { self == .v3 }
 
+    /// Resolve a persisted raw value, mapping the removed `"v2"` (or anything
+    /// unknown) to `v1` so the picker/branching never lands on a dead case.
+    static func current(from raw: String) -> TransactionEntryLayout {
+        TransactionEntryLayout(rawValue: raw) ?? .v1
+    }
+
     var displayName: String {
         switch self {
-        case .v1: return "V1 · Classic Sheet"
-        case .v2: return "V2 · Sheet"
-        case .v3: return "V3 · Inline (Experimental)"
+        case .v1: return "Classic Sheet"
+        case .v3: return "Inline (Experimental)"
         }
     }
+}
+
+/// `@AppStorage` keys for the V3 inline composer's preferences.
+enum InlineComposerPrefs {
+    /// Bool, default true: does sending a transaction close the composer (vs.
+    /// keep it open for the next quick entry)?
+    static let saveClosesKey = "anka.v3.saveClosesComposer"
 }
 
 /// Drives the experimental inline composer (Phase 8.5 / V3): holds the input

@@ -3,7 +3,7 @@ import Observation
 
 /// Routes `anka://` deep links from widgets into the app's navigation state.
 /// Injected via `.environment(deepLinkRouter)` at the `AnkaApp` level and read
-/// by `TodayView` / `TodayViewV2` to open the Add Transaction sheet.
+/// by `TodayView` to open the Add Transaction sheet.
 ///
 /// Supported URLs (see `AnkaDeepLink` in `WidgetSharedTypes`):
 ///   - `anka://open`  — just opens the app (default behavior).

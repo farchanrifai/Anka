@@ -9,8 +9,7 @@ import SwiftUI
 ///   • Transaction set changes (save / delete / import / restore re-fires the
 ///     `@Query`) → throttled snapshot.
 ///
-/// Applied to both `TodayView` and `TodayViewV2` so the behavior is identical
-/// regardless of the selected header variant.
+/// Applied to `TodayView` so the auto-backup behavior is centralized.
 struct AutoBackupModifier: ViewModifier {
     let transactions: [Transaction]
     let categories: [Category]

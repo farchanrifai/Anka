@@ -14,6 +14,8 @@ struct InlineTransactionEntryView: View {
     @State private var vm = InlineTransactionEntryViewModel()
     @State private var sendCount = 0
     @Namespace private var glassNS
+    /// User preference: close the composer after sending vs. keep it open.
+    @AppStorage(InlineComposerPrefs.saveClosesKey) private var saveClosesComposer = true
 
     /// Focus binding owned by the **host** (`InlineComposerModifier`) so the
     /// keyboard state survives this view being torn down / reused on a rapid
@@ -180,6 +182,7 @@ struct InlineTransactionEntryView: View {
         guard let tx = vm.save(context: modelContext) else { return }  // resets → bubble flies up
         sendCount += 1
         onTransactionCreated(tx)
+        guard saveClosesComposer else { return }  // keep open for the next entry
         // Let the bubble shrink-and-fly-up play, then close. `onDismiss` removes
         // the composer, which dismisses the keyboard — so the bar and keyboard
         // slide down together (no separate `focused = false` beat).

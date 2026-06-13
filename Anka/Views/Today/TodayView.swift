@@ -3,12 +3,11 @@ import SwiftData
 
 // MARK: - TodayView
 //
-// Custom sticky-header dashboard variant (period pill + balance-mode switcher
-// + hero balance). The Mail-style collapsing-large-title variant is
-// `TodayViewV2`; `AppRouter` switches between them via
-// `appearance.todayViewVersion`. The two share their list rows, empty/skeleton
-// states, day headers, toolbar buttons, and sheet stack via the components in
-// `Views/Today/Shared/`.
+// The Today dashboard: custom sticky header (period pill + balance-mode switcher
+// + hero balance) over the day-grouped transaction list. List rows,
+// empty/skeleton states, day headers, toolbar buttons, the sheet stack, and the
+// V3 inline composer live in `Views/Today/Shared/`. (An experimental Mail-style
+// `TodayViewV2` variant was removed — AUDIT.md A1.)
 
 struct TodayView: View {
     @Environment(\.modelContext) private var modelContext
