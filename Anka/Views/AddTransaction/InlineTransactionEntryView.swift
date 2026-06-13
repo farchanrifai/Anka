@@ -32,9 +32,13 @@ struct InlineTransactionEntryView: View {
     }
 
     var body: some View {
-        GlassEffectContainer(spacing: DSSpacing.sm) {
-            VStack(spacing: DSSpacing.sm) {
-                if let result = vm.parseResult {
+        VStack(spacing: DSSpacing.sm) {
+            // Own container: appearing/disappearing here must not force the
+            // composer row's container (below) to recompute its merged glass
+            // shape, which was causing the category/field/send bubbles to
+            // visibly reset whenever a parse result appeared.
+            if let result = vm.parseResult {
+                GlassEffectContainer(spacing: DSSpacing.sm) {
                     summaryBubble(result)
                         // Appears from below; on save it shrinks + flies up
                         // toward the transaction list ("expand to list").
@@ -45,7 +49,9 @@ struct InlineTransactionEntryView: View {
                                 .combined(with: .opacity)
                         ))
                 }
+            }
 
+            GlassEffectContainer(spacing: DSSpacing.sm) {
                 HStack(spacing: DSSpacing.sm) {
                     categoryBubble
                     textField

@@ -82,7 +82,11 @@ struct InlineTransactionParser {
     /// removed. Defaults to today (and the input unchanged) when nothing matches.
     func extractDate(from text: String) -> (date: Date, remainder: String) {
         let cal = Calendar.current
-        let today = cal.startOfDay(for: Date())
+        // Anchor on the current moment (not midnight) so an entry for "today"
+        // sorts above earlier same-day transactions in the reverse-chronological
+        // list, and an entry for "yesterday"/"tomorrow" lands at the same
+        // time-of-day on that date (still sorting to the top of its day group).
+        let now = Date()
 
         // "N days ago / from now / later"
         let range = NSRange(text.startIndex..., in: text)
@@ -94,17 +98,17 @@ struct InlineTransactionParser {
             let offset = text[dirRange].lowercased().hasPrefix("ago") ? -n : n
             var remainder = text
             remainder.removeSubrange(full)
-            return (cal.date(byAdding: .day, value: offset, to: today) ?? today, cleaned(remainder))
+            return (cal.date(byAdding: .day, value: offset, to: now) ?? now, cleaned(remainder))
         }
 
         // Keyword phrases.
         let lower = text.lowercased()
         for (phrase, offset) in Self.dateKeywords where lower.contains(phrase) {
             let remainder = text.replacingOccurrences(of: phrase, with: "", options: .caseInsensitive)
-            return (cal.date(byAdding: .day, value: offset, to: today) ?? today, cleaned(remainder))
+            return (cal.date(byAdding: .day, value: offset, to: now) ?? now, cleaned(remainder))
         }
 
-        return (today, text)
+        return (now, text)
     }
 
     private func cleaned(_ text: String) -> String {

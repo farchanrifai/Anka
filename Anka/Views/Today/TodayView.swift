@@ -135,7 +135,12 @@ struct TodayView: View {
                 // Hide the Filter/Search/Add bottom bar while the inline composer
                 // is up, so it's the only bottom element (Messages-style) — and
                 // the coral Add button doesn't bleed behind the glass composer.
-                .toolbarVisibility(vm.showInlineComposer ? .hidden : .automatic, for: .bottomBar)
+                // `.automatic` here would let the system's own search-driven
+                // bottom-bar visibility (from `.searchable` below) win, which
+                // could leave the bar hidden after the composer closes until
+                // some unrelated interaction forced a re-resolve. Force
+                // `.visible` explicitly whenever the composer isn't up.
+                .toolbarVisibility(vm.showInlineComposer ? .hidden : .visible, for: .bottomBar)
                 .searchable(text: $vm.searchQuery, prompt: "Search transactions")
                 .searchToolbarBehavior(.minimize)
                 // CRITICAL: iOS 26's default search-presentation behavior hides
