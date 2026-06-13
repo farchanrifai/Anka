@@ -68,9 +68,8 @@ struct AnkaApp: App {
     /// known-old defaults and re-seeds the ML-aligned set. Transactions are
     /// preserved (unlinked from their old category, shown as Uncategorized)
     /// — `.cascade` would otherwise delete them along with the category.
-    private static let categoryMigrationKey = "anka.categoryMigration.v2"
-    private static func seedOrMigrateCategories(in context: ModelContext) {
-        let defaults = UserDefaults.standard
+    static let categoryMigrationKey = "anka.categoryMigration.v2"
+    static func seedOrMigrateCategories(in context: ModelContext, defaults: UserDefaults = .standard) {
         let categoryFetch = FetchDescriptor<Category>()
         let existing = (try? context.fetch(categoryFetch)) ?? []
 

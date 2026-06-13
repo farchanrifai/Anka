@@ -39,6 +39,16 @@
                ReferencedContainer = "container:Anka.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "735BB8CA2FD45B84005D2346"
+               BuildableName = "AnkaUITests.xctest"
+               BlueprintName = "AnkaUITests"
+               ReferencedContainer = "container:Anka.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

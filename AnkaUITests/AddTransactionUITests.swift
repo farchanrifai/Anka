@@ -2,7 +2,10 @@
 //  AddTransactionUITests.swift
 //  AnkaUITests
 //
-//  Phase 2 (Spendy-adapted layout) verification.
+//  Verifies the current Add Transaction sheet (Phase 8 Mail-style layout):
+//  bottom-bar "+" → sheet with description/amount fields, a category chip
+//  rail, and a morphing Save button that's only enabled once both an amount
+//  and a category are set.
 //
 
 import XCTest
@@ -13,62 +16,62 @@ final class AddTransactionUITests: XCTestCase {
         continueAfterFailure = false
     }
 
+    private func launchApp() -> XCUIApplication {
+        let app = XCUIApplication()
+        // Skip onboarding so the dashboard is immediately visible.
+        app.launchArguments += ["-anka.hasCompletedOnboarding", "YES"]
+        // Force the classic sheet (v1) entry layout regardless of what a
+        // previous run left in this simulator's persisted UserDefaults.
+        app.launchArguments += ["-transactionEntryLayout", "v1"]
+        app.launch()
+        return app
+    }
+
     @MainActor
     func testAddTransactionLayout() throws {
-        let app = XCUIApplication()
-        app.launch()
+        let app = launchApp()
 
-        // Open the Add sheet (detached "Add" tab button).
-        let addButton = app.buttons["Add"]
-        XCTAssertTrue(addButton.waitForExistence(timeout: 5), "Add tab button should exist")
+        // Bottom-bar "+" opens the Add sheet.
+        let addButton = app.buttons["Add transaction"]
+        XCTAssertTrue(addButton.waitForExistence(timeout: 5), "Add transaction button should exist")
         addButton.tap()
 
-        // Top bar: Cancel capsule present.
-        XCTAssertTrue(app.buttons["Cancel"].waitForExistence(timeout: 5), "Cancel button should appear")
+        // Top bar: dismiss ("X") capsule present.
+        XCTAssertTrue(app.buttons["Dismiss"].waitForExistence(timeout: 5), "Dismiss button should appear")
 
-        // Currency prefix + zero amount by default.
-        XCTAssertTrue(app.staticTexts["IDR"].exists, "Currency prefix IDR should be visible")
-        XCTAssertTrue(app.staticTexts["0"].exists, "Amount should default to 0")
+        // Description field auto-focuses with its placeholder visible.
+        let descriptionField = app.textFields["Description"]
+        XCTAssertTrue(descriptionField.waitForExistence(timeout: 5), "Description field should exist")
 
-        // Note field placeholder.
-        XCTAssertTrue(app.textFields["Add note"].exists, "Note field with 'Add note' placeholder should exist")
+        // Amount placeholder shown when empty; Save disabled.
+        XCTAssertTrue(app.staticTexts["Amount"].exists, "Amount placeholder should be visible")
+        let saveButton = app.buttons["Save transaction"]
+        XCTAssertTrue(saveButton.exists, "Save button should exist")
+        XCTAssertFalse(saveButton.isEnabled, "Save should be disabled initially")
 
-        // Category slot shows placeholder; Save disabled.
-        XCTAssertTrue(app.buttons["Category"].exists, "Category slot should show 'Category' initially")
-        XCTAssertFalse(app.buttons["Save"].isEnabled, "Save should be disabled initially")
-
-        // Enter 12345 via numpad → thousands separator "12,345".
-        for digit in ["1", "2", "3", "4", "5"] {
-            app.buttons[digit].tap()
-        }
+        // Enter an amount.
+        descriptionField.tap()
+        let amountField = app.textFields.element(boundBy: 1)
+        amountField.tap()
+        amountField.typeText("12345")
         XCTAssertTrue(app.staticTexts["12,345"].waitForExistence(timeout: 2),
                       "Amount should format as 12,345")
-        XCTAssertFalse(app.buttons["Save"].isEnabled, "Save should stay disabled without a category")
+        XCTAssertFalse(saveButton.isEnabled, "Save should stay disabled without a category")
 
-        // Pick a category via the picker sheet (segmented Expenses/Income + list).
-        app.buttons["Category"].tap()
-        XCTAssertTrue(app.navigationBars["Category"].waitForExistence(timeout: 5),
-                      "Category picker sheet should open")
-        XCTAssertTrue(app.buttons["Expenses"].exists, "Picker should have an Expenses tab")
-        XCTAssertTrue(app.buttons["Income"].exists, "Picker should have an Income tab")
-
-        let foodRow = app.buttons.containing(
-            NSPredicate(format: "label CONTAINS[c] %@", "Food & Dining")
+        // Pick a category from the horizontal chip rail.
+        let groceriesChip = app.buttons.containing(
+            NSPredicate(format: "label CONTAINS[c] %@", "Groceries")
         ).firstMatch
-        XCTAssertTrue(foodRow.waitForExistence(timeout: 2), "Food & Dining row should exist")
+        XCTAssertTrue(groceriesChip.waitForExistence(timeout: 5), "Groceries chip should exist")
+        groceriesChip.tap()
 
-        // Capture the picker sheet (segmented tabs + list) for the record.
-        let pickerShot = XCTAttachment(screenshot: app.screenshot())
-        pickerShot.name = "CategoryPicker-Sheet"
-        pickerShot.lifetime = .keepAlways
-        add(pickerShot)
-
-        foodRow.tap()
-
-        // Selected category surfaces in the slot; Save now enabled.
-        XCTAssertTrue(app.staticTexts["Food & Dining"].waitForExistence(timeout: 5),
+        // Selected category surfaces in the sparkle pill (rendered as
+        // per-character labels by SparkleCategoryLabel, so check the first
+        // letter rather than the full word); Save now enabled.
+        XCTAssertTrue(app.staticTexts["G"].waitForExistence(timeout: 5),
                       "Selected category should show after picking")
-        XCTAssertTrue(app.buttons["Save"].isEnabled, "Save should be enabled once amount + category set")
+        XCTAssertTrue(saveButton.waitForExistence(timeout: 2))
+        XCTAssertTrue(saveButton.isEnabled, "Save should be enabled once amount + category are set")
 
         // Capture the filled state for the record.
         let shot = XCTAttachment(screenshot: app.screenshot())
@@ -76,9 +79,8 @@ final class AddTransactionUITests: XCTestCase {
         shot.lifetime = .keepAlways
         add(shot)
 
-        // Save closes the sheet.
-        app.buttons["Save"].tap()
-        XCTAssertTrue(app.staticTexts["Today"].waitForExistence(timeout: 5),
-                      "Should return to Today after Save")
+        // Save closes the sheet, returning to the dashboard.
+        saveButton.tap()
+        XCTAssertTrue(addButton.waitForExistence(timeout: 5), "Should return to the dashboard after Save")
     }
 }

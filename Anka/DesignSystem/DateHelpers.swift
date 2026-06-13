@@ -102,7 +102,7 @@ extension DateInterval {
     /// includes `end`), this counts a transaction at the exclusive upper bound
     /// as belonging to the *next* period — so period filters never double-count
     /// a boundary transaction (AUDIT.md D8).
-    func containsHalfOpen(_ date: Date) -> Bool {
+    nonisolated func containsHalfOpen(_ date: Date) -> Bool {
         date >= start && date < end
     }
 }
