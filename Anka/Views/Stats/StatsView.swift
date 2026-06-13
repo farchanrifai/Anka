@@ -85,16 +85,27 @@ struct StatsView: View {
         HStack(spacing: DSSpacing.lg) {
             stepperButton(systemName: "chevron.left", delta: -1, disabled: false)
 
-            VStack(spacing: 2) {
-                Text(vm.monthLabel)
-                    .font(.dsHeadlineSemi)
-                    .foregroundStyle(DSColor.textPrimary)
-                    .contentTransition(.numericText())
-                Text(vm.periodType)
-                    .font(.dsCaption2)
-                    .foregroundStyle(DSColor.textSecondary)
+            // Tap the month label to jump back to the live month (the unused
+            // `resetToCurrentMonth()` the audit flagged in U5). Disabled — and
+            // styled as plain text — once already on the current month.
+            Button {
+                vm.resetToCurrentMonth()
+            } label: {
+                VStack(spacing: 2) {
+                    Text(vm.monthLabel)
+                        .font(.dsHeadlineSemi)
+                        .foregroundStyle(DSColor.textPrimary)
+                        .contentTransition(.numericText())
+                    Text(vm.isOnCurrentMonth ? vm.periodType : "Tap to return to this month")
+                        .font(.dsCaption2)
+                        .foregroundStyle(vm.isOnCurrentMonth ? DSColor.textSecondary : DSColor.accent)
+                }
+                .frame(minWidth: 150)
+                .contentShape(Rectangle())
             }
-            .frame(minWidth: 150)
+            .buttonStyle(.plain)
+            .disabled(vm.isOnCurrentMonth)
+            .accessibilityLabel("\(vm.monthLabel). \(vm.isOnCurrentMonth ? "" : "Tap to return to the current month.")")
 
             stepperButton(systemName: "chevron.right", delta: 1, disabled: vm.isOnCurrentMonth)
         }

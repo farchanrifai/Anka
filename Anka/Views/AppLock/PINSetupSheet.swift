@@ -133,7 +133,18 @@ struct PINSetupSheet: View {
             }
         case .confirm:
             if confirmPIN == firstPIN {
-                lock.savePIN(firstPIN)
+                guard lock.savePIN(firstPIN) else {
+                    // Keychain write failed — do NOT call onComplete (which would
+                    // enable App Lock with no stored PIN and lock the user out).
+                    errorMessage = "Couldn't save your PIN. Please try again."
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                    firstPIN = ""
+                    confirmPIN = ""
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        step = .create
+                    }
+                    return
+                }
                 UINotificationFeedbackGenerator().notificationOccurred(.success)
                 onComplete()
                 dismiss()

@@ -216,6 +216,23 @@ struct SettingsView: View {
             .tint(DSColor.accent)
 
             if lock.appLockEnabled, lock.hasPIN {
+                Picker(selection: Binding(
+                    get: { lock.gracePeriod },
+                    set: { lock.gracePeriod = $0 }
+                )) {
+                    ForEach(AppLockManager.GracePeriod.allCases) { period in
+                        Text(period.displayName).tag(period)
+                    }
+                } label: {
+                    Label {
+                        Text("Require Unlock")
+                    } icon: {
+                        Image(systemName: "clock.fill")
+                            .foregroundStyle(DSColor.accent)
+                    }
+                }
+                .tint(DSColor.textSecondary)
+
                 Button {
                     showPINSetup = true
                 } label: {

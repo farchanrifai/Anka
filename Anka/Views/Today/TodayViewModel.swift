@@ -162,6 +162,8 @@ enum BalanceMode: String, CaseIterable, Hashable {
             let matches = group.transactions.filter { tx in
                 if let n = tx.note?.lowercased(), n.contains(q) { return true }
                 if let cn = tx.category?.name.lowercased(), cn.contains(q) { return true }
+                // Tags are part of the row's identity — search them too (AUDIT.md U6).
+                if tx.tags.contains(where: { $0.lowercased().contains(q) }) { return true }
                 // `String(Int(amount))` traps on NaN / out-of-Int64 amounts;
                 // `%.0f` is non-trapping (AUDIT.md X4).
                 if String(format: "%.0f", tx.amount).contains(q) { return true }
@@ -169,6 +171,16 @@ enum BalanceMode: String, CaseIterable, Hashable {
             }
             return matches.isEmpty ? nil : (date: group.date, transactions: matches)
         }
+    }
+
+    /// True when a non-empty search query is active — drives the search-specific
+    /// empty state (vs. the category-filter one).
+    var isSearchActive: Bool {
+        !searchQuery.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    func clearSearch() {
+        searchQuery = ""
     }
 
     var isLoading: Bool = false
@@ -232,6 +244,36 @@ enum BalanceMode: String, CaseIterable, Hashable {
         customStartDate = nil
         customEndDate = nil
         selectedMonth = next.startOfMonth
+    }
+
+    /// Jump straight to a specific month (from the period menu), switching into
+    /// single-month mode and clearing any custom range.
+    func jumpToMonth(_ month: Date) {
+        selectedPeriod = .month
+        customStartDate = nil
+        customEndDate = nil
+        selectedMonth = month.startOfMonth
+    }
+
+    /// Back to the live current month — the missing "way back to now" the audit
+    /// flags (U2/U5). Also re-anchors out of any preset/custom period.
+    func resetToCurrentMonth() {
+        jumpToMonth(Date())
+    }
+
+    /// True when the dashboard is showing the real current month in single-month
+    /// mode. False for past/future months or any preset/custom period — used to
+    /// gate the "Back to this month" chip.
+    var isViewingCurrentMonth: Bool {
+        selectedPeriod == .month &&
+            Calendar.current.isDate(selectedMonth, equalTo: Date(), toGranularity: .month)
+    }
+
+    /// The most recent `count` months (newest first, starting at the current
+    /// month) offered as quick-jump targets in the period menu.
+    func recentMonths(_ count: Int = 12) -> [Date] {
+        let current = Date().startOfMonth
+        return (0..<count).compactMap { current.addingMonths(-$0) }
     }
 
     var expenseTotal: Double {

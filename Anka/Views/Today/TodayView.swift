@@ -143,8 +143,10 @@ struct TodayView: View {
                     TransactionEmptyStateView(
                         isUnfiltered: allTransactions.isEmpty,
                         hasActiveFilter: !vm.selectedCategories.isEmpty,
+                        isSearchActive: vm.isSearchActive,
                         onAdd: { vm.showAddTransaction = true },
-                        onClearFilter: { vm.clearCategoryFilter() }
+                        onClearFilter: { vm.clearCategoryFilter() },
+                        onClearSearch: { vm.clearSearch() }
                     )
                 } else {
                     ForEach(vm.displayedGroupedByDay, id: \.date) { group in
@@ -223,9 +225,13 @@ struct TodayView: View {
         VStack(alignment: .leading, spacing: 16) {
             // ── Period + Balance Mode ──────────────────────────────────
             HStack(spacing: 8) {
-                periodPill
+                PeriodMenuPill(vm: vm)
+                if !vm.isViewingCurrentMonth {
+                    BackToCurrentMonthChip(vm: vm)
+                }
                 balanceModeSwitcher
             }
+            .animation(.dsSnappy, value: vm.isViewingCurrentMonth)
 
             // ── Currency prefix + amount ──────────────────────────────
             HStack(alignment: .bottom, spacing: 0) {
@@ -293,30 +299,6 @@ struct TodayView: View {
             )
             .ignoresSafeArea(.all, edges: .top)
         }
-    }
-
-    // MARK: - Period Pill
-
-    private var periodPill: some View {
-        Button {
-            vm.showCategoryFilter = true
-        } label: {
-            Text(vm.periodPillLabel)
-                .font(.dsFootnoteMedium)
-                .lineLimit(1)
-                // Roll the label like the hero number when the month changes.
-                .contentTransition(.numericText())
-                // Match the mode-picker pills exactly: same padding + Capsule radius.
-                .padding(.horizontal, 14)
-                .padding(.vertical, 8)
-                .foregroundStyle(DSColor.textOnAccent)
-                .background(DSColor.accent, in: Capsule())
-                // Animate both the label transition and the pill's width as the
-                // text length changes (e.g. "May" → "September" → "3 Months").
-                .animation(.dsSnappy, value: vm.periodPillLabel)
-        }
-        .buttonStyle(.pressable)
-        .accessibilityLabel("Period: \(vm.periodPillLabel). Tap to change.")
     }
 
     // MARK: - Balance Mode Switcher

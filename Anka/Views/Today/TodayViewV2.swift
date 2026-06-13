@@ -146,8 +146,10 @@ struct TodayViewV2: View {
                     TransactionEmptyStateView(
                         isUnfiltered: allTransactions.isEmpty,
                         hasActiveFilter: !vm.selectedCategories.isEmpty,
+                        isSearchActive: vm.isSearchActive,
                         onAdd: { vm.showAddTransaction = true },
-                        onClearFilter: { vm.clearCategoryFilter() }
+                        onClearFilter: { vm.clearCategoryFilter() },
+                        onClearSearch: { vm.clearSearch() }
                     )
                 } else {
                     ForEach(vm.displayedGroupedByDay, id: \.date) { group in
@@ -213,6 +215,11 @@ struct TodayViewV2: View {
     private var modeSelectorPills: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
+                PeriodMenuPill(vm: vm)
+                if !vm.isViewingCurrentMonth {
+                    BackToCurrentMonthChip(vm: vm)
+                }
+
                 ForEach(BalanceMode.allCases, id: \.self) { mode in
                     let isActive = vm.balanceMode == mode
 
@@ -237,6 +244,7 @@ struct TodayViewV2: View {
                 }
             }
             .padding(.top, 4)
+            .animation(.dsSnappy, value: vm.isViewingCurrentMonth)
         }
     }
 }

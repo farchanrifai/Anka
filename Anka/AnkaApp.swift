@@ -131,15 +131,15 @@ struct AnkaApp: App {
             }
         }
         .onChange(of: scenePhase) { _, newPhase in
-            // Lock on background/inactive so the app contents aren't visible
-            // in the iOS app switcher. Only re-lock if lock is enabled AND a
-            // PIN is set — otherwise the user would be stranded with no way
-            // back in.
+            // Cover the UI on background/inactive so contents aren't visible in
+            // the iOS app switcher; on return, `enterForeground` decides whether
+            // the grace period allows a silent unlock. Both bail unless lock is
+            // enabled AND a PIN is set, so the user is never stranded.
             switch newPhase {
             case .background, .inactive:
-                lockManager.lock()
+                lockManager.enterBackground()
             case .active:
-                break
+                lockManager.enterForeground()
             @unknown default:
                 break
             }
