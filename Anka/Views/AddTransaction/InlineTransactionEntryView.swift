@@ -14,6 +14,14 @@ struct InlineTransactionEntryView: View {
     @State private var vm = InlineTransactionEntryViewModel()
     @State private var sendCount = 0
     @Namespace private var glassNS
+    // The summary bubble gets its OWN namespace, separate from the composer
+    // row's (`glassNS`). `glassEffectID(_, in:)` groups shapes into a shared
+    // "merge group" for Liquid Glass's blob-fusion rendering — when the
+    // summary bubble shared `glassNS` with the row's bubbles, every
+    // appearance/disappearance of the summary bubble made the row's glass
+    // shapes recompute their fusion geometry too, which is what was causing
+    // the row to visibly jump/reset.
+    @Namespace private var summaryGlassNS
     /// User preference: close the composer after sending vs. keep it open.
     @AppStorage(InlineComposerPrefs.saveClosesKey) private var saveClosesComposer = true
 
@@ -91,7 +99,7 @@ struct InlineTransactionEntryView: View {
         .padding(.horizontal, DSSpacing.md)
         .padding(.vertical, DSSpacing.sm)
         .glassEffect(.regular, in: .capsule)
-        .glassEffectID("summary", in: glassNS)
+        .glassEffectID("summary", in: summaryGlassNS)
     }
 
     private var dot: some View {
