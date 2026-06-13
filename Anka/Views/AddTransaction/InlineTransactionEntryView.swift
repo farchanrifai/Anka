@@ -4,9 +4,8 @@ import SwiftData
 /// Experimental Messages-style inline composer (Phase 8.5 / V3), rendered in
 /// **Liquid Glass** (iOS 26 `glassEffect`). A capsule field + leading category
 /// bubble + trailing send button, with the parsed result surfacing as its own
-/// glass bubble above the field — the same material as the system search bar /
-/// Messages composer. Lives in a `.safeAreaInset(.bottom)` so it rides the
-/// keyboard; it is not a sheet.
+/// centered glass bubble above the field. Lives in a `.safeAreaInset(.bottom)`
+/// so it rides the keyboard; it is not a sheet.
 struct InlineTransactionEntryView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(CategoryPredictor.self) private var predictor
@@ -19,38 +18,37 @@ struct InlineTransactionEntryView: View {
 
     /// Called after each successful save with the created transaction.
     var onTransactionCreated: (Transaction) -> Void = { _ in }
-    /// Called to close the composer (e.g. the chevron).
+    /// Closes the composer (also called on save).
     var onDismiss: () -> Void = {}
-
-    /// Messages-style send blue. No DS blue token exists; this is the single
-    /// place it's used, matching the system composer's accent.
-    private let sendBlue = Color(red: 0.0, green: 0.48, blue: 1.0)
 
     private var expenseCategories: [Category] {
         allCategories.filter { $0.type == .expense }
     }
 
     var body: some View {
-        VStack(spacing: DSSpacing.sm) {
-            grabber
-            GlassEffectContainer(spacing: DSSpacing.sm) {
-                VStack(alignment: .leading, spacing: DSSpacing.sm) {
-                    if let result = vm.parseResult {
-                        summaryBubble(result)
-                            .transition(.opacity.combined(with: .move(edge: .bottom)))
-                    }
+        GlassEffectContainer(spacing: DSSpacing.sm) {
+            VStack(spacing: DSSpacing.sm) {
+                if let result = vm.parseResult {
+                    summaryBubble(result)
+                        // Appears from below; on save it shrinks + flies up
+                        // toward the transaction list ("expand to list").
+                        .transition(.asymmetric(
+                            insertion: .opacity.combined(with: .move(edge: .bottom)),
+                            removal: .move(edge: .top)
+                                .combined(with: .scale(scale: 0.5, anchor: .top))
+                                .combined(with: .opacity)
+                        ))
+                }
 
-                    HStack(spacing: DSSpacing.sm) {
-                        categoryBubble
-                        textField
-                        sendButton
-                    }
+                HStack(spacing: DSSpacing.sm) {
+                    categoryBubble
+                    textField
+                    sendButton
                 }
             }
         }
         .padding(.horizontal, DSSpacing.screenEdge)
-        .padding(.top, DSSpacing.xs)
-        .padding(.bottom, DSSpacing.sm)
+        .padding(.vertical, DSSpacing.sm)
         .animation(.dsSnappy, value: vm.parseResult)
         .sensoryFeedback(.success, trigger: sendCount)
         .task {
@@ -59,47 +57,24 @@ struct InlineTransactionEntryView: View {
         }
     }
 
-    /// Drag-indicator handle: tap or swipe-down to close the composer. Kept off
-    /// the text field so it doesn't fight the field's own selection gestures.
-    private var grabber: some View {
-        Capsule()
-            .fill(DSColor.textMuted.opacity(0.5))
-            .frame(width: 40, height: 5)
-            .padding(.vertical, DSSpacing.xs)
-            .contentShape(Rectangle())
-            .onTapGesture { dismiss() }
-            .gesture(
-                DragGesture(minimumDistance: 10)
-                    .onEnded { if $0.translation.height > 24 { dismiss() } }
-            )
-            .accessibilityLabel("Close")
-            .accessibilityAddTraits(.isButton)
-    }
-
-    private func dismiss() {
-        focused = false
-        onDismiss()
-    }
-
-    // MARK: - Parsed-result bubble (Liquid Glass, above the field)
+    // MARK: - Parsed-result bubble (Liquid Glass, centered, above the field)
 
     private func summaryBubble(_ result: ParsedInlineTransaction) -> some View {
         HStack(spacing: DSSpacing.xs) {
-            Text(result.amount.rupiah)
-                .font(.dsCaptionSemi)
-                .foregroundStyle(DSColor.textPrimary)
-            dot
             Text(dateLabel(result.date))
-                .font(.dsCaption)
                 .foregroundStyle(DSColor.textSecondary)
-            if let cat = vm.effectiveCategory {
+            if let note = result.note, !note.isEmpty {
                 dot
-                Text("\(cat.emoji) \(cat.name)")
-                    .font(.dsCaption)
-                    .foregroundStyle(DSColor.textSecondary)
+                Text(note)
+                    .foregroundStyle(DSColor.textPrimary)
                     .lineLimit(1)
             }
+            dot
+            Text(result.amount.rupiah)
+                .fontWeight(.semibold)
+                .foregroundStyle(DSColor.textPrimary)
         }
+        .font(.dsCaption)
         .padding(.horizontal, DSSpacing.md)
         .padding(.vertical, DSSpacing.sm)
         .glassEffect(.regular, in: .capsule)
@@ -118,7 +93,7 @@ struct InlineTransactionEntryView: View {
         return date.monthYearLabel == Date().monthYearLabel ? date.relativeLabel : date.fullDateLabel
     }
 
-    // MARK: - Category bubble (Liquid Glass circle, like Messages "+")
+    // MARK: - Category bubble (Liquid Glass circle)
 
     private var categoryBubble: some View {
         Menu {
@@ -160,7 +135,7 @@ struct InlineTransactionEntryView: View {
         TextField("5k for coffee", text: $vm.inputText)
             .font(.dsBody)
             .foregroundStyle(DSColor.textPrimary)
-            .tint(sendBlue)
+            .tint(DSColor.accent)
             .focused($focused)
             .submitLabel(.send)
             .autocorrectionDisabled()
@@ -176,16 +151,16 @@ struct InlineTransactionEntryView: View {
             .glassEffectID("field", in: glassNS)
     }
 
-    // MARK: - Send button (Liquid Glass circle, blue when armed)
+    // MARK: - Send button (Liquid Glass circle, accent-tinted when armed)
 
     private var sendButton: some View {
         Button(action: send) {
             Image(systemName: "arrow.up")
                 .font(.dsBodyBold)
-                .foregroundStyle(vm.canSend ? Color.white : DSColor.textMuted)
+                .foregroundStyle(vm.canSend ? DSColor.textOnAccent : DSColor.textMuted)
                 .frame(width: 44, height: 44)
                 .glassEffect(
-                    vm.canSend ? .regular.tint(sendBlue).interactive() : .regular,
+                    vm.canSend ? .regular.tint(DSColor.accent).interactive() : .regular,
                     in: .circle
                 )
                 .glassEffectID("send", in: glassNS)
@@ -198,22 +173,39 @@ struct InlineTransactionEntryView: View {
 
     private func send() {
         guard vm.canSend else { return }
-        guard let tx = vm.save(context: modelContext) else { return }
+        guard let tx = vm.save(context: modelContext) else { return }  // resets → bubble flies up
         sendCount += 1
         onTransactionCreated(tx)
-        focused = true   // keep the keyboard up for the next quick entry
+        focused = false
+        // Let the bubble shrink-and-fly-up play, then close the composer so we
+        // return to the default bottom bar.
+        Task {
+            try? await Task.sleep(for: .milliseconds(240))
+            onDismiss()
+        }
     }
 }
 
 // MARK: - Host modifier (rides the keyboard via a bottom safe-area inset)
 
 /// Applies the inline composer to a Today view as a keyboard-riding bottom bar
-/// when `vm.showInlineComposer` is set — replacing the old sheet presentation.
+/// when `vm.showInlineComposer` is set. Tapping the content above the composer
+/// dismisses it (there's no grabber); saving also dismisses it.
 struct InlineComposerModifier: ViewModifier {
     @Bindable var vm: TodayViewModel
 
     func body(content: Content) -> some View {
         content
+            // Tap-catcher over the content above the composer — tap to dismiss.
+            // Applied before the inset so it only covers the list, not the bar.
+            .overlay {
+                if vm.showInlineComposer {
+                    Color.black.opacity(0.001)
+                        .contentShape(Rectangle())
+                        .onTapGesture { vm.showInlineComposer = false }
+                        .transition(.opacity)
+                }
+            }
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 if vm.showInlineComposer {
                     InlineTransactionEntryView(onDismiss: { vm.showInlineComposer = false })
