@@ -21,16 +21,36 @@ struct AnkaLockScreenTimelineProvider: TimelineProvider {
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<AnkaLockScreenEntry>) -> Void) {
         let entry = Self.loadEntry()
-        let next = Calendar.current.date(byAdding: .minute, value: 15, to: Date()) ?? Date()
-        completion(Timeline(entries: [entry], policy: .after(next)))
+        // W1: Schedule a refresh at midnight so stale data is zeroed even if
+        // the main app hasn't been opened today.
+        let now = Date()
+        let cal = Calendar.current
+        let next15 = cal.date(byAdding: .minute, value: 15, to: now) ?? now
+        let nextMidnight = cal.startOfDay(for: cal.date(byAdding: .day, value: 1, to: now) ?? now)
+        let nextRefresh = min(next15, nextMidnight)
+        completion(Timeline(entries: [entry], policy: .after(nextRefresh)))
     }
+
+    /// Day formatter matching the main app's `WidgetDataWriter`.
+    private static let dayFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd"
+        f.locale = Locale(identifier: "en_US_POSIX")
+        return f
+    }()
 
     private static func loadEntry() -> AnkaLockScreenEntry {
         let defaults = UserDefaults(suiteName: WidgetKeys.suiteName)
+
+        // W1: Zero stale data when the snapshot date doesn't match today.
+        let storedDay = defaults?.string(forKey: WidgetKeys.snapshotDate) ?? ""
+        let today     = dayFormatter.string(from: Date())
+        let isStale   = storedDay != today
+
         return AnkaLockScreenEntry(
             date: Date(),
-            todayExpense: defaults?.double(forKey: WidgetKeys.todayExpense) ?? 0,
-            todayIncome:  defaults?.double(forKey: WidgetKeys.todayIncome)  ?? 0
+            todayExpense: isStale ? 0 : (defaults?.double(forKey: WidgetKeys.todayExpense) ?? 0),
+            todayIncome:  isStale ? 0 : (defaults?.double(forKey: WidgetKeys.todayIncome)  ?? 0)
         )
     }
 }
@@ -45,8 +65,10 @@ struct AnkaLockScreenWidgetView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack(spacing: 4) {
-                Image(systemName: "indianrupeesign")
-                    .font(.caption2.weight(.semibold))
+                // W2: Use text "Rp" instead of the `indianrupeesign` SF Symbol
+                // (which is ₹ — Indian rupee, wrong currency for an IDR app).
+                Text("Rp")
+                    .font(.caption2.weight(.bold))
                 Text("Today")
                     .font(.caption2.weight(.semibold))
             }
@@ -75,6 +97,8 @@ struct AnkaLockScreenWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: AnkaLockScreenTimelineProvider()) { entry in
             AnkaLockScreenWidgetView(entry: entry)
+                // W3: Tapping the lock-screen widget opens the app.
+                .widgetURL(AnkaDeepLink.openApp)
         }
         .configurationDisplayName("Anka Daily")
         .description("Quick view of today's spending.")

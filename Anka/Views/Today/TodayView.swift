@@ -15,6 +15,9 @@ struct TodayView: View {
     @Query(sort: \Transaction.date, order: .reverse) private var allTransactions: [Transaction]
     @Query(sort: \Category.sortOrder) private var allCategories: [Category]
 
+    // W3: Widget deep links → open Add sheet.
+    @Environment(DeepLinkRouter.self) private var deepLinkRouter
+
     // VM holds all state and logic
     @State private var vm = TodayViewModel()
 
@@ -62,6 +65,21 @@ struct TodayView: View {
             feedVM()
         }
         .autoBackup(transactions: allTransactions, categories: allCategories)
+        // W3: Widget deep links — open the Add sheet when `anka://add` arrives.
+        .onChange(of: deepLinkRouter.pendingAddTransaction) { _, pending in
+            guard pending else { return }
+            deepLinkRouter.pendingAddTransaction = false
+            vm.showAddTransaction = true
+        }
+        // X2: Central data-changed hook. `onChange(of: allTransactions)` misses
+        // in-place edits (same @Model identities → array compares equal) and
+        // Settings-side import/restore. On the notification, re-fetch the
+        // authoritative list so the dashboard + widgets always reflect reality.
+        .onReceive(NotificationCenter.default.publisher(for: .ankaDataDidChange)) { _ in
+            let fresh = (try? modelContext.fetch(FetchDescriptor<Transaction>(sortBy: [SortDescriptor(\.date, order: .reverse)]))) ?? allTransactions
+            vm.update(transactions: fresh, categories: allCategories)
+            WidgetDataWriter.shared.updateWidgetData(transactions: fresh)
+        }
     }
 
     private func feedVM() {
@@ -353,4 +371,5 @@ struct TodayView: View {
     TodayView()
         .modelContainer(SampleData.container())
         .environment(CategoryPredictor())
+        .environment(DeepLinkRouter())
 }

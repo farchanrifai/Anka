@@ -75,6 +75,13 @@
 			);
 			target = 73D1AA772FD55BB4002330E9 /* AnkaWidgetsExtension */;
 		};
+		73AAAA012FD55CC2002330E9 /* Exceptions for "Anka" folder in "Anka" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 735BB8B12FD45B82005D2346 /* Anka */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -82,6 +89,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				73D1AA942FD55CC2002330E9 /* Exceptions for "Anka" folder in "AnkaWidgetsExtension" target */,
+				73AAAA012FD55CC2002330E9 /* Exceptions for "Anka" folder in "Anka" target */,
 			);
 			path = Anka;
 			sourceTree = "<group>";
@@ -534,6 +542,7 @@
 				DEVELOPMENT_TEAM = P8HX673QTL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Anka/Info.plist;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Anka uses Face ID to unlock the app and keep your finances private.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -569,6 +578,7 @@
 				DEVELOPMENT_TEAM = P8HX673QTL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Anka/Info.plist;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Anka uses Face ID to unlock the app and keep your finances private.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

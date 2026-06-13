@@ -51,15 +51,19 @@ public enum CategoryMLTrainer {
         var labels: [String] = []
 
         for tx in labeled {
-            texts.append("\(tx.note.lowercased()) \(amountBucket(tx.amount))")
+            texts.append(MLFeaturizer.input(note: tx.note, amount: tx.amount))
             labels.append(tx.categoryName)
         }
 
         // Include correction examples at 2x weight to prioritize user feedback.
-        for entry in loadCorrections() {
+        // Snapshot the count so we can prune exactly these absorbed entries after
+        // a successful train (AUDIT.md P6) without dropping corrections the user
+        // makes while training runs.
+        let corrections = loadCorrections()
+        for entry in corrections {
             guard let actual = entry.actual,
                   !entry.note.trimmingCharacters(in: .whitespaces).isEmpty else { continue }
-            let text = "\(entry.note.lowercased()) \(amountBucket(entry.amount))"
+            let text = MLFeaturizer.input(note: entry.note, amount: entry.amount)
             texts.append(contentsOf: [text, text])
             labels.append(contentsOf: [actual, actual])
         }
@@ -101,29 +105,40 @@ public enum CategoryMLTrainer {
         try? fm.removeItem(at: compiledURL)
 
         defaults?.set(newCount, forKey: lastCountKey)
+        // These corrections are now baked into the user model — age them out so
+        // they don't double-count in every future training pass (P6).
+        pruneCorrections(absorbed: corrections.count)
     }
 #endif
 
     // MARK: - Corrections
 
+    private static let correctionsKey = "ml_corrections"
+
     private static func loadCorrections() -> [CorrectionEntry] {
         let defaults = UserDefaults(suiteName: appGroupID)
-        guard let data = defaults?.data(forKey: "ml_corrections"),
+        guard let data = defaults?.data(forKey: correctionsKey),
               let entries = try? JSONDecoder().decode([CorrectionEntry].self, from: data) else {
             return []
         }
         return entries
     }
 
-    // MARK: - Shared helper
-
-    private static func amountBucket(_ amount: Double) -> String {
-        switch amount {
-        case ..<20_000:    return "micro"
-        case ..<100_000:   return "small"
-        case ..<500_000:   return "medium"
-        case ..<2_000_000: return "large"
-        default:           return "xlarge"
+    /// Drops the first `absorbed` correction entries (the ones folded into the
+    /// just-trained model), preserving any added while training ran. Corrections
+    /// are appended in order, so the oldest `absorbed` are the consumed ones.
+    private static func pruneCorrections(absorbed: Int) {
+        guard absorbed > 0 else { return }
+        let defaults = UserDefaults(suiteName: appGroupID)
+        guard let data = defaults?.data(forKey: correctionsKey),
+              var entries = try? JSONDecoder().decode([CorrectionEntry].self, from: data) else { return }
+        if entries.count <= absorbed {
+            defaults?.removeObject(forKey: correctionsKey)
+        } else {
+            entries.removeFirst(absorbed)
+            if let encoded = try? JSONEncoder().encode(entries) {
+                defaults?.set(encoded, forKey: correctionsKey)
+            }
         }
     }
 }

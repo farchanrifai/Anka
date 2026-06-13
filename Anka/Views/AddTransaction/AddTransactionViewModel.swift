@@ -227,6 +227,7 @@ final class AddTransactionViewModel {
             context.insert(tx)
         }
         try context.save()
+        NotificationCenter.default.post(name: .ankaDataDidChange, object: nil)
         return true
     }
 
@@ -234,6 +235,7 @@ final class AddTransactionViewModel {
         guard let tx = existingTransaction else { return }
         context.delete(tx)
         try context.save()
+        NotificationCenter.default.post(name: .ankaDataDidChange, object: nil)
     }
 
     // MARK: - NLP parsing
@@ -313,7 +315,7 @@ final class AddTransactionViewModel {
     }
 
     private func applyMLPrediction(_ pred: Prediction) {
-        guard pred.shouldAutoAssign || pred.shouldShowChip else { return }
+        guard pred.shouldSuggest else { return }
 
         // Prefer a match in the currently-selected type. If none exists,
         // fall back to the opposite type and auto-switch — handles cases

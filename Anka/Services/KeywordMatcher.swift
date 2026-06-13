@@ -198,17 +198,32 @@ public enum KeywordMatcher {
             }
         }
 
-        // Layer A2: single-keyword exact match
+        // Layer A2: single-keyword exact match.
+        // Short keywords (≤ shortKeywordMaxLength chars) use word-boundary
+        // matching to avoid false positives like "repair" → Home ("air"),
+        // "premiere" → Eating Out ("mie"), "theory" → Coffee ("teh"),
+        // "gigantic" → Groceries ("giant"). Brand names and longer keywords
+        // still use plain substring so "indomaret" matches "ke indomaret".
+        // (AUDIT.md X6)
+        let words = lower.components(separatedBy: .whitespaces).filter { !$0.isEmpty }
         for (keyword, category) in singleKeywords {
-            if lower.contains(keyword) {
-                return (category, 0.90)
+            if keyword.count <= shortKeywordMaxLength || shortKeywords.contains(keyword) {
+                // Word-boundary match: the keyword must appear as a whole
+                // word (or multi-word phrase) in the input.
+                if keyword.contains(" ") {
+                    // Multi-word short keyword — use the same compound logic.
+                    if lower.contains(keyword) { return (category, 0.90) }
+                } else {
+                    if words.contains(keyword) { return (category, 0.90) }
+                }
+            } else {
+                if lower.contains(keyword) { return (category, 0.90) }
             }
         }
 
         // Layer B: fuzzy per-word (Levenshtein ≤ 1)
         // Only applied to single-word keywords with ≥ 4 chars to avoid false positives
         // on short tokens like "air", "teh", "mie", "tol", "ipl", "kfc".
-        let words = lower.components(separatedBy: .whitespaces).filter { !$0.isEmpty }
         for (keyword, category) in singleKeywords {
             guard !keyword.contains(" "), keyword.count >= 4 else { continue }
             for word in words {
@@ -222,6 +237,24 @@ public enum KeywordMatcher {
 
         return nil
     }
+
+    // MARK: - Word-boundary config (AUDIT.md X6)
+
+    /// Keywords at or below this length use word-boundary matching instead of
+    /// substring matching. Covers the documented false-positive cases: "air"(3),
+    /// "teh"(3), "mie"(3), "tol"(3), "ipl"(3), "kfc"(3), "cafe"(4), "kafe"(4),
+    /// "hero"(4), "kost"(4), "sewa"(4), "obat"(4), "grab"(4), "giant"(5),
+    /// "token"(5), "solar"(5), "steam"(5).
+    private static let shortKeywordMaxLength = 5
+
+    /// Explicit overrides for keywords longer than `shortKeywordMaxLength` that
+    /// still need word-boundary matching because they're common English/Indonesian
+    /// words that appear as substrings in unrelated words.
+    private static let shortKeywords: Set<String> = [
+        // These are already ≤5 chars so they're covered by the length check,
+        // but listed here for documentation. Add longer keywords here if
+        // new false-positive cases appear.
+    ]
 
     // MARK: - Levenshtein distance
 

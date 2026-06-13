@@ -22,6 +22,9 @@ struct TodayViewV2: View {
     @Query(sort: \Transaction.date, order: .reverse) private var allTransactions: [Transaction]
     @Query(sort: \Category.sortOrder) private var allCategories: [Category]
 
+    // W3: Widget deep links → open Add sheet.
+    @Environment(DeepLinkRouter.self) private var deepLinkRouter
+
     @State private var vm = TodayViewModel()
 
     /// True while a horizontal month-swipe is in progress — suppresses the
@@ -57,6 +60,19 @@ struct TodayViewV2: View {
             feedVM()
         }
         .autoBackup(transactions: allTransactions, categories: allCategories)
+        // W3: Widget deep links — open the Add sheet when `anka://add` arrives.
+        .onChange(of: deepLinkRouter.pendingAddTransaction) { _, pending in
+            guard pending else { return }
+            deepLinkRouter.pendingAddTransaction = false
+            vm.showAddTransaction = true
+        }
+        // X2: Central data-changed hook — re-fetch on mutations that don't change
+        // the @Query array identity (in-place edits, import, restore).
+        .onReceive(NotificationCenter.default.publisher(for: .ankaDataDidChange)) { _ in
+            let fresh = (try? modelContext.fetch(FetchDescriptor<Transaction>(sortBy: [SortDescriptor(\.date, order: .reverse)]))) ?? allTransactions
+            vm.update(transactions: fresh, categories: allCategories)
+            WidgetDataWriter.shared.updateWidgetData(transactions: fresh)
+        }
     }
 
     private func feedVM() {
@@ -253,4 +269,5 @@ struct TodayViewV2: View {
     TodayViewV2()
         .modelContainer(SampleData.container())
         .environment(CategoryPredictor())
+        .environment(DeepLinkRouter())
 }

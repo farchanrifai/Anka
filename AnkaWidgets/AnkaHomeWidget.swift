@@ -20,21 +20,55 @@ struct AnkaHomeTimelineProvider: TimelineProvider {
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<AnkaHomeEntry>) -> Void) {
         let entry = Self.loadEntry()
-        // Refresh every 15 minutes; also reloaded by app-side calls to
-        // WidgetCenter.shared.reloadAllTimelines().
-        let next = Calendar.current.date(byAdding: .minute, value: 15, to: Date()) ?? Date()
-        completion(Timeline(entries: [entry], policy: .after(next)))
+
+        // Schedule two refresh points:
+        //   1. 15 minutes from now — regular polling cadence (also reloaded by
+        //      app-side calls to WidgetCenter.shared.reloadAllTimelines()).
+        //   2. Midnight — zeroes the totals so yesterday's spend doesn't carry
+        //      over when the user hasn't opened the app (W1).
+        let now = Date()
+        let cal = Calendar.current
+        let next15 = cal.date(byAdding: .minute, value: 15, to: now) ?? now
+        let nextMidnight = cal.startOfDay(for: cal.date(byAdding: .day, value: 1, to: now) ?? now)
+
+        // The earlier of the two becomes the next timeline request.
+        let nextRefresh = min(next15, nextMidnight)
+        completion(Timeline(entries: [entry], policy: .after(nextRefresh)))
     }
+
+    /// Day formatter matching the main app's `WidgetDataWriter`. Used to compare
+    /// the stored snapshot date against the current calendar day.
+    private static let dayFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd"
+        f.locale = Locale(identifier: "en_US_POSIX")
+        return f
+    }()
 
     private static func loadEntry() -> AnkaHomeEntry {
         let defaults = UserDefaults(suiteName: WidgetKeys.suiteName)
-        let expense = defaults?.double(forKey: WidgetKeys.todayExpense) ?? 0
-        let income  = defaults?.double(forKey: WidgetKeys.todayIncome) ?? 0
 
+        // W1: If the stored snapshot is from a previous calendar day, the data
+        // is stale — show zeroes instead of yesterday's numbers.
+        let storedDay = defaults?.string(forKey: WidgetKeys.snapshotDate) ?? ""
+        let today     = dayFormatter.string(from: Date())
+        let isStale   = storedDay != today
+
+        let expense: Double
+        let income: Double
         var recent: [WidgetTransaction] = []
-        if let data = defaults?.data(forKey: WidgetKeys.recentTxs),
-           let decoded = try? JSONDecoder().decode([WidgetTransaction].self, from: data) {
-            recent = decoded
+
+        if isStale {
+            expense = 0
+            income  = 0
+        } else {
+            expense = defaults?.double(forKey: WidgetKeys.todayExpense) ?? 0
+            income  = defaults?.double(forKey: WidgetKeys.todayIncome) ?? 0
+
+            if let data = defaults?.data(forKey: WidgetKeys.recentTxs),
+               let decoded = try? JSONDecoder().decode([WidgetTransaction].self, from: data) {
+                recent = decoded
+            }
         }
 
         return AnkaHomeEntry(
@@ -170,7 +204,7 @@ private struct MediumContent: View {
     }
 }
 
-// MARK: Large — headline + all 3 recent rows
+// MARK: Large — headline + all 3 recent rows + quick-add link
 
 private struct LargeContent: View {
     let entry: AnkaHomeEntry
@@ -217,6 +251,17 @@ private struct LargeContent: View {
                 }
             }
             Spacer(minLength: 0)
+            // W3: Quick-add deep link at the bottom of the large widget.
+            Link(destination: AnkaDeepLink.addTransaction) {
+                HStack(spacing: 6) {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.system(size: 16, weight: .semibold))
+                    Text("Add Transaction")
+                        .font(.caption.weight(.semibold))
+                }
+                .foregroundStyle(W.coral)
+                .frame(maxWidth: .infinity, alignment: .center)
+            }
         }
     }
 }
@@ -260,6 +305,8 @@ struct AnkaHomeWidget: Widget {
         StaticConfiguration(kind: kind, provider: AnkaHomeTimelineProvider()) { entry in
             AnkaHomeWidgetView(entry: entry)
                 .containerBackground(W.card, for: .widget)
+                // W3: Tapping the small/medium widget opens the app to Today.
+                .widgetURL(AnkaDeepLink.openApp)
         }
         .configurationDisplayName("Anka Summary")
         .description("Today's spending at a glance.")

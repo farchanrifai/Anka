@@ -22,6 +22,9 @@ struct AnkaApp: App {
     /// overrides consumed by DSColor's dynamic background tokens.
     @State private var appearance = AppearanceManager()
 
+    /// Routes deep links from widgets (W3) into navigation state.
+    @State private var deepLinkRouter = DeepLinkRouter()
+
     @Environment(\.scenePhase) private var scenePhase
 
     /// First-run gate: onboarding overlays the app until completed. The
@@ -153,6 +156,7 @@ struct AnkaApp: App {
                 .environment(predictor)
                 .environment(lockManager)
                 .environment(appearance)
+                .environment(deepLinkRouter)
 
             if !hasCompletedOnboarding {
                 OnboardingView {
@@ -174,6 +178,11 @@ struct AnkaApp: App {
         .animation(.easeInOut(duration: 0.25), value: lockManager.isLocked)
         .animation(.easeInOut(duration: 0.35), value: hasCompletedOnboarding)
         .preferredColorScheme(appearance.mode.preferredColorScheme)
+        // W3: Handle widget deep links. The `anka://` URL scheme must be
+        // registered in the app target's Info.plist (URL Types → anka).
+        .onOpenURL { url in
+            deepLinkRouter.handle(url)
+        }
     }
 }
 

@@ -140,13 +140,14 @@ struct CSVService {
                 date: p.date,
                 note: p.note,
                 category: resolvedCategory,
-                currencyCode: p.currencyCode ?? "USD",
+                currencyCode: p.currencyCode ?? AppCurrency.code,
                 tags: p.tagNames,
                 paymentMethod: p.paymentMethod
             )
             context.insert(tx)
         }
         try context.save()
+        NotificationCenter.default.post(name: .ankaDataDidChange, object: nil)
         return ImportResult(
             imported: parsed.count,
             skipped: skippedErrors.count,

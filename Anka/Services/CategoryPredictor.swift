@@ -15,11 +15,18 @@ public struct Prediction {
     public let confidence: Double
     public let source: PredictionSource
 
-    /// Auto-assign silently when confidence is very high.
+    /// True only for high-confidence predictions (≥ 0.85). Retained for a
+    /// possible future silent-vs-soft distinction; the current UI applies both
+    /// bands the same way (see `shouldSuggest`).
     public var shouldAutoAssign: Bool { confidence >= 0.85 }
 
-    /// Show a confirm chip below the note field.
-    public var shouldShowChip: Bool { confidence >= 0.60 && !shouldAutoAssign }
+    /// Confidence floor for surfacing a prediction at all. The 0.60–0.85 band
+    /// was originally earmarked for a confirm "chip" that was never built; per
+    /// AUDIT.md (Batch 10 chip-band decision) it is **folded into
+    /// auto-assign-with-undo** — the predicted category is applied and shown via
+    /// the tappable sparkle pill, and deselecting it logs a negative correction.
+    /// So one threshold gates whether a prediction is applied.
+    public var shouldSuggest: Bool { confidence >= 0.60 }
 }
 
 // MARK: - Correction signal
@@ -90,6 +97,13 @@ public final class CategoryPredictor {
 
     // MARK: - Correction logging
 
+    /// Max correction entries retained. The log is decoded/appended/re-encoded
+    /// on every correction, and entries are doubled at train time — so an
+    /// unbounded log means ever-slower saves and stale signals over-weighting
+    /// training. Cap to the most recent N (AUDIT.md P6). Entries already baked
+    /// into a trained model are additionally pruned by `CategoryMLTrainer`.
+    public static let maxCorrections = 500
+
     public func logCorrection(note: String, amount: Double, predicted: String, actual: String?) {
         let entry = CorrectionEntry(note: note, amount: amount, predicted: predicted, actual: actual)
         let defaults = UserDefaults(suiteName: Self.appGroupID)
@@ -99,6 +113,10 @@ public final class CategoryPredictor {
             existing = decoded
         }
         existing.append(entry)
+        // Keep only the most recent `maxCorrections` (drop oldest).
+        if existing.count > Self.maxCorrections {
+            existing.removeFirst(existing.count - Self.maxCorrections)
+        }
         if let encoded = try? JSONEncoder().encode(existing) {
             defaults?.set(encoded, forKey: Self.correctionsKey)
         }
@@ -155,17 +173,7 @@ public final class CategoryPredictor {
     }
 
     private func buildInput(note: String, amount: Double) -> String {
-        "\(note.lowercased()) \(amountBucket(amount))"
-    }
-
-    private func amountBucket(_ amount: Double) -> String {
-        switch amount {
-        case ..<20_000:    return "micro"
-        case ..<100_000:   return "small"
-        case ..<500_000:   return "medium"
-        case ..<2_000_000: return "large"
-        default:           return "xlarge"
-        }
+        MLFeaturizer.input(note: note, amount: amount)
     }
 
     private func userModelURL() -> URL? {

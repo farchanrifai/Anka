@@ -217,6 +217,7 @@ enum BackupService {
         progress(.saving)
         await Task.yield()
         try context.save()
+        NotificationCenter.default.post(name: .ankaDataDidChange, object: nil)
 
         return BackupImportResult(imported: imported, skipped: skipped, updated: updated, deleted: deleted, warnings: warnings)
     }
