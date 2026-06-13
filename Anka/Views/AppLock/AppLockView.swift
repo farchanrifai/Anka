@@ -3,15 +3,17 @@ import LocalAuthentication
 import Combine
 
 /// Full-screen lock cover. Shown whenever `AppLockManager.isLocked == true`.
-/// Auto-prompts biometric on first appearance; PIN is always available as fallback.
+/// When biometrics are enabled it auto-prompts Face ID / Touch ID every time the
+/// app becomes active, falling back to PIN only if that attempt fails; otherwise
+/// it shows the PIN keypad directly.
 struct AppLockView: View {
     @Environment(AppLockManager.self) private var lock
+    @Environment(\.scenePhase) private var scenePhase
 
     @State private var pinInput: String = ""
     @State private var showPINEntry: Bool = false
     @State private var errorMessage: String = ""
     @State private var isAuthenticating: Bool = false
-    @State private var biometricAttempted: Bool = false
     /// Drives the live lockout countdown — refreshed once a second while the
     /// lockout window is open.
     @State private var now: Date = .now
@@ -65,18 +67,52 @@ struct AppLockView: View {
         }
         .onReceive(ticker) { now = $0 }
         .task {
-            if lock.useBiometrics {
-                // Auto-prompt biometric once when the lock screen first appears.
-                // After that the user must tap to retry.
-                if !biometricAttempted, !showPINEntry {
-                    biometricAttempted = true
-                    await runBiometric()
-                }
-            } else {
-                // PIN-only — bring up the keypad straight away.
-                try? await Task.sleep(for: .milliseconds(400))
-                pinFocused = true
+            // The lock cover can appear while the app is *backgrounding* (we
+            // cover the UI for the app-switcher snapshot). Prompting biometric
+            // then is suppressed by iOS and would dump the user to the PIN
+            // fallback — so only auto-authenticate if we're already foreground
+            // (cold launch / enable-from-Settings). Foreground re-entry is
+            // handled by the scenePhase observer below.
+            if scenePhase == .active {
+                await authenticateOnAppear(resetToBiometric: false)
             }
+        }
+        .onChange(of: scenePhase) { old, new in
+            // Re-offer the default method each time the app returns to the
+            // foreground while locked, so reopening defaults to Face ID rather
+            // than getting stuck on a PIN fallback from a prior (backgrounded,
+            // hence auto-failed) attempt.
+            guard new == .active, old != .active else { return }
+            Task { await authenticateOnAppear(resetToBiometric: true) }
+        }
+    }
+
+    /// The default unlock attempt for the current foreground: Face ID / Touch ID
+    /// when enabled (falling back to PIN on failure), or the PIN keypad when not.
+    /// - Parameter resetToBiometric: on a fresh foreground, drop a stale PIN
+    ///   fallback and re-offer biometrics — but never interrupt a PIN the user
+    ///   has already started typing.
+    private func authenticateOnAppear(resetToBiometric: Bool) async {
+        guard lock.isLocked, !isLockedOut, !isAuthenticating else { return }
+        guard lock.useBiometrics else {
+            // PIN-only — bring up the keypad straight away.
+            try? await Task.sleep(for: .milliseconds(400))
+            pinFocused = true
+            return
+        }
+        if resetToBiometric, showPINEntry, pinInput.isEmpty {
+            withAnimation(.dsEase) { showPINEntry = false }
+        }
+        // Don't yank a user out of PIN entry they've already begun.
+        guard !showPINEntry else { return }
+        // Let the foreground transition finish before presenting the system
+        // biometric sheet — evaluating during the `.active` handoff throws a
+        // not-interactive error. Retry once with a longer settle if the first
+        // attempt couldn't present; a genuine success/failure stops the loop.
+        for delayMs in [300, 600] {
+            try? await Task.sleep(for: .milliseconds(delayMs))
+            guard lock.isLocked, !isLockedOut, !showPINEntry, !isAuthenticating else { return }
+            if await runBiometric() != .unavailable { return }
         }
     }
 
@@ -242,25 +278,35 @@ struct AppLockView: View {
 
     // MARK: - Actions
 
-    private func runBiometric() async {
-        guard !isAuthenticating else { return }
+    @discardableResult
+    private func runBiometric() async -> AppLockManager.BiometricOutcome {
+        guard !isAuthenticating else { return .unavailable }
         isAuthenticating = true
         defer { isAuthenticating = false }
 
-        let ok = await lock.authenticateWithBiometrics()
-        if ok {
+        let outcome = await lock.authenticateWithBiometrics()
+        switch outcome {
+        case .success:
             withAnimation(.dsEaseSlow) {
                 lock.unlock()
             }
-        } else if lock.hasPIN {
-            // Biometric failed or was dismissed — fall through to PIN.
-            withAnimation(.dsEase) {
-                showPINEntry = true
+        case .failed:
+            // Genuine miss / cancel / fallback — drop to PIN.
+            if lock.hasPIN {
+                withAnimation(.dsEase) {
+                    showPINEntry = true
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    pinFocused = true
+                }
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                pinFocused = true
-            }
+        case .unavailable:
+            // The prompt couldn't be presented (e.g. fired during the
+            // foreground handoff). Keep the biometric screen up so the user can
+            // tap "Unlock with Face ID" — don't dump them to PIN.
+            break
         }
+        return outcome
     }
 
     private func attemptPINUnlock() {

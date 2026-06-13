@@ -236,7 +236,7 @@ Cosmetic UIKit warnings persist (`SearchBarHidesWhenScrolling-default` vs `-expl
 - `hasPIN: Bool` — derived from `KeychainHelper.read(forKey: "ankaPINCode") != nil`
 - **`biometricEnabled: Bool`** — persisted **user preference** (`anka.appLock.biometricEnabled`, default `true`) for using Face ID / Touch ID. Distinct from `canUseBiometrics` (the *hardware* capability). `useBiometrics` = `canUseBiometrics && biometricEnabled` is the effective gate the lock screen reads — so the user can keep the lock **PIN-only** even on a biometric device.
 - `gracePeriod: GracePeriod` — auto-lock grace window (`anka.appLock.gracePeriod`); see grace-period note below.
-- Biometric helpers: `biometricType`, `canUseBiometrics`, `authenticateWithBiometrics() async -> Bool`
+- Biometric helpers: `biometricType`, `canUseBiometrics`, `authenticateWithBiometrics() async -> BiometricOutcome` (`.success` / `.failed` / `.unavailable`)
 - PIN: `savePIN`/`removePIN`/`verifyPIN` (PIN is a per-PIN salted SHA256 credential in the Keychain; see Batch 5 hardening). All key literals are `static let` on the manager.
 
 `KeychainHelper` uses service `nc.Anka` (separate from the App Group ID); items are written `WhenUnlockedThisDeviceOnly`.
@@ -255,7 +255,9 @@ Cosmetic UIKit warnings persist (`SearchBarHidesWhenScrolling-default` vs `-expl
 - "Remove PIN" — confirmation dialog, then `removePIN()` + `appLockEnabled = false` together.
 
 **Lock screen UX** (`AppLockView`):
-- When `useBiometrics`: auto-prompts biometric once on first appearance via `.task`; if it fails/cancels, falls through to PIN. When `biometricEnabled` is off (PIN-only): the keypad is shown **directly** (no biometric button, no "Back to Face ID" link), focused on appear.
+- When `useBiometrics`: **Face ID / Touch ID is the default and auto-prompts every time the app becomes active** — driven by `@Environment(\.scenePhase)` (a `.task` for the cold-launch/enable case where the view appears already-active, plus an `onChange(scenePhase)` for foreground re-entry). It deliberately does **not** prompt while the lock cover appears during *backgrounding* (the prompt would be suppressed and dump the user to PIN). On a fresh foreground it drops a stale PIN fallback and re-offers Face ID (but never interrupts a PIN the user already started typing).
+  - **Outcome handling** (`AppLockManager.authenticateWithBiometrics() -> BiometricOutcome`): `.success` → unlock; `.failed` (wrong face / user cancel / fallback / lockout) → fall through to PIN; `.unavailable` (system/app-cancel / not-interactive — the prompt couldn't be presented, e.g. fired mid-foreground-handoff) → **stay on the Face ID screen, don't dump to PIN**. The auto-attempt settles ~300ms then retries once at ~600ms to ride out the foreground handoff.
+- When `biometricEnabled` is off (PIN-only): the keypad is shown **directly** (no biometric button, no "Back to Face ID" link), focused on appear.
 - 4-digit PIN auto-submits on the 4th character; wrong PIN clears + error haptic; escalating brute-force lockout with a live countdown.
 - "Use PIN instead" / "Back to Face ID" toggles between the two methods (biometric mode only).
 

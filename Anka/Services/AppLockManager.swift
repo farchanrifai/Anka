@@ -290,23 +290,41 @@ final class AppLockManager {
 
     // MARK: - Biometrics
 
-    func authenticateWithBiometrics() async -> Bool {
+    /// Outcome of a biometric attempt, so the lock screen can tell a real
+    /// failure (→ fall back to PIN) from "couldn't present the prompt" (→ keep
+    /// offering Face ID). The latter happens when the auto-prompt fires during
+    /// the foreground handoff and iOS isn't ready to show system UI yet.
+    enum BiometricOutcome {
+        case success
+        case failed        // wrong biometric, user cancel/fallback, lockout → PIN
+        case unavailable   // system/app cancel, not-interactive → leave Face ID up
+    }
+
+    func authenticateWithBiometrics() async -> BiometricOutcome {
         let ctx = LAContext()
         var error: NSError?
         guard ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
-            return false
+            return .unavailable
         }
-        // Once the auth attempt completes (success or failure), refresh the
-        // cached biometric state so it reflects anything that changed during
-        // the interaction.
+        // Once the auth attempt completes, refresh the cached biometric state so
+        // it reflects anything that changed during the interaction.
         defer { refreshBiometricState() }
         do {
-            return try await ctx.evaluatePolicy(
+            let ok = try await ctx.evaluatePolicy(
                 .deviceOwnerAuthenticationWithBiometrics,
                 localizedReason: "Unlock Anka"
             )
+            return ok ? .success : .failed
+        } catch let laError as LAError {
+            switch laError.code {
+            case .systemCancel, .appCancel, .notInteractive, .invalidContext:
+                // The prompt couldn't be shown — not a genuine auth failure.
+                return .unavailable
+            default:
+                return .failed
+            }
         } catch {
-            return false
+            return .failed
         }
     }
 
