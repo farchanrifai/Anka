@@ -23,6 +23,11 @@ extension Date {
         Calendar.current.date(byAdding: DateComponents(month: 1, second: -1), to: startOfMonth) ?? self
     }
 
+    /// First instant of the *next* month — the exclusive upper bound for a
+    /// half-open month range, so a transaction at the month boundary lands in
+    /// exactly one month (AUDIT.md D8).
+    var startOfNextMonth: Date { startOfMonth.addingMonths(1) }
+
     /// First instant of the calendar year containing this date. Falls back to
     /// `startOfMonth` if the calendar can't resolve the components (it always
     /// can for the Gregorian calendar, but this avoids a force-unwrap).
@@ -37,8 +42,16 @@ extension Date {
         Calendar.current.date(byAdding: .month, value: months, to: self) ?? self
     }
 
+    /// `self` shifted by `days`, with the same safe-fallback contract.
+    func addingDays(_ days: Int) -> Date {
+        Calendar.current.date(byAdding: .day, value: days, to: self) ?? self
+    }
+
+    /// Half-open month span `[startOfMonth, startOfNextMonth)`. The `end` is the
+    /// exclusive boundary; pair it with `DateInterval.containsHalfOpen(_:)` so a
+    /// transaction at midnight on the 1st isn't counted in two months (D8).
     var monthInterval: DateInterval {
-        DateInterval(start: startOfMonth, end: endOfMonth)
+        DateInterval(start: startOfMonth, end: startOfNextMonth)
     }
 
     nonisolated var startOfWeek: Date {
@@ -82,4 +95,14 @@ extension Date {
 /// "Jun 4–10" — used by `WeeklySpendData` to label weekly trend chart bars.
 func formatWeekRange(start: Date, end: Date) -> String {
     "\(start.weekLabel)–\(end.weekLabel)"
+}
+
+extension DateInterval {
+    /// Half-open membership: `start <= date < end`. Unlike `contains(_:)` (which
+    /// includes `end`), this counts a transaction at the exclusive upper bound
+    /// as belonging to the *next* period — so period filters never double-count
+    /// a boundary transaction (AUDIT.md D8).
+    func containsHalfOpen(_ date: Date) -> Bool {
+        date >= start && date < end
+    }
 }

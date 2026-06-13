@@ -9,11 +9,17 @@ import SwiftData
 /// still attempts a best-effort import.
 struct AnkaBackup: Codable {
 
-    static let currentVersion = 1
+    /// v1 — transactions only (category stored as a bare name).
+    /// v2 — adds `categories` so emoji / color / **type** / order survive a
+    ///      restore onto a fresh install (see AUDIT.md D3). v1 files still
+    ///      decode: `categories` is optional and absent → name-only fallback.
+    static let currentVersion = 2
 
     let version: Int
     let exportedAt: Date
     let transactions: [BackupTransaction]
+    /// Optional so v1 payloads (no categories key) still decode.
+    let categories: [BackupCategory]?
 
     struct BackupTransaction: Codable {
         /// Original Transaction.id — used for duplicate detection on restore.
@@ -26,6 +32,14 @@ struct AnkaBackup: Codable {
         let currencyCode: String?
         let tags: [String]?
         let paymentMethod: String?
+    }
+
+    struct BackupCategory: Codable {
+        let name: String
+        let emoji: String
+        let colorHex: String
+        let type: TransactionType
+        let sortOrder: Int
     }
 }
 
@@ -45,8 +59,8 @@ enum BackupService {
 
     // MARK: - Export
 
-    /// Encodes the given transactions as a versioned JSON payload.
-    static func export(transactions: [Transaction]) throws -> Data {
+    /// Encodes the given transactions + categories as a versioned JSON payload.
+    static func export(transactions: [Transaction], categories: [Category]) throws -> Data {
         let backupTxns = transactions.map { tx in
             AnkaBackup.BackupTransaction(
                 id: tx.id.uuidString,
@@ -60,106 +74,22 @@ enum BackupService {
                 paymentMethod: tx.paymentMethod
             )
         }
+        let backupCats = categories.map { cat in
+            AnkaBackup.BackupCategory(
+                name: cat.name,
+                emoji: cat.emoji,
+                colorHex: cat.colorHex,
+                type: cat.type,
+                sortOrder: cat.sortOrder
+            )
+        }
         let backup = AnkaBackup(
             version: AnkaBackup.currentVersion,
             exportedAt: Date(),
-            transactions: backupTxns
+            transactions: backupTxns,
+            categories: backupCats
         )
         return try Self.encoder.encode(backup)
-    }
-
-    // MARK: - Restore
-
-    /// Reads a JSON file at `url`, imports non-duplicate transactions into `context`,
-    /// and returns a result describing what was imported, skipped, and any warnings.
-    ///
-    /// Duplicate detection uses the transaction's original UUID so that re-importing
-    /// the same backup file is always idempotent.
-    @discardableResult
-    static func restore(
-        from url: URL,
-        into context: ModelContext,
-        replaceExisting: Bool = false
-    ) throws -> BackupImportResult {
-        let data = try Data(contentsOf: url)
-        let backup = try Self.decoder.decode(AnkaBackup.self, from: data)
-
-        // Version gate
-        var warnings: [String] = []
-        if backup.version > AnkaBackup.currentVersion {
-            warnings.append(
-                "This backup was created with a newer version of Anka (v\(backup.version)). " +
-                "Some data may not be fully restored."
-            )
-        }
-
-        let existingTxns = (try? context.fetch(FetchDescriptor<Transaction>())) ?? []
-        let existingTxnsById = Dictionary(existingTxns.map { ($0.id.uuidString, $0) }, uniquingKeysWith: { first, _ in first })
-
-        // Cache existing categories to avoid redundant fetches
-        let allCats     = (try? context.fetch(FetchDescriptor<Category>())) ?? []
-        var catsByName  = Dictionary(allCats.map { ($0.name.lowercased(), $0) }, uniquingKeysWith: { first, _ in first })
-
-        var imported = 0
-        var skipped  = 0
-        var updated  = 0
-        var deleted  = 0
-
-        let backupIDs = Set(backup.transactions.map(\.id))
-
-        if replaceExisting {
-            // Delete any local transaction that is not in the backup
-            for tx in existingTxns {
-                if !backupIDs.contains(tx.id.uuidString) {
-                    context.delete(tx)
-                    deleted += 1
-                }
-            }
-        }
-
-        for btx in backup.transactions {
-            if let existing = existingTxnsById[btx.id] {
-                if replaceExisting {
-                    // Update existing transaction
-                    existing.amount = btx.amount
-                    existing.type = btx.type
-                    existing.date = btx.date
-                    existing.note = btx.note
-                    existing.currencyCode = btx.currencyCode ?? "USD"
-                    existing.tags = btx.tags ?? []
-                    existing.paymentMethod = btx.paymentMethod
-
-                    // Resolve category
-                    existing.category = resolveCategory(
-                        name: btx.categoryName, cache: &catsByName, context: context)
-                    updated += 1
-                } else {
-                    skipped += 1
-                }
-                continue
-            }
-
-            // Resolve or lazily create the category
-            let category = resolveCategory(
-                name: btx.categoryName, cache: &catsByName, context: context)
-
-            let tx = Transaction(
-                id: UUID(uuidString: btx.id) ?? UUID(),
-                amount: btx.amount,
-                type: btx.type,
-                date: btx.date,
-                note: btx.note,
-                category: category,
-                currencyCode: btx.currencyCode ?? "USD",
-                tags: btx.tags ?? [],
-                paymentMethod: btx.paymentMethod
-            )
-            context.insert(tx)
-            imported += 1
-        }
-
-        try context.save()
-        return BackupImportResult(imported: imported, skipped: skipped, updated: updated, deleted: deleted, warnings: warnings)
     }
 
     // MARK: - Restore (async with progress)
@@ -201,6 +131,32 @@ enum BackupService {
         let allCats     = (try? context.fetch(FetchDescriptor<Category>())) ?? []
         var catsByName  = Dictionary(allCats.map { ($0.name.lowercased(), $0) }, uniquingKeysWith: { first, _ in first })
 
+        // v2: metadata for the backup's categories, keyed by lowercased name.
+        // Drives both the pre-pass (recreate missing categories with the right
+        // type/emoji/color/order) and the per-transaction fallback below. v1
+        // payloads have no `categories` → empty map → name-only behavior.
+        let backupCatMeta: [String: AnkaBackup.BackupCategory] = Dictionary(
+            (backup.categories ?? []).map { ($0.name.lowercased(), $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
+
+        // Pre-pass: ensure every category named in the backup exists locally,
+        // created with its real metadata. Fixes AUDIT.md D3 (income categories
+        // were previously recreated as expenses).
+        for meta in backup.categories ?? [] {
+            let key = meta.name.lowercased()
+            guard catsByName[key] == nil else { continue }
+            let cat = Category(
+                name: meta.name,
+                emoji: meta.emoji,
+                colorHex: meta.colorHex,
+                type: meta.type,
+                sortOrder: meta.sortOrder
+            )
+            context.insert(cat)
+            catsByName[key] = cat
+        }
+
         var imported = 0, skipped = 0, updated = 0, deleted = 0
         let total = backup.transactions.count
         let backupIDs = Set(backup.transactions.map(\.id))
@@ -223,18 +179,20 @@ enum BackupService {
                     existing.type = btx.type
                     existing.date = btx.date
                     existing.note = btx.note
-                    existing.currencyCode = btx.currencyCode ?? "USD"
+                    existing.currencyCode = btx.currencyCode ?? AppCurrency.code
                     existing.tags = btx.tags ?? []
                     existing.paymentMethod = btx.paymentMethod
                     existing.category = resolveCategory(
-                        name: btx.categoryName, cache: &catsByName, context: context)
+                        name: btx.categoryName, fallbackType: btx.type,
+                        meta: backupCatMeta, cache: &catsByName, context: context)
                     updated += 1
                 } else {
                     skipped += 1
                 }
             } else {
                 let category = resolveCategory(
-                    name: btx.categoryName, cache: &catsByName, context: context)
+                    name: btx.categoryName, fallbackType: btx.type,
+                    meta: backupCatMeta, cache: &catsByName, context: context)
                 let tx = Transaction(
                     id: UUID(uuidString: btx.id) ?? UUID(),
                     amount: btx.amount,
@@ -242,7 +200,7 @@ enum BackupService {
                     date: btx.date,
                     note: btx.note,
                     category: category,
-                    currencyCode: btx.currencyCode ?? "USD",
+                    currencyCode: btx.currencyCode ?? AppCurrency.code,
                     tags: btx.tags ?? [],
                     paymentMethod: btx.paymentMethod
                 )
@@ -263,16 +221,31 @@ enum BackupService {
         return BackupImportResult(imported: imported, skipped: skipped, updated: updated, deleted: deleted, warnings: warnings)
     }
 
+    /// Resolves the local `Category` for a backup transaction's category name,
+    /// creating one lazily if absent. Prefers the backup's own category
+    /// metadata (v2); for a v1 file with no metadata, falls back to the
+    /// transaction's own type (so an income transaction can't spawn an expense
+    /// category — AUDIT.md D3/D4) and a neutral emoji/color.
     @MainActor
     private static func resolveCategory(
         name: String?,
+        fallbackType: TransactionType,
+        meta: [String: AnkaBackup.BackupCategory],
         cache: inout [String: Category],
         context: ModelContext
     ) -> Category? {
         guard let name, !name.isEmpty else { return nil }
         let key = name.lowercased()
         if let existing = cache[key] { return existing }
-        let newCat = Category(name: name, emoji: "📦", colorHex: "#9E9E9E", type: .expense, sortOrder: 999)
+
+        let newCat: Category
+        if let m = meta[key] {
+            newCat = Category(name: m.name, emoji: m.emoji, colorHex: m.colorHex,
+                              type: m.type, sortOrder: m.sortOrder)
+        } else {
+            newCat = Category(name: name, emoji: "📦", colorHex: "#9E9E9E",
+                              type: fallbackType, sortOrder: 999)
+        }
         context.insert(newCat)
         cache[key] = newCat
         return newCat

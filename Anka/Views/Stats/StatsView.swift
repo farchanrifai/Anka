@@ -181,12 +181,10 @@ struct StatsView: View {
     }
 
     /// "Rp 1,234,567" — matches the app's amount convention (never "IDR …").
-    private func rp(_ value: Double) -> String { "Rp \(value.idrShort)" }
+    private func rp(_ value: Double) -> String { value.rupiah }
 
     /// "+Rp 1,200,000" / "-Rp 300,000" — signed, for the Net chip.
-    private func signedAmount(_ value: Double) -> String {
-        (value < 0 ? "-" : "+") + "Rp \(abs(value).idrShort)"
-    }
+    private func signedAmount(_ value: Double) -> String { value.signedRupiah }
 
     // MARK: - Chart + breakdown content
 

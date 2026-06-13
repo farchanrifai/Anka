@@ -102,8 +102,15 @@ final class TransactionParser: Sendable {
             in: text, range: NSRange(text.startIndex..., in: text)
         ), let numberRange = Range(match.range(at: 1), in: text) else { return nil }
 
-        // Comma = thousands separator (IDR locale); dot = decimal.
-        let raw = String(text[numberRange]).replacingOccurrences(of: ",", with: "")
+        // Interpret separators by the device locale instead of assuming
+        // comma=thousands / dot=decimal. On id-ID "1.500" is 1500 and "1,5"
+        // is 1.5; on en-US it's the reverse (AUDIT.md D6).
+        let grouping = Locale.current.groupingSeparator ?? ","
+        let decimal  = Locale.current.decimalSeparator ?? "."
+        var raw = String(text[numberRange]).replacingOccurrences(of: grouping, with: "")
+        if decimal != "." {
+            raw = raw.replacingOccurrences(of: decimal, with: ".")
+        }
         guard let value = Double(raw) else { return nil }
 
         var multiplier = 1.0

@@ -61,6 +61,7 @@ struct TodayView: View {
         .onChange(of: allCategories) {
             feedVM()
         }
+        .autoBackup(transactions: allTransactions, categories: allCategories)
     }
 
     private func feedVM() {

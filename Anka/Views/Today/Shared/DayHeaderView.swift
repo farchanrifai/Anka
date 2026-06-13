@@ -21,7 +21,7 @@ struct DayHeaderView: View {
             Spacer()
 
             if total > 0 {
-                Text("\(sign)Rp \(total.idrShort)")
+                Text("\(sign)\(total.rupiah)")
                     .font(.dsFootnoteMedium)
                     .foregroundStyle(.primary)
                     .frame(height: 28)

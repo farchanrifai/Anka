@@ -56,6 +56,7 @@ struct TodayViewV2: View {
         .onChange(of: allCategories) {
             feedVM()
         }
+        .autoBackup(transactions: allTransactions, categories: allCategories)
     }
 
     private func feedVM() {
@@ -119,7 +120,7 @@ struct TodayViewV2: View {
     /// "Rp 1,234,567" — the hero number, shown as the large title (Mail's
     /// "All Inboxes").
     private var heroTitleText: String {
-        "Rp \(vm.heroAmount.idrShort)"
+        vm.heroAmount.rupiah
     }
 
     /// "June" while expanded; "June · Expense" once collapsed — mirrors

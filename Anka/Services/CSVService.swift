@@ -39,28 +39,39 @@ struct CSVService {
         let tagNames: [String]
         let currencyCode: String?
         let paymentMethod: String?
+        /// True when an existing transaction already matches this row
+        /// (same day + amount + type + note). Set during preview (AUDIT.md D9).
+        var isDuplicate: Bool = false
     }
 
     struct PreviewResult {
         var transactions: [ParsedTransaction]
         var parseErrors: [(row: Int, message: String)]
+
+        /// How many parsed rows look like duplicates of existing data.
+        var duplicateCount: Int { transactions.lazy.filter(\.isDuplicate).count }
     }
 
     static func parsePreview(
         from url: URL,
-        availableCategories: [Category]
+        availableCategories: [Category],
+        existingTransactions: [Transaction] = []
     ) throws -> PreviewResult {
         let raw = try String(contentsOf: url, encoding: .utf8)
-        let lines = raw.components(separatedBy: .newlines)
-            .map { $0.trimmingCharacters(in: .whitespaces) }
-            .filter { !$0.isEmpty }
+        let rows = parseCSV(raw)
 
-        guard lines.count > 1 else { throw CSVError.emptyFile }
+        // Need at least a header + one data row.
+        guard rows.count > 1 else { throw CSVError.emptyFile }
 
-        let headers = lines[0].lowercased().components(separatedBy: ",")
+        let headers = rows[0].map { $0.lowercased().trimmingCharacters(in: .whitespaces) }
         guard let col = ColumnMap(headers: headers) else {
             throw CSVError.missingRequiredColumns
         }
+
+        // Signatures of existing data, for duplicate detection.
+        let existingSignatures = Set(existingTransactions.map {
+            signature(date: $0.date, amount: $0.amount, type: $0.type, note: $0.note)
+        })
 
         var transactions: [ParsedTransaction] = []
         var errors: [(row: Int, message: String)] = []
@@ -69,15 +80,19 @@ struct CSVService {
         isoFormatter.formatOptions = [.withFullDate]
         let fallbackFormatter = DateFormatter()
 
-        for (index, line) in lines.dropFirst().enumerated() {
-            let fields = parseCSVLine(line)
+        for (index, fields) in rows.dropFirst().enumerated() {
+            // Skip blank rows (e.g. a trailing newline produced an empty row).
+            if fields.allSatisfy({ $0.trimmingCharacters(in: .whitespaces).isEmpty }) { continue }
             do {
-                let tx = try parseParsedRow(
+                var tx = try parseParsedRow(
                     fields: fields,
                     col: col,
                     isoFormatter: isoFormatter,
                     fallbackFormatter: fallbackFormatter,
                     availableCategories: availableCategories
+                )
+                tx.isDuplicate = existingSignatures.contains(
+                    signature(date: tx.date, amount: tx.amount, type: tx.type, note: tx.note)
                 )
                 transactions.append(tx)
             } catch {
@@ -86,6 +101,14 @@ struct CSVService {
         }
 
         return PreviewResult(transactions: transactions, parseErrors: errors)
+    }
+
+    /// Stable key for "is this the same transaction" — day-granular date so a
+    /// re-export (which drops the time component) still matches the original.
+    private static func signature(date: Date, amount: Double, type: TransactionType, note: String?) -> String {
+        let day = Calendar.current.startOfDay(for: date).timeIntervalSince1970
+        let n = note?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() ?? ""
+        return "\(day)|\(amount)|\(type.rawValue)|\(n)"
     }
 
     // MARK: - Commit (writes to DB)
@@ -244,22 +267,62 @@ struct CSVService {
         return "\"\(s.replacingOccurrences(of: "\"", with: "\"\""))\""
     }
 
-    static func parseCSVLine(_ line: String) -> [String] {
-        var fields: [String] = []
-        var current = ""
+    /// Full-file RFC-4180-ish CSV tokenizer. Handles quoted fields containing
+    /// commas and newlines, and unescapes doubled quotes (`""` → `"`). The old
+    /// implementation split the file on newlines first and didn't unescape, so
+    /// a note like `He said "hi"` or one containing a comma + newline was
+    /// corrupted on round-trip (AUDIT.md D7).
+    static func parseCSV(_ text: String) -> [[String]] {
+        var rows: [[String]] = []
+        var row: [String] = []
+        var field = ""
         var inQuotes = false
-        for char in line {
-            if char == "\"" {
-                inQuotes.toggle()
-            } else if char == "," && !inQuotes {
-                fields.append(current)
-                current = ""
+
+        let chars = Array(text)
+        var i = 0
+
+        func endField() { row.append(field); field = "" }
+        func endRow()   { endField(); rows.append(row); row = [] }
+
+        while i < chars.count {
+            let c = chars[i]
+            if inQuotes {
+                if c == "\"" {
+                    if i + 1 < chars.count, chars[i + 1] == "\"" {
+                        field.append("\"")   // escaped quote
+                        i += 2
+                    } else {
+                        inQuotes = false     // closing quote
+                        i += 1
+                    }
+                } else {
+                    field.append(c)
+                    i += 1
+                }
             } else {
-                current.append(char)
+                // Note: Swift fuses "\r\n" into ONE Character grapheme, so a
+                // CRLF terminator is matched by `isNewline` in a single step —
+                // no lookahead needed (and `case "\r"` would never fire).
+                if c == "\"" {
+                    inQuotes = true
+                    i += 1
+                } else if c == "," {
+                    endField()
+                    i += 1
+                } else if c.isNewline {
+                    endRow()
+                    i += 1
+                } else {
+                    field.append(c)
+                    i += 1
+                }
             }
         }
-        fields.append(current)
-        return fields
+        // Flush the last field/row when the file doesn't end in a newline.
+        if !field.isEmpty || !row.isEmpty {
+            endRow()
+        }
+        return rows
     }
 }
 

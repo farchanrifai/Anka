@@ -13,7 +13,7 @@ struct BackupSettingsView: View {
     @Query(sort: \Category.sortOrder)                private var allCategories: [Category]
 
     @State private var backups: [AutoBackupService.BackupFile] = []
-    @State private var txCounts: [UUID: Int] = [:]
+    @State private var txCounts: [String: Int] = [:]
     @State private var isBackingUp  = false
     @State private var isRestoring  = false
     @State private var confirmRestore: AutoBackupService.BackupFile? = nil
@@ -31,11 +31,11 @@ struct BackupSettingsView: View {
     var body: some View {
         List {
             // MARK: Status Section
-            Section("Auto-Backup") {
+            Section {
                 HStack {
                     Label("Status", systemImage: "externaldrive.badge.checkmark")
                     Spacer()
-                    Text("Enabled")
+                    Text("On")
                         .foregroundStyle(.secondary)
                 }
 
@@ -57,6 +57,10 @@ struct BackupSettingsView: View {
                     }
                 }
                 .disabled(isBackingUp)
+            } header: {
+                Text("Auto-Backup")
+            } footer: {
+                Text("Anka backs up automatically when you open the app (at most once a day) and shortly after you add, edit, or delete transactions. You can also back up manually any time.")
             }
             .listRowBackground(appearance.bgCard(scheme))
 
@@ -202,7 +206,7 @@ struct BackupSettingsView: View {
     // MARK: - Last Backup Text
 
     private var lastBackupText: String {
-        let ts = UserDefaults.standard.double(forKey: "autoBackupLastDate")
+        let ts = UserDefaults.standard.double(forKey: AutoBackupService.lastBackupKey)
         guard ts > 0 else { return "Never" }
         return RelativeDateTimeFormatter()
             .localizedString(for: Date(timeIntervalSince1970: ts), relativeTo: Date())

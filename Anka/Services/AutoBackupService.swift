@@ -19,7 +19,10 @@ final class AutoBackupService {
     // MARK: - Public Types
 
     struct BackupFile: Identifiable, Sendable {
-        let id: UUID
+        /// Filename is unique per backup and stable across `listBackups()` calls,
+        /// so it's the identity (was a fresh `UUID()` per listing, which
+        /// invalidated `txCounts` keyed by it — AUDIT.md A4).
+        var id: String { name }
         let name: String       // anka-backup-2026-05-22T14-30-00.json
         let url: URL           // preferred URL: App Group > Documents
         let agURL: URL?        // App Group copy (nil if absent)
@@ -29,7 +32,6 @@ final class AutoBackupService {
 
         init(name: String, url: URL, agURL: URL?, docsURL: URL?,
              createdAt: Date, fileSize: Int64) {
-            self.id        = UUID()
             self.name      = name
             self.url       = url
             self.agURL     = agURL
@@ -39,39 +41,43 @@ final class AutoBackupService {
         }
     }
 
-    // MARK: - Private Payload
-
-    private struct AnkaAutoBackup: Codable {
-        static let currentVersion = 1
-        let version: Int
-        let exportedAt: Date
-        let transactions: [BackupTransaction]
-
-        struct BackupTransaction: Codable {
-            let id: String
-            let amount: Double
-            let type: TransactionType
-            let categoryName: String?
-            let date: Date
-            let note: String?
-            let currencyCode: String?
-            let tags: [String]?
-            let paymentMethod: String?
-        }
-    }
+    // The on-disk payload is `AnkaBackup` (see BackupService) — auto-backups and
+    // manual exports now share one format, so restore reads either. The former
+    // private `AnkaAutoBackup` duplicate + its own encoder are gone (AUDIT.md A3).
 
     // MARK: - Constants
 
     private static let maxBackups     = 7
-    private static let lastBackupKey  = "autoBackupLastDate"
+    /// UserDefaults key for the last-backup timestamp. Exposed so the Backup
+    /// screen reads the same key instead of re-typing the string literal.
+    static let lastBackupKey  = "autoBackupLastDate"
     private static let backupInterval: TimeInterval = 24 * 3600
 
-    private static let encoder: JSONEncoder = {
-        let e = JSONEncoder()
-        e.dateEncodingStrategy = .secondsSince1970
-        e.outputFormatting     = [.prettyPrinted, .sortedKeys]
-        return e
-    }()
+    // MARK: - Automatic triggers
+    //
+    // These are the entry points that make auto-backup actually automatic
+    // (see AUDIT.md D2 — previously `performBackup` was only ever called by the
+    // manual "Back Up Now" button and `shouldBackup()` was dead code).
+
+    /// Called on app foreground. Backs up only when more than 24h have passed
+    /// since the last backup, so normal launches don't thrash the disk.
+    func backupOnForegroundIfNeeded(transactions: [Transaction], categories: [Category]) {
+        guard shouldBackup() else { return }
+        let txs = transactions, cats = categories
+        Task { await performBackup(transactions: txs, categories: cats) }
+    }
+
+    /// Called after a transaction is saved, deleted, imported, or restored.
+    /// Snapshots the current state, throttled to at most once per
+    /// `minChangeInterval` so a bulk edit/import doesn't evict the rolling
+    /// 7-backup history within a single burst.
+    private static let minChangeInterval: TimeInterval = 120
+    func backupAfterChange(transactions: [Transaction], categories: [Category]) {
+        let last = UserDefaults.standard.double(forKey: Self.lastBackupKey)
+        if last > 0, Date().timeIntervalSince1970 - last < Self.minChangeInterval { return }
+        let txs = transactions, cats = categories
+        Task { await performBackup(transactions: txs, categories: cats) }
+    }
 
     // MARK: - Perform Backup
 
@@ -79,26 +85,11 @@ final class AutoBackupService {
         transactions: [Transaction],
         categories: [Category]
     ) async {
-        // 1. Snapshot model data on MainActor (safe — @Model objects live here)
-        let txSnapshots = transactions.filter { !$0.isDeleted }.map { tx in
-            AnkaAutoBackup.BackupTransaction(
-                id: tx.id.uuidString,
-                amount: tx.amount,
-                type: tx.type,
-                categoryName: tx.category?.name,
-                date: tx.date,
-                note: tx.note,
-                currencyCode: tx.currencyCode,
-                tags: tx.tags.isEmpty ? nil : tx.tags,
-                paymentMethod: tx.paymentMethod
-            )
-        }
-        let payload = AnkaAutoBackup(
-            version: AnkaAutoBackup.currentVersion,
-            exportedAt: Date(),
-            transactions: txSnapshots
-        )
-        guard let data = try? Self.encoder.encode(payload) else { return }
+        // 1. Encode on MainActor (safe — @Model objects live here). Shares the
+        //    versioned AnkaBackup format (v2: includes categories) with manual
+        //    exports, so any backup file restores through the same path.
+        let liveTxns = transactions.filter { !$0.isDeleted }
+        guard let data = try? BackupService.export(transactions: liveTxns, categories: categories) else { return }
 
         // 2. Resolve target directories (URL and Data are Sendable value types)
         let fm       = FileManager.default
@@ -206,11 +197,6 @@ final class AutoBackupService {
     }
 
     // MARK: - Restore
-
-    @discardableResult
-    func restore(from file: BackupFile, into context: ModelContext, replaceExisting: Bool = false) throws -> BackupImportResult {
-        try BackupService.restore(from: file.url, into: context, replaceExisting: replaceExisting)
-    }
 
     @MainActor
     @discardableResult

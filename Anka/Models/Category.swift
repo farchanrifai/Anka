@@ -9,7 +9,12 @@ final class Category {
     var colorHex: String              // e.g. "F26666"
     var type: TransactionType         // .expense or .income
     var sortOrder: Int                // for ordering in picker
-    @Relationship(deleteRule: .cascade, inverse: \Transaction.category) var transactions: [Transaction] = []
+    // `.nullify` (not `.cascade`): deleting a category must NOT delete its
+    // transactions — they survive as "Uncategorized" (tx.category == nil).
+    // This matches the one-time migration in AnkaApp, which deliberately
+    // unlinks transactions before deleting old default categories so a cascade
+    // wouldn't wipe a user's history. See AUDIT.md D1.
+    @Relationship(deleteRule: .nullify, inverse: \Transaction.category) var transactions: [Transaction] = []
 
     init(
         id: UUID = UUID(),

@@ -31,6 +31,14 @@ extension Double {
     var idrShort: String {
         NumberFormatter.idr.string(from: NSNumber(value: self)) ?? "0"
     }
+    /// "Rp 1,234,567" — the app's canonical amount rendering. Single source for
+    /// the symbol so it isn't re-typed across views (AUDIT.md U4).
+    var rupiah: String { "Rp \(idrShort)" }
+
+    /// "+Rp 1,234,567" / "-Rp 300,000" — signed rupiah for net/delta values.
+    var signedRupiah: String {
+        (self < 0 ? "-" : "+") + abs(self).rupiah
+    }
 }
 
 extension Int {

@@ -21,6 +21,12 @@ struct ExportSheet: View {
     /// was a computed property re-run several times per render.
     @State private var filtered: [Transaction] = []
 
+    /// Temp CSV file backing the `ShareLink`. Regenerated whenever `filtered`
+    /// changes; nil when there's nothing to export. Using `ShareLink` instead
+    /// of a hand-presented `UIActivityViewController` fixes the iPad popover
+    /// crash (no source anchor) — see AUDIT.md X1.
+    @State private var exportURL: URL?
+
     // Cached formatters — DateFormatter is expensive to allocate.
     private static let monthFormatter: DateFormatter = {
         let f = DateFormatter(); f.dateFormat = "yyyy-MM"; return f
@@ -73,12 +79,17 @@ struct ExportSheet: View {
                         .tint(.primary)
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Export") {
-                        shareFiltered()
-                        dismiss()
+                    if let url = exportURL {
+                        ShareLink(item: url, preview: SharePreview(filename())) {
+                            Text("Export")
+                        }
+                        .disabled(filtered.isEmpty)
+                        .tint(.primary)
+                    } else {
+                        Button("Export") {}
+                            .disabled(true)
+                            .tint(.primary)
                     }
-                    .disabled(filtered.isEmpty)
-                    .tint(.primary)
                 }
             }
         }
@@ -94,6 +105,21 @@ struct ExportSheet: View {
     private func recomputeFiltered() {
         filtered = Self.filter(transactions, period: period,
                                customStart: customStart, customEnd: customEnd)
+        regenerateExportFile()
+    }
+
+    /// Writes the current `filtered` set to a temp CSV the `ShareLink` exports.
+    /// Reuses a stable filename per period so we don't litter the temp dir.
+    private func regenerateExportFile() {
+        guard !filtered.isEmpty else { exportURL = nil; return }
+        let csv = CSVService.export(filtered)
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent(filename())
+        do {
+            try csv.write(to: url, atomically: true, encoding: .utf8)
+            exportURL = url
+        } catch {
+            exportURL = nil
+        }
     }
 
     /// Pure filter so it can run off the view-update path. Uses the safe date
@@ -108,33 +134,20 @@ struct ExportSheet: View {
         case .thisMonth:
             return transactions.filter { $0.date >= now.startOfMonth && $0.date <= now }
         case .lastMonth:
+            // Half-open: [startOfMonth, startOfNextMonth) — no 1-second end gap (D8).
             let last = now.addingMonths(-1)
-            return transactions.filter { $0.date >= last.startOfMonth && $0.date <= last.endOfMonth }
+            return transactions.filter { $0.date >= last.startOfMonth && $0.date < last.startOfNextMonth }
         case .thisYear:
             let yearStart = now.startOfYear
             return transactions.filter { $0.date >= yearStart && $0.date <= now }
         case .custom:
-            let end = cal.date(bySettingHour: 23, minute: 59, second: 59, of: customEnd) ?? customEnd
-            return transactions.filter { $0.date >= customStart && $0.date <= end }
+            // Exclusive upper bound = start of the day after the end date.
+            let endExclusive = cal.startOfDay(for: customEnd).addingDays(1)
+            return transactions.filter { $0.date >= customStart && $0.date < endExclusive }
         }
     }
 
-    // MARK: - Share
-
-    private func shareFiltered() {
-        let csv = CSVService.export(filtered)
-        let url = FileManager.default.temporaryDirectory
-            .appendingPathComponent(filename())
-        guard (try? csv.write(to: url, atomically: true, encoding: .utf8)) != nil else { return }
-
-        let av = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-        guard let scene = UIApplication.shared.connectedScenes
-            .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
-              let root = scene.keyWindow?.rootViewController else { return }
-        var presenter = root
-        while let next = presenter.presentedViewController { presenter = next }
-        presenter.present(av, animated: true)
-    }
+    // MARK: - Filename
 
     private func filename() -> String {
         switch period {

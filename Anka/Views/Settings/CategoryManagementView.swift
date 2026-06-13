@@ -7,6 +7,9 @@ struct CategoryManagementView: View {
     @Environment(AppearanceManager.self) private var appearance
     @Bindable var viewModel: SettingsViewModel
 
+    /// Category pending swipe-deletion — drives the confirmation dialog.
+    @State private var pendingDelete: Category?
+
     private var expenses: [Category] {
         viewModel.categories
             .filter { $0.type == .expense }
@@ -26,7 +29,7 @@ struct CategoryManagementView: View {
                     categoryRow(category)
                 }
                 .onDelete { offsets in
-                    delete(from: expenses, at: offsets)
+                    requestDelete(from: expenses, at: offsets)
                 }
                 .onMove { from, to in
                     move(in: expenses, from: from, to: to)
@@ -39,7 +42,7 @@ struct CategoryManagementView: View {
                     categoryRow(category)
                 }
                 .onDelete { offsets in
-                    delete(from: incomes, at: offsets)
+                    requestDelete(from: incomes, at: offsets)
                 }
                 .onMove { from, to in
                     move(in: incomes, from: from, to: to)
@@ -68,6 +71,38 @@ struct CategoryManagementView: View {
         .sheet(isPresented: $viewModel.showAddCategory) {
             AddEditCategorySheet(viewModel: viewModel)
         }
+        .confirmationDialog(
+            deleteDialogTitle,
+            isPresented: Binding(
+                get: { pendingDelete != nil },
+                set: { if !$0 { pendingDelete = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button("Delete Category", role: .destructive) {
+                if let cat = pendingDelete { delete(cat) }
+                pendingDelete = nil
+            }
+            Button("Cancel", role: .cancel) { pendingDelete = nil }
+        } message: {
+            Text(deleteDialogMessage)
+        }
+    }
+
+    // MARK: - Delete confirmation copy
+
+    private var deleteDialogTitle: String {
+        guard let cat = pendingDelete else { return "Delete Category?" }
+        return "Delete \"\(cat.name)\"?"
+    }
+
+    private var deleteDialogMessage: String {
+        let count = pendingDelete?.transactions.count ?? 0
+        guard count > 0 else {
+            return "This category has no transactions and will be removed."
+        }
+        let noun = count == 1 ? "transaction" : "transactions"
+        return "\(count) \(noun) will be kept and moved to Uncategorized. The category itself is removed."
     }
 
     // MARK: - Row
@@ -99,10 +134,15 @@ struct CategoryManagementView: View {
 
     // MARK: - Mutations
 
-    private func delete(from list: [Category], at offsets: IndexSet) {
-        for index in offsets {
-            modelContext.delete(list[index])
-        }
+    /// Swipe-to-delete: don't delete immediately — confirm first, since the
+    /// category may have transactions that will be moved to Uncategorized.
+    private func requestDelete(from list: [Category], at offsets: IndexSet) {
+        guard let index = offsets.first, list.indices.contains(index) else { return }
+        pendingDelete = list[index]
+    }
+
+    private func delete(_ category: Category) {
+        modelContext.delete(category)
         try? modelContext.save()
     }
 

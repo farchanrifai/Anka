@@ -37,11 +37,11 @@ struct WeeklyTrendChartView: View {
                 .foregroundStyle(DSColor.textSecondary)
             Spacer()
             if let week = selectedWeek {
-                Text("\(week.dateRangeLabel) · Rp \(week.total.idrShort)")
+                Text("\(week.dateRangeLabel) · \(week.total.rupiah)")
                     .font(.dsCaption)
                     .foregroundStyle(DSColor.textSecondary)
             } else if average > 0 {
-                Text("avg Rp \(average.idrShort)")
+                Text("avg \(average.rupiah)")
                     .font(.dsCaption)
                     .foregroundStyle(DSColor.textSecondary)
             }

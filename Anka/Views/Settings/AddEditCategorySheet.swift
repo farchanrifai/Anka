@@ -7,6 +7,8 @@ struct AddEditCategorySheet: View {
 
     @Bindable var viewModel: SettingsViewModel
 
+    @State private var showDeleteConfirm = false
+
     private var isEditing: Bool { viewModel.editingCategory != nil }
     private var title: String { isEditing ? "Edit Category" : "Add Category" }
 
@@ -35,7 +37,33 @@ struct AddEditCategorySheet: View {
                     .foregroundStyle(DSColor.textSecondary)
                 }
             }
+            .confirmationDialog(
+                deleteDialogTitle,
+                isPresented: $showDeleteConfirm,
+                titleVisibility: .visible
+            ) {
+                Button("Delete Category", role: .destructive) { deleteEditing() }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text(deleteDialogMessage)
+            }
         }
+    }
+
+    // MARK: - Delete confirmation copy
+
+    private var deleteDialogTitle: String {
+        guard let cat = viewModel.editingCategory else { return "Delete Category?" }
+        return "Delete \"\(cat.name)\"?"
+    }
+
+    private var deleteDialogMessage: String {
+        let count = viewModel.editingCategory?.transactions.count ?? 0
+        guard count > 0 else {
+            return "This category has no transactions and will be removed."
+        }
+        let noun = count == 1 ? "transaction" : "transactions"
+        return "\(count) \(noun) will be kept and moved to Uncategorized. The category itself is removed."
     }
 
     // MARK: - Fields
@@ -91,7 +119,7 @@ struct AddEditCategorySheet: View {
         HStack(spacing: DSSpacing.md) {
             if isEditing {
                 Button(role: .destructive) {
-                    deleteEditing()
+                    showDeleteConfirm = true
                 } label: {
                     Image(systemName: "trash")
                         .font(.dsBody)

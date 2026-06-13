@@ -13,7 +13,7 @@ struct AmountLabel: View {
 
     var body: some View {
         let isIncome = type == .income
-        Text("\(isIncome ? "+ " : "")Rp \(amount.idrShort)")
+        Text("\(isIncome ? "+ " : "")\(amount.rupiah)")
             .font(.dsFootnoteMedium)
             // Income reads green so the list scans at a glance; expenses stay
             // neutral (they're the common case — coloring them would be noise).

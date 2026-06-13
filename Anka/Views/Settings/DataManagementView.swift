@@ -94,7 +94,8 @@ struct DataManagementView: View {
                 do {
                     let preview = try CSVService.parsePreview(
                         from: url,
-                        availableCategories: categories
+                        availableCategories: categories,
+                        existingTransactions: transactions
                     )
                     pendingTransactionPreview = preview
                     showTransactionPreview = true

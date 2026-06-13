@@ -137,18 +137,20 @@ final class StatsViewModel {
         // 2. Heavy aggregation off-main.
         let result = await Task.detached(priority: .userInitiated) {
             // Expense only — the donut shows where the user's money goes.
+            // Half-open membership so a boundary transaction isn't counted in
+            // both this month and the next (AUDIT.md D8).
             let monthExpenses = txSnaps.filter {
-                $0.type == .expense && interval.contains($0.date)
+                $0.type == .expense && interval.containsHalfOpen($0.date)
             }
 
             // Income total for the month's summary line (not charted).
             let income = txSnaps
-                .filter { $0.type == .income && interval.contains($0.date) }
+                .filter { $0.type == .income && interval.containsHalfOpen($0.date) }
                 .reduce(0) { $0 + $1.amount }
 
             // Previous-month expense total, for the change-vs-last-month pill.
             let prevTotal = txSnaps
-                .filter { $0.type == .expense && prevInterval.contains($0.date) }
+                .filter { $0.type == .expense && prevInterval.containsHalfOpen($0.date) }
                 .reduce(0) { $0 + $1.amount }
 
             var totals: [UUID: Double] = [:]

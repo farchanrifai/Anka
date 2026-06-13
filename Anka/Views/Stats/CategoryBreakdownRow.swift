@@ -31,7 +31,7 @@ struct CategoryBreakdownRow: View {
 
                 Spacer(minLength: DSSpacing.sm)
 
-                Text("Rp \(data.amount.idrShort)")
+                Text(data.amount.rupiah)
                     .font(.dsFootnoteMedium)
                     .foregroundStyle(DSColor.textPrimary)
                     .monospacedDigit()

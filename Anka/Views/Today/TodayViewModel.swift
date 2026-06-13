@@ -162,7 +162,9 @@ enum BalanceMode: String, CaseIterable, Hashable {
             let matches = group.transactions.filter { tx in
                 if let n = tx.note?.lowercased(), n.contains(q) { return true }
                 if let cn = tx.category?.name.lowercased(), cn.contains(q) { return true }
-                if String(Int(tx.amount)).contains(q) { return true }
+                // `String(Int(amount))` traps on NaN / out-of-Int64 amounts;
+                // `%.0f` is non-trapping (AUDIT.md X4).
+                if String(format: "%.0f", tx.amount).contains(q) { return true }
                 return false
             }
             return matches.isEmpty ? nil : (date: group.date, transactions: matches)
@@ -192,10 +194,12 @@ enum BalanceMode: String, CaseIterable, Hashable {
         case .custom:
             if let start = customStartDate {
                 let end = customEndDate ?? start
-                // End of day so all transactions on the end date are included.
+                // Exclusive upper bound = start of the day *after* the end date,
+                // so the whole end day is included without the 1-second gap of a
+                // "23:59:59" end (AUDIT.md D8). Filtered with containsHalfOpen.
                 let cal = Calendar.current
-                let endOfDay = cal.date(bySettingHour: 23, minute: 59, second: 59, of: end) ?? end
-                return DateInterval(start: cal.startOfDay(for: start), end: endOfDay)
+                let endExclusive = cal.startOfDay(for: end).addingDays(1)
+                return DateInterval(start: cal.startOfDay(for: start), end: endExclusive)
             }
             return DateInterval(start: Date(), end: Date())
         case .last3Months, .last6Months, .thisYear:
@@ -242,7 +246,16 @@ enum BalanceMode: String, CaseIterable, Hashable {
 
     var heroAmount: Double {
         if !selectedCategories.isEmpty {
-            return filteredTransactions.reduce(0) { $0 + $1.amount }
+            // In Total mode the filtered set contains both types, so net them
+            // (income − expense) rather than summing — otherwise the hero
+            // added income onto expenses (AUDIT.md D10). Expense/Income modes
+            // already filter to a single type, so a plain sum is correct.
+            switch balanceMode {
+            case .expense, .income:
+                return filteredTransactions.reduce(0) { $0 + $1.amount }
+            case .total:
+                return filteredTransactions.reduce(0) { $0 + ($1.type == .income ? $1.amount : -$1.amount) }
+            }
         }
         switch balanceMode {
         case .expense: return expenseTotal
@@ -304,8 +317,8 @@ enum BalanceMode: String, CaseIterable, Hashable {
             var cal = Calendar(identifier: .gregorian)
             cal.timeZone = tz
 
-            // Period filter
-            let periodSnaps = txSnaps.filter { interval.contains($0.date) }
+            // Period filter (half-open so boundary transactions land in one period)
+            let periodSnaps = txSnaps.filter { interval.containsHalfOpen($0.date) }
 
             // Filtered + sorted snaps (type + optional category filter)
             var filtered = capturedType == nil ? periodSnaps : periodSnaps.filter { $0.type == capturedType }

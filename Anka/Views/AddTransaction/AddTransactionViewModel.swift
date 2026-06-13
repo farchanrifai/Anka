@@ -23,9 +23,10 @@ final class AddTransactionViewModel {
     var latestMLCategory: Category? = nil
 
     // MARK: - NLP parse state
-    /// Currency code extracted by the natural-language parser (e.g. "USD").
-    /// Persisted on save; falls back to `AppCurrency.code` when nil.
-    var parsedCurrencyCode: String? = nil
+    // Anka is IDR-only at MVP (AUDIT.md D5): the parser still recognises and
+    // strips currency words from the note ("5 dollar coffee" → note "coffee"),
+    // but the extracted foreign code is NOT persisted — every transaction is
+    // stored in `AppCurrency.code` so totals never mix currencies.
     /// Confidence (0–1) of the last description parse. Exposed for potential
     /// UI feedback — the parse itself is silent.
     var parseConfidence: Double = 0
@@ -73,11 +74,24 @@ final class AddTransactionViewModel {
             .sorted { $0.sortOrder < $1.sortOrder }
     }
 
-    var parsedAmount: Double {
-        let cleaned = amountText
-            .replacingOccurrences(of: ",", with: "")
-            .replacingOccurrences(of: " ", with: "")
-        return Double(cleaned) ?? 0
+    var parsedAmount: Double { Self.parseAmount(amountText) }
+
+    /// Locale-aware amount parse. On an Indonesian-locale device the decimal-pad
+    /// decimal key is "," (and "." is the grouping separator), so "1,5" means
+    /// 1.5 and "1.500" means 1500. The old code stripped every "," as a
+    /// thousands separator, turning "1,5" into 15 — a 10× error for the app's
+    /// primary market (AUDIT.md D6). `locale` is injectable for tests.
+    nonisolated static func parseAmount(_ text: String, locale: Locale = .current) -> Double {
+        var s = text.trimmingCharacters(in: .whitespaces)
+        guard !s.isEmpty else { return 0 }
+        let grouping = locale.groupingSeparator ?? ","
+        let decimal  = locale.decimalSeparator ?? "."
+        s = s.replacingOccurrences(of: grouping, with: "")
+        s = s.replacingOccurrences(of: " ", with: "")
+        if decimal != "." {
+            s = s.replacingOccurrences(of: decimal, with: ".")
+        }
+        return Double(s) ?? 0
     }
 
     /// Cached display formatters — NumberFormatter is expensive to construct
@@ -94,6 +108,10 @@ final class AddTransactionViewModel {
         let f = NumberFormatter()
         f.numberStyle = .decimal
         f.groupingSeparator = ","
+        // Pin the decimal separator so the display matches the app's US-style
+        // grouping ("1,234.5") regardless of device locale — consistent with
+        // `NumberFormatter.idr`.
+        f.decimalSeparator = "."
         f.maximumFractionDigits = 2
         f.minimumFractionDigits = 0
         return f
@@ -102,7 +120,9 @@ final class AddTransactionViewModel {
     var formattedAmountDisplay: String {
         let value = parsedAmount
         guard value > 0 else { return amountText }
-        let f = amountText.contains(".") ? Self.fractionalAmountFormatter : Self.wholeAmountFormatter
+        // "Has a fraction" is locale-relative: on id-ID the decimal key is ",".
+        let decimal = Locale.current.decimalSeparator ?? "."
+        let f = amountText.contains(decimal) ? Self.fractionalAmountFormatter : Self.wholeAmountFormatter
         return f.string(from: NSNumber(value: value)) ?? amountText
     }
 
@@ -201,7 +221,7 @@ final class AddTransactionViewModel {
                 date: selectedDate,
                 note: trimmedNote.isEmpty ? nil : trimmedNote,
                 category: selectedCategory,
-                currencyCode: parsedCurrencyCode ?? AppCurrency.code,
+                currencyCode: AppCurrency.code,
                 tags: selectedTags
             )
             context.insert(tx)
@@ -242,9 +262,9 @@ final class AddTransactionViewModel {
         if parsed.amount == nil && parsed.note == raw { return }
 
         // Auto-fill the amount only when the user hasn't entered one yet.
+        // The parsed currency code is intentionally discarded — IDR-only (D5).
         if let amount = parsed.amount, amountText.isEmpty {
             amountText = Self.amountText(from: amount)
-            parsedCurrencyCode = parsed.currencyCode
         }
 
         // Replace the note with the cleaned text (programmatic set — does not

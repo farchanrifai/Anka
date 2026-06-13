@@ -8,11 +8,20 @@ struct ImportPreviewSheet: View {
     @Environment(\.colorScheme) private var scheme
     @Environment(AppearanceManager.self) private var appearance
 
-    private var grouped: [(label: String, date: Date, total: Double, items: [CSVService.ParsedTransaction])] {
+    /// Whether to import rows that look like duplicates of existing data.
+    /// Off by default — duplicates are skipped (AUDIT.md D9).
+    @State private var includeDuplicates = false
+
+    /// Day-grouped sections, computed once on appear instead of on every render
+    /// (AUDIT.md P4). Stored, not a recomputed `var`.
+    private typealias Group = (label: String, date: Date, total: Double, items: [CSVService.ParsedTransaction])
+    @State private var grouped: [Group] = []
+
+    private static func group(_ transactions: [CSVService.ParsedTransaction]) -> [Group] {
         let cal = Calendar.current
         var byDay: [Date: [CSVService.ParsedTransaction]] = [:]
         var totals: [Date: Double] = [:]
-        for tx in preview.transactions {
+        for tx in transactions {
             let day = cal.startOfDay(for: tx.date)
             byDay[day, default: []].append(tx)
             totals[day, default: 0] += tx.amount
@@ -27,13 +36,18 @@ struct ImportPreviewSheet: View {
             )}
     }
 
+    /// The rows that will actually be imported, honoring the duplicate toggle.
+    private var rowsToImport: [CSVService.ParsedTransaction] {
+        includeDuplicates ? preview.transactions : preview.transactions.filter { !$0.isDuplicate }
+    }
+
     var body: some View {
         NavigationStack {
             List {
                 // Summary
                 Section {
-                    let count = preview.transactions.count
-                    let total = preview.transactions.filter { $0.type == .expense }.reduce(0) { $0 + $1.amount }
+                    let count = rowsToImport.count
+                    let total = rowsToImport.filter { $0.type == .expense }.reduce(0) { $0 + $1.amount }
                     HStack {
                         Text("\(count) transaction\(count == 1 ? "" : "s") ready to import")
                         Spacer()
@@ -44,6 +58,25 @@ struct ImportPreviewSheet: View {
                 }
                 .listRowBackground(appearance.bgGrouped(scheme))
                 .listSectionSeparator(.hidden)
+
+                // Duplicate handling
+                if preview.duplicateCount > 0 {
+                    Section {
+                        Toggle(isOn: $includeDuplicates) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Import \(preview.duplicateCount) duplicate\(preview.duplicateCount == 1 ? "" : "s")")
+                                    .font(.subheadline)
+                                Text("Rows matching transactions you already have")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .tint(DSColor.accent)
+                    } footer: {
+                        Text("Duplicates are skipped by default to avoid importing the same data twice.")
+                    }
+                    .listRowBackground(appearance.bgCard(scheme))
+                }
 
                 // Parse warnings
                 if !preview.parseErrors.isEmpty {
@@ -79,14 +112,18 @@ struct ImportPreviewSheet: View {
                         .tint(.primary)
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Import \(preview.transactions.count)") {
-                        onConfirm(preview.transactions, preview.parseErrors)
+                    Button("Import \(rowsToImport.count)") {
+                        onConfirm(rowsToImport, preview.parseErrors)
                         dismiss()
                     }
-                    .disabled(preview.transactions.isEmpty)
+                    .disabled(rowsToImport.isEmpty)
                     .tint(.primary)
                 }
             }
+            // Group once on appear, and re-group only when the duplicate toggle
+            // flips (so skipped duplicates drop out of the list).
+            .onAppear { grouped = Self.group(rowsToImport) }
+            .onChange(of: includeDuplicates) { grouped = Self.group(rowsToImport) }
         }
     }
 
