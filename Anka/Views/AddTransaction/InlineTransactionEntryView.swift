@@ -216,16 +216,16 @@ struct InlineComposerModifier: ViewModifier {
             }
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 if vm.showInlineComposer {
-                    // Zoom out of / shrink back into the bottom-trailing corner —
-                    // where the `+` toolbar button sits — to echo V1's sheet
-                    // zoom from the add button. No vertical *move* (that comes
-                    // from the keyboard lifting the safe-area inset), so the bar
-                    // still rides up/down with the keyboard while it scales.
+                    // Open: plain opacity (no zoom) — the bar just fades in while
+                    // the keyboard lifts the safe-area inset.
+                    // Close: shrink back into the bottom-trailing corner (where
+                    // the `+` sits). Asymmetric so only the close zooms.
                     InlineTransactionEntryView(onDismiss: dismiss)
-                        .transition(
-                            .scale(scale: 0.2, anchor: .bottomTrailing)
+                        .transition(.asymmetric(
+                            insertion: .opacity,
+                            removal: .scale(scale: 0.2, anchor: .bottomTrailing)
                                 .combined(with: .opacity)
-                        )
+                        ))
                 }
             }
             // Open/close are animated explicitly (snappy open, slower smooth
