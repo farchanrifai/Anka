@@ -234,25 +234,30 @@ Cosmetic UIKit warnings persist (`SearchBarHidesWhenScrolling-default` vs `-expl
 - `appLockEnabled: Bool` — persisted to `UserDefaults` under `anka.appLockEnabled` (the `didSet` writes through automatically)
 - `isLocked: Bool` — transient, flips between launches/foreground/background
 - `hasPIN: Bool` — derived from `KeychainHelper.read(forKey: "ankaPINCode") != nil`
+- **`biometricEnabled: Bool`** — persisted **user preference** (`anka.appLock.biometricEnabled`, default `true`) for using Face ID / Touch ID. Distinct from `canUseBiometrics` (the *hardware* capability). `useBiometrics` = `canUseBiometrics && biometricEnabled` is the effective gate the lock screen reads — so the user can keep the lock **PIN-only** even on a biometric device.
+- `gracePeriod: GracePeriod` — auto-lock grace window (`anka.appLock.gracePeriod`); see grace-period note below.
 - Biometric helpers: `biometricType`, `canUseBiometrics`, `authenticateWithBiometrics() async -> Bool`
-- PIN: `savePIN`, `removePIN`, `verifyPIN`
+- PIN: `savePIN`/`removePIN`/`verifyPIN` (PIN is a per-PIN salted SHA256 credential in the Keychain; see Batch 5 hardening). All key literals are `static let` on the manager.
 
-`KeychainHelper` uses service `nc.Anka` (separate from the App Group ID).
+`KeychainHelper` uses service `nc.Anka` (separate from the App Group ID); items are written `WhenUnlockedThisDeviceOnly`.
 
-**Lock gate at app root** — `AnkaApp.body` wraps `AppRouter` in a `ZStack` and overlays `AppLockView` when `lockManager.isLocked` is true. `.onChange(of: scenePhase)` calls `lockManager.lock()` on `.background`/`.inactive`, but `lock()` itself bails when `appLockEnabled == false` OR `hasPIN == false` — so the user can never be stranded.
+**Lock gate at app root** — `AnkaApp.body` wraps `AppRouter` in a `ZStack` and overlays `AppLockView` when `lockManager.isLocked` is true. `.onChange(of: scenePhase)` calls `enterBackground()` on `.inactive`/`.background` and `enterForeground()` on `.active` (these cover the UI for app-switcher privacy and honor the grace period); both bail when `appLockEnabled == false` OR `hasPIN == false` — so the user can never be stranded. ⚠️ The overlay lives in the **root ZStack**, *beneath* any presented sheet — so engaging the lock while a sheet (e.g. Settings) is open won't surface it until the sheet closes (see "Immediate prompt on activation").
 
-**PIN is mandatory when enabling.** The Settings toggle won't flip `appLockEnabled` to true unless a PIN exists; it presents `PINSetupSheet` first. Biometric remains the fast path, PIN is fallback.
+**PIN is mandatory when enabling.** The Settings toggle won't flip `appLockEnabled` to true unless a PIN exists; it presents `PINSetupSheet` first. Biometric is an opt-in fast path on top of the PIN.
+
+**Immediate prompt on activation.** Enabling App Lock (toggle-with-PIN, or finishing `PINSetupSheet`) routes through `SettingsView.engageLock()` → `appLockEnabled = true` + `lock()` + **`dismiss()` of the Settings sheet**. The dismiss is required because the lock overlay is beneath the sheet; without it the lock screen (and biometric prompt) would only appear on the next launch — the "didn't ask for Face ID right after activating" bug.
 
 **Settings security section** lives in the existing native `List` (Settings → Section "Security"):
-- Toggle: "Face ID & PIN" / "Touch ID & PIN" / "App Lock (PIN)" depending on `biometricType`
-- "Change PIN" — re-runs `PINSetupSheet`
-- "Remove PIN" — confirmation dialog, then `removePIN()` + `appLockEnabled = false` together
+- Toggle: **"App Lock"** (generic `lock.fill`) — enables/disables the lock.
+- Toggle: **"Use Face ID" / "Use Touch ID" / "Use Optic ID"** (only when `canUseBiometrics`) — drives `biometricEnabled` (PIN-only vs PIN + biometrics).
+- "Require Unlock" — grace-period picker (`Immediately` / `30s` / `1m` / `5m`).
+- "Change PIN" — re-runs `PINSetupSheet`.
+- "Remove PIN" — confirmation dialog, then `removePIN()` + `appLockEnabled = false` together.
 
 **Lock screen UX** (`AppLockView`):
-- Auto-prompts biometric once on first appearance via `.task`
-- If biometric fails/cancels, falls through to PIN input automatically
-- 4-digit PIN auto-submits on the 4th character; wrong PIN clears + error haptic
-- "Use PIN instead" / "Back to Face ID" toggles between the two methods
+- When `useBiometrics`: auto-prompts biometric once on first appearance via `.task`; if it fails/cancels, falls through to PIN. When `biometricEnabled` is off (PIN-only): the keypad is shown **directly** (no biometric button, no "Back to Face ID" link), focused on appear.
+- 4-digit PIN auto-submits on the 4th character; wrong PIN clears + error haptic; escalating brute-force lockout with a live countdown.
+- "Use PIN instead" / "Back to Face ID" toggles between the two methods (biometric mode only).
 
 ## ML Auto-Categorization (Phase 6)
 

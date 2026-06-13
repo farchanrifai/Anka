@@ -53,7 +53,7 @@ struct AppLockView: View {
 
                 if isLockedOut {
                     lockoutSection
-                } else if showPINEntry {
+                } else if showsPINEntry {
                     pinEntrySection
                 } else {
                     biometricSection
@@ -65,19 +65,31 @@ struct AppLockView: View {
         }
         .onReceive(ticker) { now = $0 }
         .task {
-            // Auto-prompt biometric once when the lock screen first appears.
-            // After that the user must tap to retry.
-            if !biometricAttempted, lock.canUseBiometrics, !showPINEntry {
-                biometricAttempted = true
-                await runBiometric()
+            if lock.useBiometrics {
+                // Auto-prompt biometric once when the lock screen first appears.
+                // After that the user must tap to retry.
+                if !biometricAttempted, !showPINEntry {
+                    biometricAttempted = true
+                    await runBiometric()
+                }
+            } else {
+                // PIN-only — bring up the keypad straight away.
+                try? await Task.sleep(for: .milliseconds(400))
+                pinFocused = true
             }
         }
     }
 
+    /// Shows the PIN keypad when the user tapped "Use PIN" or when biometrics
+    /// are off (hardware-absent or user opted into PIN-only).
+    private var showsPINEntry: Bool {
+        showPINEntry || !lock.useBiometrics
+    }
+
     private var subtitle: String {
         if isLockedOut { return "Too many attempts" }
-        if showPINEntry { return "Enter your PIN" }
-        if lock.canUseBiometrics { return "Authenticate to continue" }
+        if showsPINEntry { return "Enter your PIN" }
+        if lock.useBiometrics { return "Authenticate to continue" }
         return "Enter your PIN to continue"
     }
 
@@ -126,7 +138,7 @@ struct AppLockView: View {
 
     private var biometricSection: some View {
         VStack(spacing: DSSpacing.md) {
-            if lock.canUseBiometrics {
+            if lock.useBiometrics {
                 Button {
                     Task { await runBiometric() }
                 } label: {
@@ -155,7 +167,7 @@ struct AppLockView: View {
                         pinFocused = true
                     }
                 } label: {
-                    Text(lock.canUseBiometrics ? "Use PIN instead" : "Enter PIN")
+                    Text(lock.useBiometrics ? "Use PIN instead" : "Enter PIN")
                         .font(.dsCaption)
                         .foregroundStyle(DSColor.accentText)
                 }
@@ -212,7 +224,7 @@ struct AppLockView: View {
                     if pinInput.count == 4 { attemptPINUnlock() }
                 }
 
-            if lock.canUseBiometrics {
+            if lock.useBiometrics {
                 Button {
                     withAnimation(.dsEase) {
                         showPINEntry = false

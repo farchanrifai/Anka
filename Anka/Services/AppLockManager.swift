@@ -18,11 +18,24 @@ final class AppLockManager {
     private static let graceKey = "anka.appLock.gracePeriod"
     private static let failedAttemptsKey = "anka.appLock.failedAttempts"
     private static let lockoutUntilKey = "anka.appLock.lockoutUntil"
+    private static let biometricKey = "anka.appLock.biometricEnabled"
 
     /// Persisted: does the user want the lock screen at all?
     var appLockEnabled: Bool {
         didSet { UserDefaults.standard.set(appLockEnabled, forKey: Self.enabledKey) }
     }
+
+    /// Persisted user *preference* for using Face ID / Touch ID on the lock
+    /// screen. Distinct from `canUseBiometrics` (the hardware capability) — the
+    /// user can keep the lock PIN-only even on a Face ID device. Defaults to on
+    /// so existing installs keep using biometrics.
+    var biometricEnabled: Bool {
+        didSet { UserDefaults.standard.set(biometricEnabled, forKey: Self.biometricKey) }
+    }
+
+    /// Effective gate the lock screen uses: biometrics are offered only when the
+    /// hardware supports them AND the user hasn't opted into PIN-only.
+    var useBiometrics: Bool { canUseBiometrics && biometricEnabled }
 
     /// Transient: is the lock screen currently covering the UI?
     var isLocked: Bool
@@ -99,6 +112,9 @@ final class AppLockManager {
         self.gracePeriod = GracePeriod(rawValue: defaults.integer(forKey: Self.graceKey)) ?? .immediately
         self.failedAttempts = defaults.integer(forKey: Self.failedAttemptsKey)
         self.lockoutUntil = defaults.object(forKey: Self.lockoutUntilKey) as? Date
+        // Default to true when the key has never been written (new + existing
+        // installs keep biometrics on until the user turns them off).
+        self.biometricEnabled = defaults.object(forKey: Self.biometricKey) as? Bool ?? true
         // Seed the cached biometric state once (all stored properties are now
         // initialized, so calling an instance method here is valid).
         refreshBiometricState()

@@ -202,7 +202,7 @@ struct SettingsView: View {
                         // Enabling — require PIN first so biometric failure
                         // can't lock the user out forever.
                         if lock.hasPIN {
-                            lock.appLockEnabled = true
+                            engageLock()
                         } else {
                             showPINSetup = true
                         }
@@ -212,15 +212,32 @@ struct SettingsView: View {
                 }
             )) {
                 Label {
-                    Text(lockToggleLabel)
+                    Text("App Lock")
                 } icon: {
-                    Image(systemName: lockToggleIcon)
+                    Image(systemName: "lock.fill")
                         .foregroundStyle(DSColor.accent)
                 }
             }
             .tint(DSColor.accent)
 
             if lock.appLockEnabled, lock.hasPIN {
+                // Let the user choose PIN-only vs. PIN + biometrics (only on
+                // hardware that has Face ID / Touch ID / Optic ID).
+                if lock.canUseBiometrics {
+                    Toggle(isOn: Binding(
+                        get: { lock.biometricEnabled },
+                        set: { lock.biometricEnabled = $0 }
+                    )) {
+                        Label {
+                            Text(biometricRowLabel)
+                        } icon: {
+                            Image(systemName: biometricRowIcon)
+                                .foregroundStyle(DSColor.accent)
+                        }
+                    }
+                    .tint(DSColor.accent)
+                }
+
                 Picker(selection: Binding(
                     get: { lock.gracePeriod },
                     set: { lock.gracePeriod = $0 }
@@ -269,7 +286,7 @@ struct SettingsView: View {
         }
         .sheet(isPresented: $showPINSetup) {
             PINSetupSheet {
-                lock.appLockEnabled = true
+                engageLock()
             }
             .environment(lock)
         }
@@ -286,23 +303,33 @@ struct SettingsView: View {
         }
     }
 
-    private var lockToggleLabel: String {
+    /// Enables the lock and engages it *now*. The lock overlay lives at the app
+    /// root, beneath this Settings sheet — so we dismiss Settings too, otherwise
+    /// the lock screen (and its biometric prompt) stays hidden until the next
+    /// launch (the exact "didn't ask immediately after activating" bug).
+    private func engageLock() {
+        lock.appLockEnabled = true
+        lock.lock()
+        dismiss()
+    }
+
+    /// "Use Face ID" / "Use Touch ID" / "Use Optic ID" — label for the
+    /// biometric opt-in toggle (only shown on biometric-capable hardware).
+    private var biometricRowLabel: String {
         switch lock.biometricType {
-        case .faceID:  return "Face ID & PIN"
-        case .touchID: return "Touch ID & PIN"
-        case .opticID: return "Optic ID & PIN"
-        case .none:    return "App Lock (PIN)"
-        @unknown default: return "App Lock (PIN)"
+        case .faceID:  return "Use Face ID"
+        case .touchID: return "Use Touch ID"
+        case .opticID: return "Use Optic ID"
+        default:       return "Use Biometrics"
         }
     }
 
-    private var lockToggleIcon: String {
+    private var biometricRowIcon: String {
         switch lock.biometricType {
         case .faceID:  return "faceid"
         case .touchID: return "touchid"
         case .opticID: return "opticid"
-        case .none:    return "lock.fill"
-        @unknown default: return "lock.fill"
+        default:       return "lock.fill"
         }
     }
 
