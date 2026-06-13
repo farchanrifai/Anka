@@ -26,7 +26,7 @@ public struct TrainableTransaction: Sendable {
 /// On builds where CreateML is unavailable, `trainIfNeeded` is a no-op —
 /// inference still works via the bundled StarterCategoryClassifier.
 public enum CategoryMLTrainer {
-    private static let lastCountKey = "ml_last_train_count"
+    private static let lastCountKey = MLStorage.lastTrainCountKey
     private static let appGroupID   = PlatformPaths.appGroupID
 
     // MARK: - Public
@@ -113,7 +113,7 @@ public enum CategoryMLTrainer {
 
     // MARK: - Corrections
 
-    private static let correctionsKey = "ml_corrections"
+    private static let correctionsKey = MLStorage.correctionsKey
 
     private static func loadCorrections() -> [CorrectionEntry] {
         let defaults = UserDefaults(suiteName: appGroupID)

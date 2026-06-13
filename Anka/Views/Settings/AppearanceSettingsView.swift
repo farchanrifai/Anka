@@ -60,7 +60,7 @@ struct AppearanceSettingsView: View {
 
     private func modeRow(_ mode: AppearanceManager.Mode, binding: Binding<AppearanceManager.Mode>) -> some View {
         Button {
-            withAnimation(.easeInOut(duration: 0.2)) {
+            withAnimation(.dsEase) {
                 binding.wrappedValue = mode
             }
         } label: {
@@ -87,7 +87,7 @@ struct AppearanceSettingsView: View {
 
     private func variantRow(_ variant: AppearanceManager.DarkVariant, binding: Binding<AppearanceManager.DarkVariant>) -> some View {
         Button {
-            withAnimation(.easeInOut(duration: 0.2)) {
+            withAnimation(.dsEase) {
                 binding.wrappedValue = variant
             }
         } label: {
@@ -117,7 +117,7 @@ struct AppearanceSettingsView: View {
 
     private func todayViewRow(_ version: AppearanceManager.TodayViewVersion, binding: Binding<AppearanceManager.TodayViewVersion>) -> some View {
         Button {
-            withAnimation(.easeInOut(duration: 0.2)) {
+            withAnimation(.dsEase) {
                 binding.wrappedValue = version
             }
         } label: {

@@ -30,16 +30,8 @@ extension Font {
 
     // MARK: Display / Hero (amounts, large numbers)
 
-    /// 57 pt — hero amount on dashboard.
-    static let dsHero         = Font.system(size: 57, relativeTo: .largeTitle)
-    /// 52 pt — Today dashboard hero balance amount. Dynamic-Type-aware
-    /// (UIFontMetrics-scaled relative to .largeTitle), unlike the fixed-size `dsHero`.
+    /// 52 pt — Today dashboard hero balance amount (UIFontMetrics-scaled).
     static let dsHeroAmount   = Font.system(size: 52, weight: .black, relativeTo: .largeTitle)
-    /// 53 pt — large emoji/icon display.
-    static let dsDisplay      = Font.system(size: 53, relativeTo: .largeTitle)
-    /// 37 pt — large text field inputs (description, amount).
-    static let dsLargeTitle   = Font.system(size: 37, relativeTo: .largeTitle)
-    static let dsLargeTitleBold = Font.system(size: 37, weight: .bold, relativeTo: .largeTitle)
     /// 34 pt — section hero numbers.
     static let dsTitle        = Font.system(size: 34, weight: .bold, relativeTo: .title)
     /// 26 pt

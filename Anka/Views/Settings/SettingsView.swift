@@ -16,7 +16,9 @@ struct SettingsView: View {
     /// re-presents the onboarding overlay. It is the *only* thing replaying
     /// onboarding changes — no transactions or categories are touched — so
     /// existing data is preserved whichever option the user picks at the end.
-    @AppStorage("anka.hasCompletedOnboarding") private var hasCompletedOnboarding = true
+    /// Default matches `AnkaApp` (`false`) so the two `@AppStorage` declarations
+    /// can't disagree on a fresh install (AUDIT.md U17).
+    @AppStorage("anka.hasCompletedOnboarding") private var hasCompletedOnboarding = false
 
     var body: some View {
         @Bindable var vm = viewModel
@@ -100,8 +102,11 @@ struct SettingsView: View {
                 }
                 .listRowBackground(appearance.bgCard(scheme))
 
+                // Dev-only utility — never ships in Release builds (U17).
+                #if DEBUG
                 developerSection
                     .listRowBackground(appearance.bgCard(scheme))
+                #endif
             }
             // Hide the List's default UIKit-managed background so our
             // variant-aware grouped color shows through. Without these two

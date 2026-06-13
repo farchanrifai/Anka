@@ -160,13 +160,15 @@ struct AddTransactionView: View {
         .safeAreaInset(edge: .bottom) { morphingBottomBar }
         .alert("Delete Transaction?", isPresented: $showDeleteAlert) {
             Button("Delete", role: .destructive) {
-                dismiss()
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    do {
-                        try vm.deleteTransaction(context: modelContext)
-                    } catch {
-                        saveErrorMessage = error.localizedDescription
-                    }
+                // Delete first, dismiss only on success. The old order (dismiss,
+                // then delete 0.3s later via asyncAfter) meant a thrown error set
+                // `saveErrorMessage` on an already-dismissed view, so the alert
+                // never showed (AUDIT.md X3 + AN3).
+                do {
+                    try vm.deleteTransaction(context: modelContext)
+                    dismiss()
+                } catch {
+                    saveErrorMessage = error.localizedDescription
                 }
             }
             Button("Cancel", role: .cancel) {}
@@ -731,8 +733,12 @@ struct AddTransactionView: View {
 
     private func closeDatePicker() {
         withAnimation(.easeOut(duration: 0.18)) { datePickerOpacity = 0 }
-        withAnimation(.easeInOut(duration: 0.32)) { showDatePicker = false }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.38) {
+        // Drive focus off the animation's completion instead of a hand-tuned
+        // `asyncAfter(0.38)` that could drift out of sync with the animation
+        // (AN3 — the same fragile pattern the file's ShakeEffect comment removed).
+        withAnimation(.easeInOut(duration: 0.32)) {
+            showDatePicker = false
+        } completion: {
             focusedField = .description
         }
     }

@@ -341,7 +341,7 @@ enum BalanceMode: String, CaseIterable, Hashable {
         defer { isLoading = false }
 
         // 1. Snapshot Sendable value types on the main actor.
-        let txSnaps           = transactions.map(TxSnap.init)
+        let txSnaps           = transactions.map(TransactionSnapshot.init)
         let interval          = periodInterval
         // nil = include both types (Total mode)
         let capturedType: TransactionType? = {
@@ -462,23 +462,5 @@ enum BalanceMode: String, CaseIterable, Hashable {
             let net = transactions.reduce(0) { $0 + ($1.type == .income ? $1.amount : -$1.amount) }
             return (abs(net), net >= 0 ? "+" : "-")
         }
-    }
-}
-
-// MARK: - Sendable snapshot
-
-private struct TxSnap: Sendable {
-    let id: UUID
-    let date: Date
-    let type: TransactionType
-    let amount: Double
-    let categoryID: UUID?
-
-    init(_ tx: Transaction) {
-        self.id         = tx.id
-        self.date       = tx.date
-        self.type       = tx.type
-        self.amount     = tx.amount
-        self.categoryID = tx.category?.id
     }
 }

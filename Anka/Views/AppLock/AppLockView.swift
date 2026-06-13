@@ -148,7 +148,7 @@ struct AppLockView: View {
 
             if lock.hasPIN {
                 Button {
-                    withAnimation(.easeInOut(duration: 0.2)) {
+                    withAnimation(.dsEase) {
                         showPINEntry = true
                     }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -214,7 +214,7 @@ struct AppLockView: View {
 
             if lock.canUseBiometrics {
                 Button {
-                    withAnimation(.easeInOut(duration: 0.2)) {
+                    withAnimation(.dsEase) {
                         showPINEntry = false
                         pinInput = ""
                         errorMessage = ""
@@ -237,12 +237,12 @@ struct AppLockView: View {
 
         let ok = await lock.authenticateWithBiometrics()
         if ok {
-            withAnimation(.easeInOut(duration: 0.25)) {
+            withAnimation(.dsEaseSlow) {
                 lock.unlock()
             }
         } else if lock.hasPIN {
             // Biometric failed or was dismissed — fall through to PIN.
-            withAnimation(.easeInOut(duration: 0.2)) {
+            withAnimation(.dsEase) {
                 showPINEntry = true
             }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -253,7 +253,7 @@ struct AppLockView: View {
 
     private func attemptPINUnlock() {
         if lock.verifyPIN(pinInput) {
-            withAnimation(.easeInOut(duration: 0.25)) {
+            withAnimation(.dsEaseSlow) {
                 lock.unlock()
             }
         } else {

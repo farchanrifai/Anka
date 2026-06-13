@@ -128,7 +128,7 @@ struct PINSetupSheet: View {
         switch step {
         case .create:
             errorMessage = ""
-            withAnimation(.easeInOut(duration: 0.2)) {
+            withAnimation(.dsEase) {
                 step = .confirm
             }
         case .confirm:
@@ -140,7 +140,7 @@ struct PINSetupSheet: View {
                     UINotificationFeedbackGenerator().notificationOccurred(.error)
                     firstPIN = ""
                     confirmPIN = ""
-                    withAnimation(.easeInOut(duration: 0.2)) {
+                    withAnimation(.dsEase) {
                         step = .create
                     }
                     return
@@ -153,7 +153,7 @@ struct PINSetupSheet: View {
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
                 firstPIN = ""
                 confirmPIN = ""
-                withAnimation(.easeInOut(duration: 0.2)) {
+                withAnimation(.dsEase) {
                     step = .create
                 }
             }

@@ -49,8 +49,6 @@ public struct CorrectionEntry: Codable {
 @MainActor
 @Observable
 public final class CategoryPredictor {
-    public private(set) var latestPrediction: Prediction? = nil
-
     private let starterModel: NLModel?
     private var userModel: NLModel?
 
@@ -59,19 +57,12 @@ public final class CategoryPredictor {
         loadUserModel()
     }
 
-    public func loadModels() {
-        loadUserModel()
-    }
-
     // MARK: - Predict
 
     @discardableResult
     public func predict(note: String, amount: Double) -> Prediction? {
         let trimmed = note.trimmingCharacters(in: .whitespaces)
-        guard !trimmed.isEmpty else {
-            latestPrediction = nil
-            return nil
-        }
+        guard !trimmed.isEmpty else { return nil }
 
         let input = buildInput(note: trimmed, amount: amount)
         var result: Prediction?
@@ -91,7 +82,6 @@ public final class CategoryPredictor {
             result = infer(model: model, input: input, threshold: 0.60, source: .starterModel)
         }
 
-        latestPrediction = result
         return result
     }
 
@@ -136,7 +126,7 @@ public final class CategoryPredictor {
 
     // MARK: - Private
 
-    private static let correctionsKey = "ml_corrections"
+    private static let correctionsKey = MLStorage.correctionsKey
     private static let appGroupID     = PlatformPaths.appGroupID
 
     // Bundled asset — loads optionally, doesn't crash if missing.

@@ -3,24 +3,6 @@ import SwiftData
 import SwiftUI
 import Foundation
 
-// MARK: - Sendable snapshot
-
-private struct StatsTxSnap: Sendable {
-    let id: UUID
-    let date: Date
-    let type: TransactionType
-    let amount: Double
-    let categoryID: UUID?
-
-    init(_ tx: Transaction) {
-        self.id         = tx.id
-        self.date       = tx.date
-        self.type       = tx.type
-        self.amount     = tx.amount
-        self.categoryID = tx.category?.id
-    }
-}
-
 // MARK: - StatsViewModel
 
 @MainActor
@@ -127,7 +109,7 @@ final class StatsViewModel {
         defer { isLoading = false }
 
         // 1. Snapshot value types on the main actor.
-        let txSnaps      = transactions.map(StatsTxSnap.init)
+        let txSnaps      = transactions.map(TransactionSnapshot.init)
         let interval     = currentMonth.monthInterval
         let prevInterval = currentMonth.addingMonths(-1).monthInterval
         let catMeta: [UUID: (name: String, colorHex: String, emoji: String)] = Dictionary(

@@ -26,3 +26,11 @@ enum MLFeaturizer {
         "\(note.lowercased()) \(amountBucket(amount))"
     }
 }
+
+/// Single source of truth for the App-Group `UserDefaults` keys the ML pipeline
+/// reads/writes — previously the `"ml_corrections"` literal was re-typed in both
+/// `CategoryPredictor` and `CategoryMLTrainer` (AUDIT.md A4).
+enum MLStorage {
+    static let correctionsKey   = "ml_corrections"
+    static let lastTrainCountKey = "ml_last_train_count"
+}

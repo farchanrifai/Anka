@@ -102,7 +102,7 @@ struct DateRangePicker: View {
     
     private func changeMonth(by value: Int) {
         if let newDate = calendar.date(byAdding: .month, value: value, to: displayedMonth) {
-            withAnimation(.easeInOut(duration: 0.2)) {
+            withAnimation(.dsEase) {
                 displayedMonth = newDate
             }
         }
@@ -244,7 +244,7 @@ private struct DayCell: View {
         impact.prepare()
         impact.impactOccurred()
         
-        withAnimation(.easeInOut(duration: 0.2)) {
+        withAnimation(.dsEase) {
             if let start = startDate {
                 if endDate != nil {
                     // Both selected -> reset to new start date

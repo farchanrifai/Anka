@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 /// Full category picker presented as a sheet from `AddTransactionView`.
-/// (The compact selected-category chip lives in `CategorySlotView`.)
+/// (The compact selected-category chip is the sparkle pill in `AddTransactionView`.)
 struct CategoryPickerSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Query private var allCategories: [Category]

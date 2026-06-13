@@ -61,6 +61,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		73AAAA012FD55CC2002330E9 /* Exceptions for "Anka" folder in "Anka" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 735BB8B12FD45B82005D2346 /* Anka */;
+		};
 		73D1AA892FD55BB5002330E9 /* Exceptions for "AnkaWidgets" folder in "AnkaWidgetsExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -75,21 +82,14 @@
 			);
 			target = 73D1AA772FD55BB4002330E9 /* AnkaWidgetsExtension */;
 		};
-		73AAAA012FD55CC2002330E9 /* Exceptions for "Anka" folder in "Anka" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 735BB8B12FD45B82005D2346 /* Anka */;
-		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		735BB8B42FD45B82005D2346 /* Anka */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				73D1AA942FD55CC2002330E9 /* Exceptions for "Anka" folder in "AnkaWidgetsExtension" target */,
 				73AAAA012FD55CC2002330E9 /* Exceptions for "Anka" folder in "Anka" target */,
+				73D1AA942FD55CC2002330E9 /* Exceptions for "Anka" folder in "AnkaWidgetsExtension" target */,
 			);
 			path = Anka;
 			sourceTree = "<group>";
@@ -459,7 +459,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -519,7 +519,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -611,7 +611,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = P8HX673QTL;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = nc.AnkaTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -633,7 +633,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = P8HX673QTL;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = nc.AnkaTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";

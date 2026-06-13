@@ -10,15 +10,18 @@ import CryptoKit
 @MainActor
 @Observable
 final class AppLockManager {
-    private let pinKey = "ankaPINCode"
-    private let enabledKey = "anka.appLockEnabled"
-    private let graceKey = "anka.appLock.gracePeriod"
-    private let failedAttemptsKey = "anka.appLock.failedAttempts"
-    private let lockoutUntilKey = "anka.appLock.lockoutUntil"
+    // `static` so `init` can reference them without re-typing the literal
+    // strings (it can't read instance properties before all stored props are
+    // initialized — that's why these used to be duplicated as literals) (A4).
+    private static let pinKey = "ankaPINCode"
+    private static let enabledKey = "anka.appLockEnabled"
+    private static let graceKey = "anka.appLock.gracePeriod"
+    private static let failedAttemptsKey = "anka.appLock.failedAttempts"
+    private static let lockoutUntilKey = "anka.appLock.lockoutUntil"
 
     /// Persisted: does the user want the lock screen at all?
     var appLockEnabled: Bool {
-        didSet { UserDefaults.standard.set(appLockEnabled, forKey: enabledKey) }
+        didSet { UserDefaults.standard.set(appLockEnabled, forKey: Self.enabledKey) }
     }
 
     /// Transient: is the lock screen currently covering the UI?
@@ -54,7 +57,7 @@ final class AppLockManager {
 
     /// Persisted auto-lock grace period.
     var gracePeriod: GracePeriod {
-        didSet { UserDefaults.standard.set(gracePeriod.rawValue, forKey: graceKey) }
+        didSet { UserDefaults.standard.set(gracePeriod.rawValue, forKey: Self.graceKey) }
     }
 
     /// When the app last went to the background. Used to decide whether the
@@ -86,16 +89,16 @@ final class AppLockManager {
 
     init() {
         let defaults = UserDefaults.standard
-        let enabled = defaults.bool(forKey: "anka.appLockEnabled")
+        let enabled = defaults.bool(forKey: Self.enabledKey)
         self.appLockEnabled = enabled
         // hasPIN read inline (can't reference self.hasPIN before all stored
         // properties are initialized).
-        let pinExists = KeychainHelper.shared.read(forKey: "ankaPINCode") != nil
+        let pinExists = KeychainHelper.shared.read(forKey: Self.pinKey) != nil
         self.hasPIN = pinExists
         self.isLocked = enabled && pinExists
-        self.gracePeriod = GracePeriod(rawValue: defaults.integer(forKey: "anka.appLock.gracePeriod")) ?? .immediately
-        self.failedAttempts = defaults.integer(forKey: "anka.appLock.failedAttempts")
-        self.lockoutUntil = defaults.object(forKey: "anka.appLock.lockoutUntil") as? Date
+        self.gracePeriod = GracePeriod(rawValue: defaults.integer(forKey: Self.graceKey)) ?? .immediately
+        self.failedAttempts = defaults.integer(forKey: Self.failedAttemptsKey)
+        self.lockoutUntil = defaults.object(forKey: Self.lockoutUntilKey) as? Date
         // Seed the cached biometric state once (all stored properties are now
         // initialized, so calling an instance method here is valid).
         refreshBiometricState()
@@ -142,7 +145,7 @@ final class AppLockManager {
     /// keychain success so the caller only flips `hasPIN` on a real write.
     @discardableResult
     func savePIN(_ pin: String) -> Bool {
-        let ok = KeychainHelper.shared.save(Self.makeCredential(for: pin), forKey: pinKey)
+        let ok = KeychainHelper.shared.save(Self.makeCredential(for: pin), forKey: Self.pinKey)
         if ok {
             hasPIN = true
             resetAttempts()
@@ -152,7 +155,7 @@ final class AppLockManager {
 
     @discardableResult
     func removePIN() -> Bool {
-        let ok = KeychainHelper.shared.delete(forKey: pinKey)
+        let ok = KeychainHelper.shared.delete(forKey: Self.pinKey)
         if ok {
             hasPIN = false
             resetAttempts()
@@ -166,7 +169,7 @@ final class AppLockManager {
     /// counter and transparently upgrades a legacy plaintext PIN to a hash.
     func verifyPIN(_ pin: String) -> Bool {
         guard !isInLockout else { return false }
-        guard let stored = KeychainHelper.shared.read(forKey: pinKey) else {
+        guard let stored = KeychainHelper.shared.read(forKey: Self.pinKey) else {
             recordFailedAttempt()
             return false
         }
@@ -205,11 +208,11 @@ final class AppLockManager {
 
     private func recordFailedAttempt() {
         failedAttempts += 1
-        UserDefaults.standard.set(failedAttempts, forKey: failedAttemptsKey)
+        UserDefaults.standard.set(failedAttempts, forKey: Self.failedAttemptsKey)
         if let delay = Self.lockoutDelay(for: failedAttempts) {
             let until = Date().addingTimeInterval(delay)
             lockoutUntil = until
-            UserDefaults.standard.set(until, forKey: lockoutUntilKey)
+            UserDefaults.standard.set(until, forKey: Self.lockoutUntilKey)
         }
     }
 
@@ -217,8 +220,8 @@ final class AppLockManager {
         guard failedAttempts != 0 || lockoutUntil != nil else { return }
         failedAttempts = 0
         lockoutUntil = nil
-        UserDefaults.standard.removeObject(forKey: failedAttemptsKey)
-        UserDefaults.standard.removeObject(forKey: lockoutUntilKey)
+        UserDefaults.standard.removeObject(forKey: Self.failedAttemptsKey)
+        UserDefaults.standard.removeObject(forKey: Self.lockoutUntilKey)
     }
 
     /// Escalating lockout schedule. No penalty for the first four misses, then
