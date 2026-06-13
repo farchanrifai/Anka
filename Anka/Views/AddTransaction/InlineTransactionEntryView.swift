@@ -228,19 +228,19 @@ struct InlineComposerModifier: ViewModifier {
                         )
                 }
             }
-            .animation(.dsSnappy, value: vm.showInlineComposer)
+            // Open/close are animated explicitly (snappy open, slower smooth
+            // close) rather than via one implicit `.animation`, so the two can
+            // differ — see `dismiss()` and `AddToolbarButton`.
     }
 
-    /// Close in sync with the keyboard: resign first responder so the keyboard
-    /// descends and the safe-area-inset bar rides *down with it*, then remove the
-    /// bar once it's down. Removing it immediately (the old behavior) left it
-    /// fading in place up top while the keyboard slid away — the close stagger.
+    /// Close: resign first responder so the keyboard starts sliding down, and
+    /// shrink the bar **at the same time** (not after the keyboard lands) — at a
+    /// gentler, search-bar pace.
     private func dismiss() {
         UIApplication.shared.sendAction(
             #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil
         )
-        Task { @MainActor in
-            try? await Task.sleep(for: .milliseconds(250))
+        withAnimation(.smooth(duration: 0.4)) {
             vm.showInlineComposer = false
         }
     }

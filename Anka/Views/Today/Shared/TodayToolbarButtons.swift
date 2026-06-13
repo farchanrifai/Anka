@@ -56,7 +56,8 @@ struct AddToolbarButton: View {
         Button {
             // V3 toggles the inline composer; V1/V2 present the classic sheet.
             if layoutRaw == TransactionEntryLayout.v3.rawValue {
-                vm.showInlineComposer.toggle()
+                // Snappy open (the close uses a slower smooth curve in dismiss()).
+                withAnimation(.dsSnappy) { vm.showInlineComposer.toggle() }
             } else {
                 vm.showAddTransaction = true
             }
