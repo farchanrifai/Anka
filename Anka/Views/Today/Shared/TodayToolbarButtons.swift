@@ -54,9 +54,9 @@ struct AddToolbarButton: View {
 
     var body: some View {
         Button {
-            // V3 opens the inline composer; V1/V2 present the classic sheet.
+            // V3 toggles the inline composer; V1/V2 present the classic sheet.
             if layoutRaw == TransactionEntryLayout.v3.rawValue {
-                vm.showInlineComposer = true
+                vm.showInlineComposer.toggle()
             } else {
                 vm.showAddTransaction = true
             }

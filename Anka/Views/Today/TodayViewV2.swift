@@ -73,6 +73,8 @@ struct TodayViewV2: View {
             vm.update(transactions: fresh, categories: allCategories)
             WidgetDataWriter.shared.updateWidgetData(transactions: fresh)
         }
+        // V3 Liquid Glass inline composer — rides the keyboard (not a sheet).
+        .inlineComposer(vm: vm)
     }
 
     private func feedVM() {
@@ -126,6 +128,8 @@ struct TodayViewV2: View {
                         AddToolbarButton(vm: vm, namespace: animationNamespace)
                     }
                 }
+                // Hide the bottom bar while the inline composer is up (see TodayView).
+                .toolbarVisibility(vm.showInlineComposer ? .hidden : .automatic, for: .bottomBar)
                 .searchable(text: $vm.searchQuery, prompt: "Search transactions")
                 .searchToolbarBehavior(.minimize)
                 .searchPresentationToolbarBehavior(.avoidHidingContent)

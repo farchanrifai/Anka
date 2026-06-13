@@ -32,15 +32,9 @@ struct TodaySheetsModifier: ViewModifier {
                 AddTransactionView(defaultType: vm.addDefaultType)
                     .navigationTransition(.zoom(sourceID: "addTransaction", in: namespace))
             }
-            // Experimental inline composer (Phase 8.5 / V3). Presented as a short
-            // sheet with background interaction so it rides above the keyboard
-            // while the transaction list stays visible + scrollable behind it.
-            .sheet(isPresented: $vm.showInlineComposer) {
-                InlineTransactionEntryView()
-                    .presentationDetents([.height(InlineComposerMetrics.sheetHeight)])
-                    .presentationBackgroundInteraction(.enabled(upThrough: .height(InlineComposerMetrics.sheetHeight)))
-                    .presentationDragIndicator(.visible)
-            }
+            // The experimental inline composer (Phase 8.5 / V3) is NOT a sheet —
+            // it's a Liquid Glass bar applied via `.inlineComposer(vm:)` on the
+            // Today views so it rides the keyboard like the Messages composer.
             .sheet(isPresented: $vm.showCategoryFilter) {
                 CategoryFilterSheet(
                     selection: $vm.selectedCategories,
