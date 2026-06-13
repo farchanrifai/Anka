@@ -20,6 +20,10 @@ struct SettingsView: View {
     /// can't disagree on a fresh install (AUDIT.md U17).
     @AppStorage("anka.hasCompletedOnboarding") private var hasCompletedOnboarding = false
 
+    /// Experimental Add-Transaction entry layout (Phase 8.5). Drives whether the
+    /// `+` opens the classic sheet (V1/V2) or the inline composer (V3).
+    @AppStorage(TransactionEntryLayout.storageKey) private var entryLayoutRaw = TransactionEntryLayout.v1.rawValue
+
     var body: some View {
         @Bindable var vm = viewModel
 
@@ -66,6 +70,9 @@ struct SettingsView: View {
                     }
                 }
                 .listRowBackground(appearance.bgCard(scheme))
+
+                inputMethodSection
+                    .listRowBackground(appearance.bgCard(scheme))
 
                 securitySection
                     .listRowBackground(appearance.bgCard(scheme))
@@ -185,6 +192,34 @@ struct SettingsView: View {
             Text("Developer")
         } footer: {
             Text("Re-launches the welcome flow. Your transactions and categories are not affected.")
+        }
+    }
+
+    // MARK: - Input method section (Phase 8.5)
+
+    @ViewBuilder
+    private var inputMethodSection: some View {
+        Section {
+            Picker(selection: $entryLayoutRaw) {
+                ForEach(TransactionEntryLayout.allCases) { layout in
+                    Text(layout.displayName).tag(layout.rawValue)
+                }
+            } label: {
+                Label {
+                    Text("Entry Layout")
+                } icon: {
+                    Image(systemName: "keyboard")
+                        .foregroundStyle(DSColor.accent)
+                }
+            }
+            .pickerStyle(.menu)
+            .tint(DSColor.textSecondary)
+        } header: {
+            Text("Input Method")
+        } footer: {
+            if entryLayoutRaw == TransactionEntryLayout.v3.rawValue {
+                Text("Fast natural-language entry. Type things like \"5k coffee\" or \"100k grabfood yesterday\" — the amount, category and date are detected for you.")
+            }
         }
     }
 

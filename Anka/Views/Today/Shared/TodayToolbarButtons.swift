@@ -50,9 +50,16 @@ struct AddToolbarButton: View {
     let vm: TodayViewModel
     let namespace: Namespace.ID
 
+    @AppStorage(TransactionEntryLayout.storageKey) private var layoutRaw = TransactionEntryLayout.v1.rawValue
+
     var body: some View {
         Button {
-            vm.showAddTransaction = true
+            // V3 opens the inline composer; V1/V2 present the classic sheet.
+            if layoutRaw == TransactionEntryLayout.v3.rawValue {
+                vm.showInlineComposer = true
+            } else {
+                vm.showAddTransaction = true
+            }
         } label: {
             Image(systemName: "plus")
                 .foregroundStyle(DSColor.textOnAccent)

@@ -32,6 +32,15 @@ struct TodaySheetsModifier: ViewModifier {
                 AddTransactionView(defaultType: vm.addDefaultType)
                     .navigationTransition(.zoom(sourceID: "addTransaction", in: namespace))
             }
+            // Experimental inline composer (Phase 8.5 / V3). Presented as a short
+            // sheet with background interaction so it rides above the keyboard
+            // while the transaction list stays visible + scrollable behind it.
+            .sheet(isPresented: $vm.showInlineComposer) {
+                InlineTransactionEntryView()
+                    .presentationDetents([.height(InlineComposerMetrics.sheetHeight)])
+                    .presentationBackgroundInteraction(.enabled(upThrough: .height(InlineComposerMetrics.sheetHeight)))
+                    .presentationDragIndicator(.visible)
+            }
             .sheet(isPresented: $vm.showCategoryFilter) {
                 CategoryFilterSheet(
                     selection: $vm.selectedCategories,

@@ -105,6 +105,9 @@ enum BalanceMode: String, CaseIterable, Hashable {
 
     var showSettings = false
     var showAddTransaction = false
+    /// Experimental inline composer (Phase 8.5 / V3) — presented instead of the
+    /// full Add sheet when the user picks the inline entry layout.
+    var showInlineComposer = false
     var showCategoryFilter = false
     /// Drives the push to StatsView (`.navigationDestination(isPresented:)`).
     var showStats = false

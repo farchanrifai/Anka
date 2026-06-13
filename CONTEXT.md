@@ -341,6 +341,24 @@ Tests: `AnkaTests/TransactionParserTests.swift` (Swift Testing) — the 6 spec-t
 
 ---
 
+## Inline Entry — Experimental V3 (Phase 8.5)
+
+A Messages-style inline composer for fast natural-language entry, gated behind a Settings picker. **Experimental / optional** — does not replace the V1/V2 Add sheet.
+
+**Entry-layout setting** — `TransactionEntryLayout` enum (`v1`/`v2`/`v3`, `@AppStorage(TransactionEntryLayout.storageKey)`, default `v1`). `v1`/`v2` both present the classic `AddTransactionView` sheet; `v3` opens the inline composer. Picker lives in Settings → **Input Method**. ⚠️ This is a *different axis* from `appearance.todayViewVersion` (which picks the **dashboard** TodayView vs TodayViewV2) — don't conflate them.
+
+**Wiring** — `AddToolbarButton` (the `+`) reads the layout: `v3` → `vm.showInlineComposer = true`, else `vm.showAddTransaction = true`. The composer is presented from `TodaySheetsModifier` as a **short sheet** (`.presentationDetents([.height(InlineComposerMetrics.sheetHeight)])` + `.presentationBackgroundInteraction(.enabled(upThrough:))`) so it rides above the keyboard while the list stays visible/scrollable behind it. Chosen over a `safeAreaInset` bar because the Today views already do heavy `.ignoresSafeArea(.keyboard)` work for search — the sheet sidesteps that fight and gives swipe-to-dismiss for free.
+
+**Parser** — `Services/InlineTransactionParser.swift`, `parse(_:availableCategories:predictor:) -> ParsedInlineTransaction?` (`@MainActor` because it calls `CategoryPredictor`). Composes existing logic rather than reinventing: relative **date** scan first (today/yesterday/tomorrow/"N days ago"/"N days from now", stripped from the text), then **amount + note** via `TransactionParser` (locale decimals, IDR `k`/`m`/`rb`/`jt` shorthand), then **category** via `CategoryPredictor.predict` matched by name (expense-only). Returns `nil` when no amount; `confidence` = 1.0 with a category, 0.5 amount-only. (Struct is named `ParsedInlineTransaction` to avoid colliding with `TransactionParser.ParsedTransaction`.)
+
+**ViewModel** — `InlineTransactionEntryViewModel` (`@Observable @MainActor`): debounced parse (300 ms, cancels in-flight), `selectedCategory` manual override, `effectiveCategory = selectedCategory ?? parseResult?.category`, `canSend = amount > 0 && effectiveCategory != nil && !isSaving`. `save(context:)` inserts an `.expense` transaction, posts `.ankaDataDidChange` (so the dashboard + widgets refresh and the new row animates in via the existing pipeline — no bespoke TodayView change needed), then resets for the next entry. `isSaving` debounces rapid send taps.
+
+**View** — `InlineTransactionEntryView`: category bubble (a `Menu` of expense categories, shows the effective category's emoji) · NL text field (auto-focused, debounced `onChange`, `onSubmit` sends) · send button (coral `DSColor.accent` when enabled, gray+disabled otherwise, success haptic). A compact summary line above the field shows the parsed "Rp amount · Date · Category" so the user sees what was understood.
+
+Tests: `AnkaTests/InlineTransactionParserTests.swift` (9 tests) — amount/note/category/date extraction + relative-date cases. Verified end-to-end on the iOS 27 simulator: "100k grabfood yesterday" → Rp 100,000 / Food Delivery / grabfood under a *Yesterday* section; amount-only keeps send disabled; bubble override enables it.
+
+---
+
 ## Multi-Currency & FX Rates (Phase 9)
 
 **Design:**
