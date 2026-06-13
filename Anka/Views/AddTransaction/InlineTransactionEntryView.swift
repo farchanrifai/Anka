@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import UIKit
 
 /// Experimental Messages-style inline composer (Phase 8.5 / V3), rendered in
 /// **Liquid Glass** (iOS 26 `glassEffect`). A capsule field + leading category
@@ -146,7 +147,11 @@ struct InlineTransactionEntryView: View {
             .onChange(of: vm.inputText) {
                 vm.scheduleParse(categories: allCategories, predictor: predictor)
             }
-            .onSubmit(send)
+            // Return sends when armed, otherwise just closes the composer (so the
+            // return key never leaves a stranded empty bar behind the keyboard).
+            .onSubmit {
+                if vm.canSend { send() } else { onDismiss() }
+            }
             .padding(.horizontal, DSSpacing.lg)
             .frame(height: 44)
             .frame(maxWidth: .infinity)
@@ -205,7 +210,7 @@ struct InlineComposerModifier: ViewModifier {
                 if vm.showInlineComposer {
                     Color.black.opacity(0.001)
                         .contentShape(Rectangle())
-                        .onTapGesture { vm.showInlineComposer = false }
+                        .onTapGesture { dismiss() }
                         .transition(.opacity)
                 }
             }
@@ -214,11 +219,25 @@ struct InlineComposerModifier: ViewModifier {
                     // Opacity-only (no slide). The vertical motion comes entirely
                     // from the keyboard lifting the safe-area inset, so the bar
                     // and keyboard move as one instead of staggering.
-                    InlineTransactionEntryView(onDismiss: { vm.showInlineComposer = false })
+                    InlineTransactionEntryView(onDismiss: dismiss)
                         .transition(.opacity)
                 }
             }
             .animation(.dsSnappy, value: vm.showInlineComposer)
+    }
+
+    /// Close in sync with the keyboard: resign first responder so the keyboard
+    /// descends and the safe-area-inset bar rides *down with it*, then remove the
+    /// bar once it's down. Removing it immediately (the old behavior) left it
+    /// fading in place up top while the keyboard slid away — the close stagger.
+    private func dismiss() {
+        UIApplication.shared.sendAction(
+            #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil
+        )
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(250))
+            vm.showInlineComposer = false
+        }
     }
 }
 
