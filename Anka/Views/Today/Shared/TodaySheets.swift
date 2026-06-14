@@ -12,6 +12,8 @@ struct TodaySheetsModifier: ViewModifier {
 
     @Environment(\.modelContext) private var modelContext
 
+    @AppStorage(TransactionEntryLayout.storageKey) private var layoutRaw = TransactionEntryLayout.v1.rawValue
+
     func body(content: Content) -> some View {
         content
             .sheet(isPresented: $vm.showStats) {
@@ -53,8 +55,12 @@ struct TodaySheetsModifier: ViewModifier {
                 set: { if !$0 { vm.editingTransaction = nil } }
             )) {
                 if let tx = vm.editingTransaction {
-                    AddTransactionView(defaultType: tx.type, existingTransaction: tx)
-                        .navigationTransition(.zoom(sourceID: tx.id, in: namespace))
+                    if layoutRaw == TransactionEntryLayout.v3.rawValue {
+                        EditTransactionSheet(transaction: tx)
+                    } else {
+                        AddTransactionView(defaultType: tx.type, existingTransaction: tx)
+                            .navigationTransition(.zoom(sourceID: tx.id, in: namespace))
+                    }
                 }
             }
             .alert("Delete Transaction?", isPresented: Binding(

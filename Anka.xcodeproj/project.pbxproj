@@ -78,8 +78,8 @@
 		73D1AA942FD55CC2002330E9 /* Exceptions for "Anka" folder in "AnkaWidgetsExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Services/WidgetSharedTypes.swift,
 				"DesignSystem/NumberFormatter+Amount.swift",
+				Services/WidgetSharedTypes.swift,
 			);
 			target = 73D1AA772FD55BB4002330E9 /* AnkaWidgetsExtension */;
 		};
