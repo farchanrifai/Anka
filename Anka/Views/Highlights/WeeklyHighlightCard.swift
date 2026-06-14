@@ -6,9 +6,9 @@ struct WeeklyHighlightCard: View {
     let data: WeeklyHighlightData
 
     var body: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.md) {
+        VStack(alignment: .leading, spacing: DSSpacing.lg) {
             Text("💰 Spending")
-                .font(.dsCaption)
+                .font(.dsSubheadSemi)
                 .foregroundStyle(DSColor.accent)
 
             Text(data.descriptiveText)
@@ -21,9 +21,10 @@ struct WeeklyHighlightCard: View {
                 Text("Average Spend")
                     .font(.dsCaption)
                     .foregroundStyle(.gray)
-                Text(data.dailyAverage.rupiah)
-                    .font(.dsTitle2Bold)
-                    .foregroundStyle(DSColor.textPrimary)
+                HStack(alignment: .firstTextBaseline, spacing: 2) {
+                    Text("Rp").font(.dsBody).foregroundStyle(DSColor.textPrimary)
+                    Text(data.dailyAverage.idrShort).font(.dsTitle).foregroundStyle(DSColor.textPrimary)
+                }
             }
 
             Chart {
@@ -39,7 +40,7 @@ struct WeeklyHighlightCard: View {
                     .foregroundStyle(DSColor.accent)
                     .lineStyle(StrokeStyle(lineWidth: 2))
             }
-            .frame(height: 180)
+            .frame(height: 200)
             .chartYAxis(.hidden)
             .chartXAxis {
                 AxisMarks(values: data.days.map(\.date)) { value in
@@ -50,7 +51,7 @@ struct WeeklyHighlightCard: View {
                 }
             }
         }
-        .padding(DSSpacing.md)
+        .padding(DSSpacing.lg)
         .background(DSColor.bgCard)
         .clipShape(RoundedRectangle(cornerRadius: DSRadius.large))
     }

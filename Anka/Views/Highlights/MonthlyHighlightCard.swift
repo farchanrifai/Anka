@@ -6,9 +6,9 @@ struct MonthlyHighlightCard: View {
     let data: MonthlyHighlightData
 
     var body: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.md) {
+        VStack(alignment: .leading, spacing: DSSpacing.lg) {
             Text("💰 Spending")
-                .font(.dsCaption)
+                .font(.dsSubheadSemi)
                 .foregroundStyle(DSColor.accent)
 
             Text(data.descriptiveText)
@@ -24,7 +24,7 @@ struct MonthlyHighlightCard: View {
             comparisonRow(amount: data.lastMonthAvgPerDay, label: data.lastMonthLabel,
                           color: Color.gray.opacity(0.4), maxAmount: maxAmount)
         }
-        .padding(DSSpacing.md)
+        .padding(DSSpacing.lg)
         .background(DSColor.bgCard)
         .clipShape(RoundedRectangle(cornerRadius: DSRadius.large))
     }
@@ -33,11 +33,10 @@ struct MonthlyHighlightCard: View {
         let ratio = maxAmount > 0 ? amount / maxAmount : 0
         return VStack(alignment: .leading, spacing: DSSpacing.sm) {
             HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text(amount.rupiah)
-                    .font(.dsTitle2Bold)
-                    .foregroundStyle(DSColor.textPrimary)
+                Text("Rp").font(.dsBody).foregroundStyle(DSColor.textPrimary)
+                Text(amount.idrShort).font(.dsTitle).foregroundStyle(DSColor.textPrimary)
                 Text("/day")
-                    .font(.dsCaption)
+                    .font(.dsBody)
                     .foregroundStyle(.gray)
             }
             GeometryReader { geo in
@@ -46,12 +45,12 @@ struct MonthlyHighlightCard: View {
                         .fill(color)
                         .frame(width: max(geo.size.width * ratio, 60))
                     Text(label)
-                        .font(.dsCaption)
+                        .font(.dsCaptionMedium)
                         .foregroundStyle(color == DSColor.accent ? .white : DSColor.textPrimary)
                         .padding(.leading, DSSpacing.md)
                 }
             }
-            .frame(height: 44)
+            .frame(height: 52)
         }
     }
 }

@@ -8,9 +8,9 @@ struct DailyHighlightCard: View {
     let data: DailyHighlightData
 
     var body: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.md) {
+        VStack(alignment: .leading, spacing: DSSpacing.lg) {
             Text("💰 Spending")
-                .font(.dsCaption)
+                .font(.dsSubheadSemi)
                 .foregroundStyle(DSColor.accent)
 
             Text(data.descriptiveText)
@@ -19,7 +19,7 @@ struct DailyHighlightCard: View {
 
             Divider().background(Color.gray.opacity(0.3))
 
-            HStack(spacing: DSSpacing.lg) {
+            HStack(spacing: DSSpacing.xl) {
                 statColumn(dot: DSColor.accent, label: "Today", amount: data.todayTotal, color: DSColor.accent)
                 statColumn(dot: .gray, label: "Average", amount: data.averageTotal, color: .gray)
             }
@@ -48,11 +48,11 @@ struct DailyHighlightCard: View {
                         .foregroundStyle(Color.gray.opacity(0.4))
                         .lineStyle(StrokeStyle(lineWidth: 1, dash: [4]))
                 }
-                .frame(height: 180)
+                .frame(height: 200)
                 .chartYAxis(.hidden)
             }
         }
-        .padding(DSSpacing.md)
+        .padding(DSSpacing.lg)
         .background(DSColor.bgCard)
         .clipShape(RoundedRectangle(cornerRadius: DSRadius.large))
     }
@@ -63,9 +63,10 @@ struct DailyHighlightCard: View {
                 Circle().fill(dot).frame(width: 8, height: 8)
                 Text(label).font(.dsCaption).foregroundStyle(color)
             }
-            Text(amount.rupiah)
-                .font(.dsTitle2Bold)
-                .foregroundStyle(color)
+            HStack(alignment: .firstTextBaseline, spacing: 2) {
+                Text("Rp").font(.dsBody).foregroundStyle(color)
+                Text(amount.idrShort).font(.dsTitle).foregroundStyle(color)
+            }
         }
     }
 }
