@@ -106,28 +106,21 @@ struct TodayView: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbarBackground(.hidden, for: .navigationBar)
                 .background(DSColor.bgPrimary.ignoresSafeArea())
-                // iOS Mail-style bottom toolbar: Filter • Search • Add.
-                // Layout switches on filter state:
-                //   - inactive: filter-icon | flex | full search bar | flex | +
-                //   - active:   filter-pill | flex | search-circle | +
-                // (when active the trailing flex is dropped so the search
-                //  circle sits right next to + with standard toolbar padding.)
-                // Stats + Settings present as sheets (not pushes) so they don't
-                // contend with the bottom-bar search item for the Liquid Glass
-                // toolbar's trailing item group — that contention is what caused
-                // the empty-glass-capsule freeze (`glassEffect() tried to update
-                // multiple times per frame`).
+                // Bottom toolbar: Stats • Filter • search (minimized) • Add.
+                // Settings stays in the top bar.
                 .toolbar {
                     ToolbarItemGroup(placement: .topBarTrailing) {
-                        StatsToolbarButton(vm: vm, namespace: animationNamespace)
                         SettingsToolbarButton(vm: vm)
                     }
 
-                    DefaultToolbarItem(kind: .search, placement: .bottomBar)
+                    ToolbarItem(placement: .bottomBar) {
+                        StatsToolbarButton(vm: vm, namespace: animationNamespace)
+                    }
                     ToolbarItem(placement: .bottomBar) {
                         FilterToolbarButton(vm: vm, namespace: animationNamespace)
                     }
                     ToolbarSpacer(.flexible, placement: .bottomBar)
+                    DefaultToolbarItem(kind: .search, placement: .bottomBar)
                     ToolbarItem(placement: .bottomBar) {
                         AddToolbarButton(vm: vm, namespace: animationNamespace)
                     }
