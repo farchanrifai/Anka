@@ -80,6 +80,7 @@
 			membershipExceptions = (
 				"DesignSystem/CurrencyInfo.swift",
 				"DesignSystem/NumberFormatter+Amount.swift",
+				Services/PlatformPaths.swift,
 				Services/WidgetSharedTypes.swift,
 			);
 			target = 73D1AA772FD55BB4002330E9 /* AnkaWidgetsExtension */;
