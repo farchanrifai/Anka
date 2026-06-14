@@ -297,6 +297,21 @@ struct TodayView: View {
                     : "Double tap to clear the category filter.")
                 .accessibilityAddTraits(.isButton)
             }
+
+            // Phase 8.7: entry point to the Apple Health-style Highlights page.
+            NavigationLink {
+                HighlightsView()
+            } label: {
+                HStack(spacing: 4) {
+                    Text("Highlights")
+                        .font(.dsBody)
+                        .foregroundStyle(DSColor.accent)
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(DSColor.accent)
+                }
+            }
+            .padding(.top, DSSpacing.sm)
         }
         .padding(.horizontal, DSSpacing.screenEdge)
         // Previously 75 — that included status-bar clearance back when the nav
