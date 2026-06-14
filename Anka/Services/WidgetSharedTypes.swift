@@ -43,16 +43,3 @@ public struct WidgetTransaction: Codable, Identifiable, Sendable, Hashable {
         self.isExpense = isExpense
     }
 }
-
-/// Whole-IDR grouped string used by widget glyphs.
-/// e.g. 125_000 → "125,000". No "K" suffix (the pasted Phase 7 plan had
-/// a "K" suffix without dividing by 1000 — that's a typo).
-public extension Double {
-    var groupedIDR: String {
-        let f = NumberFormatter()
-        f.numberStyle = .decimal
-        f.groupingSeparator = ","
-        f.maximumFractionDigits = 0
-        return f.string(from: NSNumber(value: self)) ?? "0"
-    }
-}

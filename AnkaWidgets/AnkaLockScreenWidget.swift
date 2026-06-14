@@ -74,13 +74,13 @@ struct AnkaLockScreenWidgetView: View {
             }
             .widgetAccentable()
 
-            Text(entry.todayExpense.groupedIDR)
+            Text(entry.todayExpense.idrShort)
                 .font(.title3.weight(.bold))
                 .minimumScaleFactor(0.5)
                 .lineLimit(1)
 
             if entry.todayIncome > 0 {
-                Text("+ \(entry.todayIncome.groupedIDR)")
+                Text("+ \(entry.todayIncome.idrShort)")
                     .font(.caption2)
                     .widgetAccentable()
             }
