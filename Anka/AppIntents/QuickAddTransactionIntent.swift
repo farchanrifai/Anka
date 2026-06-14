@@ -19,7 +19,7 @@ struct QuickAddTransactionIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let context = try AnkaModelContainer.makeContext()
-        let categories = try context.fetch(FetchDescriptor<Category>())
+        let categories = try context.allCategories()
 
         guard let parsed = InlineTransactionParser().parse(
             text, availableCategories: categories, predictor: AnkaModelContainer.predictor

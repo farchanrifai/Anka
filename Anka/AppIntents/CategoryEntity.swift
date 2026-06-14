@@ -29,7 +29,7 @@ struct CategoryEntityQuery: EntityQuery {
     @MainActor
     func entities(for identifiers: [CategoryEntity.ID]) async throws -> [CategoryEntity] {
         let context = try AnkaModelContainer.makeContext()
-        let all = try context.fetch(FetchDescriptor<Category>())
+        let all = try context.allCategories()
         return all
             .filter { identifiers.contains($0.id) }
             .map(CategoryEntity.init(from:))
@@ -38,7 +38,6 @@ struct CategoryEntityQuery: EntityQuery {
     @MainActor
     func suggestedEntities() async throws -> [CategoryEntity] {
         let context = try AnkaModelContainer.makeContext()
-        let all = try context.fetch(FetchDescriptor<Category>(sortBy: [SortDescriptor(\.sortOrder)]))
-        return all.map(CategoryEntity.init(from:))
+        return try context.allCategories().map(CategoryEntity.init(from:))
     }
 }

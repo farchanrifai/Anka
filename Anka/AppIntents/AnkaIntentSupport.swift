@@ -25,6 +25,18 @@ enum AnkaModelContainer {
     static let predictor = CategoryPredictor()
 }
 
+extension ModelContext {
+    /// All categories, sorted for display (Siri/Shortcuts category lists).
+    func allCategories() throws -> [Category] {
+        try fetch(FetchDescriptor<Category>(sortBy: [SortDescriptor(\.sortOrder)]))
+    }
+
+    /// Looks up a category by id (Siri/Shortcuts entity resolution).
+    func category(id: UUID) throws -> Category? {
+        try fetch(FetchDescriptor<Category>(predicate: #Predicate { $0.id == id })).first
+    }
+}
+
 /// Posts the same change notification + widget refresh that the in-app save
 /// paths trigger, so the dashboard and widgets stay in sync after a
 /// Siri/Shortcuts-driven save.

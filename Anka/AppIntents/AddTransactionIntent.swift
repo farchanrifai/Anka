@@ -42,10 +42,7 @@ struct AddTransactionIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let context = try AnkaModelContainer.makeContext()
-        let categoryID = category.id
-        let resolvedCategory = try context.fetch(
-            FetchDescriptor<Category>(predicate: #Predicate { $0.id == categoryID })
-        ).first
+        let resolvedCategory = try context.category(id: category.id)
 
         let tx = Transaction(
             amount: amount,
