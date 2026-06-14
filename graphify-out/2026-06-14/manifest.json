@@ -440,9 +440,9 @@
     "semantic_hash": "7fdf7a8a1c1ffae3a5c7f64bc37c2983"
   },
   "Anka/DesignSystem/NumberFormatter+Amount.swift": {
-    "mtime": 1781458636.4056354,
-    "ast_hash": "53cd66091284cafa22983f6891518ea7",
-    "semantic_hash": ""
+    "mtime": 1781310595.889076,
+    "ast_hash": "f7e5166a08d8f8a27f323de6deb5f738",
+    "semantic_hash": "f7e5166a08d8f8a27f323de6deb5f738"
   },
   "Anka/DesignSystem/PressableButtonStyle.swift": {
     "mtime": 1781195653.2903244,
@@ -460,14 +460,14 @@
     "semantic_hash": "42323b7790920d6a4a670f299c7a9023"
   },
   "Anka/Models/Transaction.swift": {
-    "mtime": 1781458794.38512,
-    "ast_hash": "fe6c7c9c53b454d5d3365701c7dbe38f",
-    "semantic_hash": ""
+    "mtime": 1781103164.3140125,
+    "ast_hash": "c6877914991349c90b1adc51d3ad4f3b",
+    "semantic_hash": "c6877914991349c90b1adc51d3ad4f3b"
   },
   "Anka/Models/TransactionSnapshot.swift": {
-    "mtime": 1781458876.8099682,
-    "ast_hash": "1434f115737eaa9f659277dfccb59dfb",
-    "semantic_hash": ""
+    "mtime": 1781314414.776702,
+    "ast_hash": "4bb06f35a813398d90524a68271c66fb",
+    "semantic_hash": "4bb06f35a813398d90524a68271c66fb"
   },
   "Anka/Models/TransactionType.swift": {
     "mtime": 1780804618.2189298,
@@ -520,9 +520,9 @@
     "semantic_hash": "04654a300097f0abfe3fb028dc44a200"
   },
   "Anka/Services/HighlightInsightEngine.swift": {
-    "mtime": 1781458905.4214888,
-    "ast_hash": "910f4bf8fd5781ccde1de37c60b4ce6d",
-    "semantic_hash": ""
+    "mtime": 1781414791.7864482,
+    "ast_hash": "73f34c0ca02946cd3636df693c504eb7",
+    "semantic_hash": "73f34c0ca02946cd3636df693c504eb7"
   },
   "Anka/Services/InlineTransactionParser.swift": {
     "mtime": 1781368268.4587626,
@@ -535,9 +535,9 @@
     "semantic_hash": "36535520816ad6915ed049b6d5838752"
   },
   "Anka/Services/KeywordMatcher.swift": {
-    "mtime": 1781455761.6044915,
-    "ast_hash": "aa5cfbd3edece8d440a881ae856cf317",
-    "semantic_hash": ""
+    "mtime": 1781313102.5449848,
+    "ast_hash": "f6c83efcd0926038937fd53f01c8c04e",
+    "semantic_hash": "f6c83efcd0926038937fd53f01c8c04e"
   },
   "Anka/Services/MLFeaturizer.swift": {
     "mtime": 1781455183.3114457,
@@ -555,9 +555,9 @@
     "semantic_hash": "8c1b559f4352e2193d518c1228d707af"
   },
   "Anka/Services/WidgetDataWriter.swift": {
-    "mtime": 1781458920.4628239,
-    "ast_hash": "cc8f5cdda265598ec04e32bbb8d5d3df",
-    "semantic_hash": ""
+    "mtime": 1781313324.3787718,
+    "ast_hash": "57ef5a291e80b6f47c293d779fd9945b",
+    "semantic_hash": "57ef5a291e80b6f47c293d779fd9945b"
   },
   "Anka/Services/WidgetSharedTypes.swift": {
     "mtime": 1781410899.1436179,
@@ -600,9 +600,9 @@
     "semantic_hash": "f5744c731140c61c5013e4b6c9e11271"
   },
   "Anka/Views/Highlights/DailyHighlightCard.swift": {
-    "mtime": 1781458805.9928515,
-    "ast_hash": "75284872e48522f98646ebe35f0097dd",
-    "semantic_hash": ""
+    "mtime": 1781415700.4246879,
+    "ast_hash": "8f46b0769c75484d9b642c4309a915c1",
+    "semantic_hash": "8f46b0769c75484d9b642c4309a915c1"
   },
   "Anka/Views/Highlights/HighlightsView.swift": {
     "mtime": 1781435103.6469476,
@@ -610,14 +610,14 @@
     "semantic_hash": "908b5ff61aa9e4b2853b57d8211d2cc4"
   },
   "Anka/Views/Highlights/MonthlyHighlightCard.swift": {
-    "mtime": 1781458816.3735728,
-    "ast_hash": "12676470cd37701bf399ee48ec42b5c6",
-    "semantic_hash": ""
+    "mtime": 1781415733.7895515,
+    "ast_hash": "6af29d428a84bc4adb9e3f408be3d815",
+    "semantic_hash": "6af29d428a84bc4adb9e3f408be3d815"
   },
   "Anka/Views/Highlights/WeeklyHighlightCard.swift": {
-    "mtime": 1781458814.9468112,
-    "ast_hash": "88836bf0db84cd2f4a736e57cdb9335d",
-    "semantic_hash": ""
+    "mtime": 1781415713.9346585,
+    "ast_hash": "9c1e1e75b170f998ba5b210af2fe8ac1",
+    "semantic_hash": "9c1e1e75b170f998ba5b210af2fe8ac1"
   },
   "Anka/Views/Onboarding/OnboardingPages.swift": {
     "mtime": 1781312032.522518,
@@ -675,14 +675,14 @@
     "semantic_hash": "9643b3208c47955f4475dc47eb239b46"
   },
   "Anka/Views/Settings/SettingsView.swift": {
-    "mtime": 1781458953.8544166,
-    "ast_hash": "8ace85a7bdaed1a58244cdd33e95fffa",
-    "semantic_hash": ""
+    "mtime": 1781343429.330366,
+    "ast_hash": "587715919e3f9b331c429a84b30edc3d",
+    "semantic_hash": "587715919e3f9b331c429a84b30edc3d"
   },
   "Anka/Views/Settings/SettingsViewModel.swift": {
-    "mtime": 1781458948.9572136,
-    "ast_hash": "a59c3e0541cb82b73ca43e3e15e4ea0f",
-    "semantic_hash": ""
+    "mtime": 1781312201.997808,
+    "ast_hash": "b2edce3ef056647b235f3e595f01328e",
+    "semantic_hash": "b2edce3ef056647b235f3e595f01328e"
   },
   "Anka/Views/Stats/CategoryBreakdownRow.swift": {
     "mtime": 1781311949.0043864,
@@ -695,9 +695,9 @@
     "semantic_hash": "a2d401f1ebd01c645f293f07b9695819"
   },
   "Anka/Views/Stats/StatsViewModel.swift": {
-    "mtime": 1781458886.2549448,
-    "ast_hash": "5d65649c4e16a27d2e655a8f978be842",
-    "semantic_hash": ""
+    "mtime": 1781314443.1195402,
+    "ast_hash": "fa703c8f56304100bf21035173317600",
+    "semantic_hash": "fa703c8f56304100bf21035173317600"
   },
   "Anka/Views/Stats/WeeklyTrendChartView.swift": {
     "mtime": 1781310595.8910294,
@@ -745,14 +745,14 @@
     "semantic_hash": "2e99061107cdaed969e135c108799753"
   },
   "Anka/Views/Today/TodayView.swift": {
-    "mtime": 1781458798.6150603,
-    "ast_hash": "f68fb80f24e60bce8553e75ab354bc7f",
+    "mtime": 1781455216.245675,
+    "ast_hash": "a61342b4aba57a8e185c8cc751946e45",
     "semantic_hash": ""
   },
   "Anka/Views/Today/TodayViewModel.swift": {
-    "mtime": 1781458849.962329,
-    "ast_hash": "769e37921a2642f6fc40f79320191255",
-    "semantic_hash": ""
+    "mtime": 1781407182.1019301,
+    "ast_hash": "8203da064b5f04339a8416e04276cf7f",
+    "semantic_hash": "8203da064b5f04339a8416e04276cf7f"
   },
   "AnkaTests/AmountParsingTests.swift": {
     "mtime": 1781310595.8916698,
@@ -1047,21 +1047,6 @@
   "CLAUDE.md": {
     "mtime": 1781436415.1107955,
     "ast_hash": "82efb97a359f5c7290bf2513d14686be",
-    "semantic_hash": ""
-  },
-  "Anka/DesignSystem/CurrencyInfo.swift": {
-    "mtime": 1781458624.759296,
-    "ast_hash": "7154e8a3a75daa9a294a81d96027445f",
-    "semantic_hash": ""
-  },
-  "Anka/Views/Settings/CurrencySettingsView.swift": {
-    "mtime": 1781458963.6460197,
-    "ast_hash": "f09fb440a840de5717f29537d7928dac",
-    "semantic_hash": ""
-  },
-  "AnkaTests/CurrencyInfoTests.swift": {
-    "mtime": 1781458973.9697647,
-    "ast_hash": "d49d0d7d87575777b2b7b0e62e79f80d",
     "semantic_hash": ""
   }
 }

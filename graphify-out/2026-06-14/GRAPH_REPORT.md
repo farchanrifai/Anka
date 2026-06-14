@@ -1,11 +1,11 @@
-# Graph Report - Anka  (2026-06-15)
+# Graph Report - Anka  (2026-06-14)
 
 ## Corpus Check
-- 213 files · ~301,418 words
+- 210 files · ~300,198 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 4074 nodes · 7490 edges · 229 communities (192 shown, 37 thin omitted)
+- 4051 nodes · 7459 edges · 232 communities (195 shown, 37 thin omitted)
 - Extraction: 97% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 176 edges (avg confidence: 0.78)
 - Token cost: 0 input · 0 output
 
@@ -167,6 +167,7 @@
 - [[_COMMUNITY_is generated|is generated]]
 - [[_COMMUNITY_hook lib|hook lib]]
 - [[_COMMUNITY_sveltekit adapter|sveltekit adapter]]
+- [[_COMMUNITY_DeepLinkRouter|DeepLinkRouter]]
 - [[_COMMUNITY_DESIGN & related|DESIGN & related]]
 - [[_COMMUNITY_impeccable paths & related|impeccable paths & related]]
 - [[_COMMUNITY_index|index]]
@@ -238,6 +239,7 @@
 - [[_COMMUNITY_Community 223|Community 223]]
 - [[_COMMUNITY_Community 224|Community 224]]
 - [[_COMMUNITY_Community 225|Community 225]]
+- [[_COMMUNITY_Community 226|Community 226]]
 - [[_COMMUNITY_Community 227|Community 227]]
 - [[_COMMUNITY_Community 229|Community 229]]
 - [[_COMMUNITY_Community 230|Community 230]]
@@ -302,39 +304,39 @@
 - **Highlights Feature Spec Implementation Set** — highlights_prompt_highlightinsightengine, highlights_prompt_weeklyhighlightcard, highlights_prompt_monthlyhighlightcard, highlights_prompt_dailyhighlightcard, highlights_prompt_highlightsview_shell [EXTRACTED 1.00]
 - **Critical Data-Loss / Crash Risk Cluster** — audit_d1_category_delete_cascades_transactions, audit_d2_autobackup_never_runs, audit_s1_missing_faceid_usage_description, ankacodeaudit_try_bang_modelcontainer_crash [INFERRED 0.85]
 
-## Communities (229 total, 37 thin omitted)
+## Communities (232 total, 37 thin omitted)
 
 ### Community 0 - "live browser"
 Cohesion: 0.03
-Nodes (111): applyPlaceholderSizingStyles(), averageRgb01(), buildCollapsible(), buildColorModels(), buildDesignHeader(), buildPickedAnchorSnapshot(), buildRadiiModels(), buildSvelteExpressionTextMap() (+103 more)
+Nodes (89): acceptedDomAlreadyClean(), applyPlaceholderSizingStyles(), averageRgb01(), buildAnnotationsForCapture(), buildPickedAnchorSnapshot(), buildPinElement(), buildPlaceholderResizeHandles(), buildSvelteExpressionTextMap() (+81 more)
 
 ### Community 1 - "checks"
 Cohesion: 0.06
-Nodes (72): checkBorders(), checkClippedOverflow(), checkColors(), checkElementAIPaletteDOM(), checkElementBorders(), checkElementBordersDOM(), checkElementClippedOverflow(), checkElementClippedOverflowDOM() (+64 more)
+Nodes (72): checkBorders(), checkColors(), checkCreamPalette(), checkElementAIPaletteDOM(), checkElementBorders(), checkElementBordersDOM(), checkElementColors(), checkElementColorsDOM() (+64 more)
 
 ### Community 2 - "live browser"
 Cohesion: 0.09
 Nodes (63): abortSvelteComponentInjection(), buildInsertPlaceholderSnapshotFromDom(), cancelEditing(), cancelEditingToPicking(), cancelInsertConfigure(), checkpointPayload(), cleanup(), cleanupAcceptedSession() (+55 more)
 
 ### Community 3 - "AddTransactionViewModel"
-Cohesion: 0.10
-Nodes (17): AddTransactionViewModel, Bool, Category, CategoryPredictor, Date, DateFormatter, Double, ModelContext (+9 more)
+Cohesion: 0.06
+Nodes (31): AddTransactionViewModel, Category, CategoryPredictor, Date, Double, Int, String, Bool (+23 more)
 
 ### Community 4 - "live browser"
 Cohesion: 0.06
 Nodes (56): applyOriginalAttrsToSvelteAnchor(), applyParamDefaults(), applyParamValue(), applySavedSessionMeta(), buildSveltePropValuesFromLiveElement(), clampVariantIndex(), closedClipPath(), commitAcceptedSvelteComponentToDom() (+48 more)
 
 ### Community 5 - "AddTransactionView"
-Cohesion: 0.11
+Cohesion: 0.13
 Nodes (14): InlineComposerModifier, InlineTransactionEntryView, View, Bool, Category, CGFloat, Content, Date (+6 more)
 
 ### Community 6 - "detect text & related"
-Cohesion: 0.12
-Nodes (29): detectUrl(), runVisualContrastFallback(), finding(), getAP(), extractFindingIds(), profileFindings(), profileFindingsAsync(), profileNow() (+21 more)
+Cohesion: 0.11
+Nodes (33): detectUrl(), runVisualContrastFallback(), finding(), getAP(), extractFindingIds(), profileFindings(), profileFindingsAsync(), profileNow() (+25 more)
 
 ### Community 7 - "hook lib"
-Cohesion: 0.08
-Nodes (52): cursorBlockMessage(), ACK_EXTS, ALLOWED_EXTS, bumpEditCount(), clampGroupedToBudget(), clampToBudget(), cleanIgnoreValueDisplay(), CO_SCAN_STYLE_NAMES (+44 more)
+Cohesion: 0.07
+Nodes (57): cursorBlockMessage(), ACK_EXTS, ALLOWED_EXTS, bumpEditCount(), clampGroupedToBudget(), clampToBudget(), cleanIgnoreValueDisplay(), CO_SCAN_STYLE_NAMES (+49 more)
 
 ### Community 8 - "modern screenshot.umd"
 Cohesion: 0.11
@@ -345,12 +347,12 @@ Cohesion: 0.09
 Nodes (48): allEntryIds(), argVal(), buildRepairBatch(), candidatesForEntry(), changedFilesSinceSnapshot(), collectApplyOwnedFiles(), collectRollbackFiles(), commitManualEdits() (+40 more)
 
 ### Community 10 - "AnkaHomeWidget"
-Cohesion: 0.11
-Nodes (21): AnkaHomeWidget, String, WidgetConfiguration, AnkaLockScreenEntry, AnkaLockScreenTimelineProvider, AnkaLockScreenWidget, AnkaLockScreenWidgetView, Context (+13 more)
+Cohesion: 0.13
+Nodes (18): AnkaHomeWidget, String, WidgetConfiguration, AnkaLockScreenEntry, AnkaLockScreenTimelineProvider, AnkaLockScreenWidget, AnkaLockScreenWidgetView, Context (+10 more)
 
 ### Community 11 - "detect antipatterns browser"
 Cohesion: 0.07
-Nodes (38): addBrowserFindings(), addVisualContrastFindings(), addVisualContrastResult(), checkBorders(), checkClippedOverflow(), checkElementBorders(), checkElementBordersDOM(), checkElementClippedOverflow() (+30 more)
+Nodes (36): checkBorders(), checkClippedOverflow(), checkElementBorders(), checkElementBordersDOM(), checkElementClippedOverflow(), checkElementClippedOverflowDOM(), checkElementItalicSerif(), checkElementItalicSerifDOM() (+28 more)
 
 ### Community 12 - "SKILL & related"
 Cohesion: 0.18
@@ -358,15 +360,15 @@ Nodes (14): Impeccable Command Table, Adapt Command, Responsive Design Reference
 
 ### Community 13 - "live server"
 Cohesion: 0.07
-Nodes (37): assembleLiveBrowserScript(), assertLiveBrowserScriptParts(), LIVE_BROWSER_SCRIPT_PARTS, readLiveBrowserScriptParts(), resolveLiveBrowserScriptParts(), summarizeManualApplyFailures(), removeAllSvelteComponentSessions(), acknowledgePendingEvent() (+29 more)
+Nodes (36): assembleLiveBrowserScript(), assertLiveBrowserScriptParts(), LIVE_BROWSER_SCRIPT_PARTS, readLiveBrowserScriptParts(), resolveLiveBrowserScriptParts(), summarizeManualApplyFailures(), removeAllSvelteComponentSessions(), acknowledgePendingEvent() (+28 more)
 
 ### Community 14 - "svelte component"
 Cohesion: 0.10
-Nodes (41): appendCssToSvelteStyle(), appendSanitizedCssRule(), applyDeferredSvelteComponentAccepts(), bakeParamValuesInCss(), buildInsertVariantStub(), buildPropContract(), buildPropsScript(), buildVariantStub() (+33 more)
+Nodes (43): appendCssToSvelteStyle(), appendSanitizedCssRule(), applyDeferredSvelteComponentAccepts(), bakeParamValuesInCss(), buildInsertVariantStub(), buildPropContract(), buildPropsScript(), buildVariantStub() (+35 more)
 
 ### Community 15 - "live browser"
-Cohesion: 0.09
-Nodes (44): actionLabel(), applyConfigureBarChrome(), bindConfigureCountPillTooltip(), bindConfigureInlineControlHover(), buildConfigureActionControl(), buildConfigureCountControl(), buildConfigureRow(), buildConfigureSubmitButton() (+36 more)
+Cohesion: 0.10
+Nodes (42): actionLabel(), applyConfigureBarChrome(), bindConfigureCountPillTooltip(), bindConfigureInlineControlHover(), buildConfigureActionControl(), buildConfigureCountControl(), buildConfigureRow(), buildConfigureSubmitButton() (+34 more)
 
 ### Community 16 - "live accept & related"
 Cohesion: 0.06
@@ -374,11 +376,11 @@ Nodes (43): hasGeneratedHeader, isGeneratedFile, isGitIgnored, acceptCli, buildC
 
 ### Community 17 - "manual apply"
 Cohesion: 0.08
-Nodes (35): addOpToManualApplyChunk(), APPLY_EVENT_HARD_TIMEOUT_MS, APPLY_EVENT_SOFT_DEADLINE_MS, buildManualApplyAgentAction(), clearManualApplyTransaction(), collectManualApplyFiles(), compactManualApplyBatch(), compactManualApplyCandidates() (+27 more)
+Nodes (36): addOpToManualApplyChunk(), APPLY_EVENT_HARD_TIMEOUT_MS, APPLY_EVENT_SOFT_DEADLINE_MS, buildManualApplyAgentAction(), clearManualApplyTransaction(), collectManualApplyFiles(), compactManualApplyBatch(), compactManualApplyCandidates() (+28 more)
 
 ### Community 18 - "OnboardingPages & related"
-Cohesion: 0.19
-Nodes (15): Bool, CGFloat, Color, Double, Int, Never, Task, Void (+7 more)
+Cohesion: 0.10
+Nodes (25): Bool, CGFloat, Color, Double, Int, Never, Task, Void (+17 more)
 
 ### Community 19 - "HighlightInsightEngine & related"
 Cohesion: 0.08
@@ -390,7 +392,7 @@ Nodes (39): activeElementDeep(), armPageChatForTyping(), clearSteerAwaitTimer(),
 
 ### Community 21 - "live wrap"
 Cohesion: 0.13
-Nodes (36): buildSvelteComponentCssAuthoring(), scaffoldSvelteComponentInsertSession(), shouldUseSvelteComponentInjection(), argVal(), buildInsertWrapperLines(), computeInsertLine(), INSERT_POSITIONS, insertCli() (+28 more)
+Nodes (35): buildSvelteComponentCssAuthoring(), shouldUseSvelteComponentInjection(), argVal(), buildInsertWrapperLines(), computeInsertLine(), INSERT_POSITIONS, insertCli(), isInsertPosition() (+27 more)
 
 ### Community 22 - "index"
 Cohesion: 0.10
@@ -413,8 +415,8 @@ Cohesion: 0.09
 Nodes (33): addManualContextText(), applyEditing(), buildLocatorForLeaf(), canRestoreManualEditElement(), collectManualContextPieces(), contextElementForManualEdit(), copyEditContainerContext(), copyEditLeafContext() (+25 more)
 
 ### Community 27 - "css cascade"
-Cohesion: 0.11
-Nodes (26): checkElementHeroEyebrow(), checkElementQualityDOM(), resolveLengthPx(), resolveVarRefs(), applyStaticDeclaration(), buildBorderOverrideMap(), compareStaticPriority(), cssPropToCamel() (+18 more)
+Cohesion: 0.12
+Nodes (24): checkElementHeroEyebrow(), resolveVarRefs(), applyStaticDeclaration(), buildBorderOverrideMap(), compareStaticPriority(), cssPropToCamel(), expandStaticBoxValues(), expandStaticDeclaration() (+16 more)
 
 ### Community 28 - "hook admin"
 Cohesion: 0.17
@@ -437,8 +439,8 @@ Cohesion: 0.10
 Nodes (20): Bool, Context, FocusState, String, UIFont, Void, _AutoFocusUITextField, AutoFocusTextField (+12 more)
 
 ### Community 33 - "BackupSettingsView"
-Cohesion: 0.17
-Nodes (13): BackupImportResult, Bool, Category, Int, String, Transaction, URL, AutoBackupService (+5 more)
+Cohesion: 0.11
+Nodes (20): BackupImportResult, Bool, Category, Int, String, Transaction, URL, Category (+12 more)
 
 ### Community 34 - "SettingsViewModel & related"
 Cohesion: 0.09
@@ -465,16 +467,16 @@ Cohesion: 0.09
 Nodes (28): hook.mjs main, bumpCursorDenial, cursorBlockMessage, hook-before-edit.mjs main, projectedEditContent, proposedContent, shellCopiedFileContent, shellHereDocContent (+20 more)
 
 ### Community 40 - "BackupService"
-Cohesion: 0.16
-Nodes (20): Bool, Category, Data, Date, Double, Int, MainActor, ModelContext (+12 more)
+Cohesion: 0.14
+Nodes (22): Bool, Category, Data, Date, Double, Int, MainActor, ModelContext (+14 more)
 
 ### Community 41 - "detect text & related"
 Cohesion: 0.10
 Nodes (28): filterByProviders, getAntipattern, checkRepeatedSectionKickers, buildStaticStyleMap, collectStaticCssRules, detect-antipatterns.mjs public API facade, scripts/detect.mjs entry shim, checkStaticPageTypography (+20 more)
 
 ### Community 42 - "CSVService"
-Cohesion: 0.12
-Nodes (26): Bool, Category, Date, DateFormatter, Double, Int, ModelContext, String (+18 more)
+Cohesion: 0.08
+Nodes (30): Bool, Category, Date, DateFormatter, Double, Int, ModelContext, String (+22 more)
 
 ### Community 43 - "TransactionParser & related"
 Cohesion: 0.05
@@ -489,12 +491,12 @@ Cohesion: 0.09
 Nodes (21): Bool, CategorySpendData, Double, Bool, Category, CGFloat, Color, Date (+13 more)
 
 ### Community 46 - "manual edits buffer & related"
-Cohesion: 0.17
-Nodes (21): summarizeManualDiagnostics(), createManualEditRoutes(), sendJson(), summarizePendingManualEditBatch(), countByPage(), getBufferPath(), readBuffer(), readBufferInternal() (+13 more)
+Cohesion: 0.18
+Nodes (20): createManualEditRoutes(), sendJson(), summarizePendingManualEditBatch(), countByPage(), getBufferPath(), readBuffer(), readBufferInternal(), readBufferStrict() (+12 more)
 
 ### Community 47 - "live browser"
-Cohesion: 0.10
-Nodes (25): applyPlaceholderDimensions(), beginEditPin(), buildAnnotationsForCapture(), buildPinElement(), cancelEditingPin(), clampPlaceholderSize(), ensureInsertPlaceholder(), finalizeEditingPin() (+17 more)
+Cohesion: 0.12
+Nodes (22): applyPlaceholderDimensions(), beginEditPin(), cancelEditingPin(), clampPlaceholderSize(), ensureInsertPlaceholder(), finalizeEditingPin(), isInsertGeneratingSession(), localCoords() (+14 more)
 
 ### Community 48 - "live browser"
 Cohesion: 0.12
@@ -505,20 +507,20 @@ Cohesion: 0.18
 Nodes (22): completionAckForAcceptResult(), completionTypeForAcceptResult(), augmentEventWithAcceptHandling(), buildAcceptScriptArgs(), buildPollReplyPayload(), EVENT_TYPES_NEEDING_AGENT_REPLY, fetchNextEvent(), fetchServerStatus() (+14 more)
 
 ### Community 51 - "insert ui"
-Cohesion: 0.08
-Nodes (23): FORBIDDEN_MANUAL_EDIT_TEXT_CHARS, INSERT_POSITIONS, isValidId(), isValidVariantId(), validateAnnotationFields(), validateEvent(), validateInsertGenerate(), validateManualEditEvent() (+15 more)
+Cohesion: 0.11
+Nodes (11): canCreateInsert(), clampPlaceholderSize(), computeInsertPosition(), groupSiblingRows(), hitSiblingInsertGap(), horizontalOverlap(), insertCreateDisabledReason(), insertLineCoords() (+3 more)
 
 ### Community 52 - "InlineTransactionEntryViewModel"
-Cohesion: 0.14
-Nodes (13): InlineComposerPrefs, InlineTransactionEntryViewModel, Bool, Category, CategoryPredictor, Date, ModelContext, Never (+5 more)
+Cohesion: 0.12
+Nodes (17): InlineComposerPrefs, InlineTransactionEntryViewModel, TransactionEntryLayout, v1, v3, Bool, Category, CategoryPredictor (+9 more)
 
 ### Community 53 - "CategoryPredictor"
-Cohesion: 0.08
-Nodes (30): Double, Int, String, UserDefaults, Bool, Double, String, TrainableTransaction (+22 more)
+Cohesion: 0.18
+Nodes (13): Bool, Double, String, TrainableTransaction, URL, NLModel, CategoryPredictor, CorrectionEntry (+5 more)
 
 ### Community 54 - "TodayViewModel"
-Cohesion: 0.09
-Nodes (24): TransactionEntryLayout, v1, v3, DateInterval, CaseIterable, Hashable, TransactionType, expense (+16 more)
+Cohesion: 0.10
+Nodes (20): DateInterval, CaseIterable, Hashable, TransactionType, expense, income, Plan, monthly (+12 more)
 
 ### Community 55 - "AUDIT"
 Cohesion: 0.09
@@ -529,8 +531,8 @@ Cohesion: 0.05
 Nodes (41): 1. Read the screenshot (if present), 2. Wrap the element, 3. Load the action's reference, 4. Plan three variants: identity first, then mode, then axes, 5. Apply the freeform prompt (if present), 6. Write all variants in a single edit, 7. Parameters (composition-sized, 0–4 per variant), 8. Signal done (+33 more)
 
 ### Community 57 - "live inject"
-Cohesion: 0.14
-Nodes (21): appendOriginToDirective(), buildTagBlock(), commentClose(), commentOpen(), CONFIG_PATH, detectLineEnding(), __dirname, ensureLiveGitIgnores() (+13 more)
+Cohesion: 0.15
+Nodes (19): appendOriginToDirective(), buildTagBlock(), commentClose(), commentOpen(), CONFIG_PATH, detectLineEnding(), __dirname, ensureLiveGitIgnores() (+11 more)
 
 ### Community 58 - "TodayViewModel"
 Cohesion: 0.15
@@ -557,16 +559,16 @@ Cohesion: 0.20
 Nodes (11): Bool, Color, ColorScheme, AppearanceManager, DarkVariant, black, gray, Mode (+3 more)
 
 ### Community 65 - "WidgetSharedTypes & related"
-Cohesion: 0.11
-Nodes (15): String, URL, UserDefaults, DateFormatter, Transaction, Bool, Double, String (+7 more)
+Cohesion: 0.14
+Nodes (13): String, URL, UserDefaults, DateFormatter, Bool, Double, String, PlatformPaths (+5 more)
 
 ### Community 66 - "TodaySheets"
 Cohesion: 0.11
 Nodes (18): Category, Date, AddTransactionViewModel, Bool, Category, String, Transaction, Category (+10 more)
 
 ### Community 67 - "BackupServiceTests"
-Cohesion: 0.08
-Nodes (19): Category, ModelContainer, BackupServiceTests, Anka, BackupImportResult, Bool, Data, ModelContext (+11 more)
+Cohesion: 0.30
+Nodes (8): BackupServiceTests, Anka, BackupImportResult, Bool, Data, ModelContext, Transaction, URL
 
 ### Community 68 - "AddTransactionUITests & related"
 Cohesion: 0.12
@@ -577,16 +579,16 @@ Cohesion: 0.22
 Nodes (15): firstExisting(), getDesignSidecarCandidates(), getDesignSidecarPath(), getImpeccableDir(), getLegacyLiveConfigPath(), getLegacyLiveServerPath(), getLiveAnnotationsDir(), getLiveConfigPath() (+7 more)
 
 ### Community 70 - "profiler"
-Cohesion: 0.10
-Nodes (21): Bool, Double, Int, String, Category, CategoryPredictor, Date, Double (+13 more)
+Cohesion: 0.08
+Nodes (35): buildCollapsible(), buildColorModels(), buildDesignHeader(), buildRadiiModels(), buildTypographyModels(), cssSafe(), designPanelCss(), escapeHtml() (+27 more)
 
 ### Community 71 - "detect antipatterns browser"
 Cohesion: 0.16
 Nodes (17): checkElementOversizedH1(), checkElementOversizedH1DOM(), checkElementQuality(), checkElementQualityDOM(), checkOversizedH1(), checkQuality(), colorsNearlyMatch(), cssColorAlpha() (+9 more)
 
 ### Community 72 - "sveltekit adapter"
-Cohesion: 0.26
-Nodes (14): applySvelteKitLiveAdapter(), buildSvelteLiveRootComponent(), defaultSvelteLayout(), detectSvelteKitProject(), ensureSvelteLiveRootComponent(), escapeRegExp(), fileIncludes(), findSvelteKitAppHtml() (+6 more)
+Cohesion: 0.23
+Nodes (16): applySvelteKitLiveAdapter(), buildSvelteLiveRootComponent(), defaultSvelteLayout(), detectSvelteKitProject(), ensureSvelteLiveRootComponent(), escapeRegExp(), fileIncludes(), findSvelteKitAppHtml() (+8 more)
 
 ### Community 73 - "OnboardingView"
 Cohesion: 0.18
@@ -605,8 +607,8 @@ Cohesion: 0.18
 Nodes (11): Category, DisplayRepresentation, String, TransactionType, TypeDisplayRepresentation, UUID, ModelContext.allCategories, AppEntity (+3 more)
 
 ### Community 77 - "InlineTransactionParserTests"
-Cohesion: 0.22
-Nodes (4): CSVServiceTests, ModelContext, String, URL
+Cohesion: 0.20
+Nodes (3): InlineTransactionParserTests, Anka, Date
 
 ### Community 78 - "detect antipatterns browser"
 Cohesion: 0.16
@@ -617,28 +619,28 @@ Cohesion: 0.12
 Nodes (15): TransactionType: AppEnum extension, Date, DisplayRepresentation, Double, IntentResult, LocalizedStringResource, ParameterSummary, ProvidesDialog (+7 more)
 
 ### Community 80 - "DonutChartView"
-Cohesion: 0.19
-Nodes (12): CGFloat, CGSize, Color, Double, Int, String, Void, CGPoint (+4 more)
+Cohesion: 0.17
+Nodes (13): CGFloat, CGSize, Color, Double, Int, String, Void, CGPoint (+5 more)
 
 ### Community 81 - "AppLockManager"
-Cohesion: 0.06
-Nodes (30): Bool, Data, Date, String, TimeInterval, URL, Bool, String (+22 more)
+Cohesion: 0.20
+Nodes (6): Date, TimeInterval, Character, Int, LABiometryType, AppLockManager
 
 ### Community 82 - "CategoryMLTrainer"
-Cohesion: 0.22
-Nodes (13): checkCreamPalette(), checkQuality(), colorsNearlyMatch(), creamFromClassList(), cssColorAlpha(), cssColorIsTransparent(), getComputedStyleFor(), hasMeaningfulDirectText() (+5 more)
+Cohesion: 0.29
+Nodes (8): Double, Int, String, UserDefaults, CorrectionEntry, JSONDecoder, CategoryMLTrainer, TrainableTransaction
 
 ### Community 83 - "TodayToolbarButtons"
-Cohesion: 0.23
-Nodes (10): Namespace, String, TodayViewModel, Category, Transaction, AddToolbarButton, FilterToolbarButton, SettingsToolbarButton (+2 more)
+Cohesion: 0.14
+Nodes (15): Namespace, String, TodayViewModel, Bool, String, Void, Category, Transaction (+7 more)
 
 ### Community 84 - "CSVServiceTests"
 Cohesion: 0.06
 Nodes (32): Accent Color Application, Accessibility, Alpha Is A Design Smell, Assess Color Opportunity, Background & Surfaces, Balance & Refinement, Borders & Accents, Building Functional Palettes (+24 more)
 
 ### Community 86 - "constants"
-Cohesion: 0.17
-Nodes (22): createBrowserDetector(), confirm(), detectCli(), formatFindings(), handleStdin(), printUsage(), buildImportGraph(), detectFrameworkConfig() (+14 more)
+Cohesion: 0.10
+Nodes (35): createBrowserDetector(), confirm(), detectCli(), formatFindings(), handleStdin(), printUsage(), isNeutralColor, isBrandFontOnOwnDomain (+27 more)
 
 ### Community 87 - "context & related"
 Cohesion: 0.16
@@ -649,12 +651,12 @@ Cohesion: 0.22
 Nodes (14): firstCssUrl(), getLayerValue(), loadVisualContrastImage(), parseObjectPosition(), parsePositionPair(), parsePositionToken(), pickWorstContrastColor(), pointToImageSource() (+6 more)
 
 ### Community 89 - "event validation"
-Cohesion: 0.27
-Nodes (7): Category, Content, Transaction, View, AutoBackupModifier, View, AutoBackupService (referenced)
+Cohesion: 0.25
+Nodes (12): FORBIDDEN_MANUAL_EDIT_TEXT_CHARS, INSERT_POSITIONS, isValidId(), isValidVariantId(), validateAnnotationFields(), validateEvent(), validateInsertGenerate(), validateManualEditEvent() (+4 more)
 
 ### Community 90 - "checks"
-Cohesion: 0.09
-Nodes (21): isNeutralColor, isBrandFontOnOwnDomain, checkElementGlow(), checkElementOversizedH1(), checkElementOversizedH1DOM(), checkElementQuality(), checkHtmlPatterns(), checkOversizedH1() (+13 more)
+Cohesion: 0.16
+Nodes (17): checkElementOversizedH1(), checkElementOversizedH1DOM(), checkElementQuality(), checkElementQualityDOM(), checkOversizedH1(), checkQuality(), colorsNearlyMatch(), cssColorAlpha() (+9 more)
 
 ### Community 91 - "context signals"
 Cohesion: 0.23
@@ -666,7 +668,7 @@ Nodes (8): Category, ModelContainer, ModelContext, UUID, CategoryPredictor (inst
 
 ### Community 93 - "TransactionSnapshot"
 Cohesion: 0.15
-Nodes (12): Date, Double, String, Transaction, TransactionType, UUID, TransactionSnapshot, Sendable (+4 more)
+Nodes (11): Date, Double, Transaction, TransactionType, UUID, TransactionSnapshot, Sendable, RestorePhase (+3 more)
 
 ### Community 94 - "critique storage"
 Cohesion: 0.31
@@ -677,12 +679,12 @@ Cohesion: 0.18
 Nodes (12): applyConfigSource(), cloneDefaultConfig(), hookSection(), mergeIgnoreValues(), numberOr(), readCache(), readConfig(), safeReadJson() (+4 more)
 
 ### Community 96 - "AppLockManager"
-Cohesion: 0.25
-Nodes (8): checkRepeatedSectionKickers(), checkRepeatedSectionKickersDOM(), checkRepeatedSectionKickersFromDoc(), cleanInlineText(), collectRepeatedSectionKickerCandidates(), isRepeatedKickerCandidate(), isRepeatedKickerCardContext(), makeStaticStyle()
+Cohesion: 0.20
+Nodes (9): BiometricOutcome, failed, success, unavailable, GracePeriod, after1Minute, after30Seconds, after5Minutes (+1 more)
 
 ### Community 97 - "CategoryMigrationTests"
-Cohesion: 0.32
-Nodes (6): Int, String, AppCurrency, Double, Int, NumberFormatter
+Cohesion: 0.38
+Nodes (4): CategoryMigrationTests, Anka, ModelContext, UserDefaults
 
 ### Community 98 - "InlineComposerUITests"
 Cohesion: 0.27
@@ -742,19 +744,19 @@ Nodes (7): Double, CGFloat, View, ButtonStyle, Configuration, DSOpacity, Pressab
 
 ### Community 112 - "AppLockManager"
 Cohesion: 0.32
-Nodes (5): Bool, String, Void, OnboardingPaywallView, Plan
+Nodes (4): Bool, Data, String, Data
 
 ### Community 113 - "AppLockView"
-Cohesion: 0.29
-Nodes (7): checkLayout(), checkPageLayout(), isCardLike(), isCardLikeDOM(), isCardLikeFromProps(), parseRadiusToPx(), resolveBorderRadiusPx()
+Cohesion: 0.24
+Nodes (6): Bool, Date, Int, String, AppLockView, AppLockManager
 
 ### Community 114 - "phase 8 7 highlights prompt"
 Cohesion: 0.24
 Nodes (11): Phase Status, DailyHighlightCard (Phase C), HighlightInsightEngine (Services/HighlightInsightEngine.swift), HighlightsView Shell (Views/Highlights/HighlightsView.swift), MonthlyHighlightCard (Phase B), Highlights Navigation Entry Point in TodayView, Highlights Page Objective (Apple Health-Inspired), WeeklyHighlightCard (Phase A) (+3 more)
 
 ### Community 115 - "Transaction"
-Cohesion: 0.38
-Nodes (7): Category, Date, Double, String, TransactionType, UUID, Transaction
+Cohesion: 0.20
+Nodes (12): String, Category, Date, Double, String, TransactionType, UUID, AppCurrency (+4 more)
 
 ### Community 116 - "PeriodMenuPill"
 Cohesion: 0.28
@@ -765,8 +767,8 @@ Cohesion: 0.25
 Nodes (9): resolveLiveBrowserScriptParts / readLiveBrowserScriptParts / assertLiveBrowserScriptParts, acknowledgePendingEvent, createRequestHandler, flushPendingPolls, handlePollGet, handlePollPost, loadBrowserScripts, validateManualApplyResultMessage (+1 more)
 
 ### Community 120 - "detect antipatterns browser"
-Cohesion: 0.29
-Nodes (8): analyzeVisualContrast(), buildSelectorSegment(), collectVisualContrastCandidates(), collectVisualContrastReasons(), generateSelector(), getDirectText(), getDirectTextRect(), waitForVisualPaint()
+Cohesion: 0.25
+Nodes (9): addBrowserFindings(), addVisualContrastFindings(), addVisualContrastResult(), clearOverlays(), detachOverlay(), disconnectLazyVisualContrastObserver(), scheduleLazyVisualContrast(), shouldRunVisualContrast() (+1 more)
 
 ### Community 121 - "ui core"
 Cohesion: 0.33
@@ -789,12 +791,16 @@ Cohesion: 0.36
 Nodes (5): CGFloat, UIFont, Font, Font.TextStyle, Font.Weight
 
 ### Community 126 - "Category"
-Cohesion: 0.39
-Nodes (6): Int, String, Transaction, TransactionType, UUID, Category
+Cohesion: 0.18
+Nodes (10): Int, String, Transaction, TransactionType, UUID, Category, ModelContainer, ModelConfiguration (+2 more)
 
 ### Community 127 - "KeychainHelper"
-Cohesion: 0.38
-Nodes (7): borderColorsFromStyle(), borderWidthsFromStyle(), checkElementGptBorderShadow(), checkElementGptBorderShadowDOM(), checkGptThinBorderWideShadow(), shadowLayerAlpha(), shadowMaxBlurPx()
+Cohesion: 0.36
+Nodes (3): Bool, String, KeychainHelper
+
+### Community 128 - "KeywordMatcher"
+Cohesion: 0.19
+Nodes (9): Double, Int, Set, String, Double, String, KeywordMatcher, MLFeaturizer (+1 more)
 
 ### Community 129 - "event validation & related"
 Cohesion: 0.25
@@ -853,8 +859,8 @@ Cohesion: 0.33
 Nodes (7): manualEditRoutes instance, rollbackManualApplyTransaction / writeManualApplyTransaction, /manual-edit-commit handler, /manual-edit-stash handler, countByPage, readBuffer / readBufferStrict / writeBuffer, stageEntry
 
 ### Community 143 - "NumberFormatter+Amount"
-Cohesion: 0.09
-Nodes (26): Double, String, Bool, String, Void, AnkaHomeEntry, AnkaHomeTimelineProvider, AnkaHomeWidgetView (+18 more)
+Cohesion: 0.16
+Nodes (17): AnkaHomeEntry, AnkaHomeTimelineProvider, AnkaHomeWidgetView, LargeContent, MediumContent, SmallContent, Context, Date (+9 more)
 
 ### Community 144 - "DayHeaderView"
 Cohesion: 0.09
@@ -1021,8 +1027,8 @@ Cohesion: 0.18
 Nodes (10): Assess Current State, Color Refinement, Composition Refinement, Motion Reduction, Plan Refinement, Refine the Design, Register, Simplification (+2 more)
 
 ### Community 218 - "Community 218"
-Cohesion: 0.36
-Nodes (8): acceptedDomAlreadyClean(), ensureAcceptedDomClean(), findAcceptedRuntimeWrappers(), markSessionHandled(), maybeCompleteAcceptedSession(), reloadAfterMissingAcceptedDom(), restoreAcceptedDomFromSnapshot(), scheduleAcceptCleanup()
+Cohesion: 0.18
+Nodes (10): checkClippedOverflow(), checkElementClippedOverflow(), checkElementClippedOverflowDOM(), clippingContainerIsIntentionalViewport(), elementRect(), positionedChildEscapesClip(), positionedChildHasSubstantiveContent(), positionedChildIsDecorative() (+2 more)
 
 ### Community 219 - "Community 219"
 Cohesion: 0.20
@@ -1037,20 +1043,24 @@ Cohesion: 0.20
 Nodes (9): Color, Components, Layout, Motion, Product bans (on top of the shared absolute bans), Product permissions, Product register, The product slop test (+1 more)
 
 ### Community 222 - "Community 222"
-Cohesion: 0.33
-Nodes (7): checkRepeatedSectionKickers(), checkRepeatedSectionKickersDOM(), checkRepeatedSectionKickersFromDoc(), cleanInlineText(), collectRepeatedSectionKickerCandidates(), isRepeatedKickerCandidate(), isRepeatedKickerCardContext()
+Cohesion: 0.29
+Nodes (8): analyzeVisualContrast(), buildSelectorSegment(), collectVisualContrastCandidates(), collectVisualContrastReasons(), generateSelector(), getDirectText(), getDirectTextRect(), waitForVisualPaint()
 
 ### Community 223 - "Community 223"
 Cohesion: 0.25
 Nodes (7): Extract Flow, Step 1: Discover the Design System, Step 2: Identify Patterns, Step 3: Plan Extraction, Step 4: Extract & Enrich, Step 5: Migrate, Step 6: Document
 
 ### Community 224 - "Community 224"
-Cohesion: 0.40
-Nodes (5): ensureHookGitExcludes(), escapeRegExp(), persistCache(), resolveGitDir(), resolveHookGitExcludeTarget()
+Cohesion: 0.29
+Nodes (7): checkLayout(), checkPageLayout(), isCardLike(), isCardLikeDOM(), isCardLikeFromProps(), parseRadiusToPx(), resolveBorderRadiusPx()
 
 ### Community 225 - "Community 225"
 Cohesion: 0.29
 Nodes (6): Constraints, Failure modes, Flow, /impeccable hooks, Intentional findings, Routing
+
+### Community 226 - "Community 226"
+Cohesion: 0.38
+Nodes (7): borderColorsFromStyle(), borderWidthsFromStyle(), checkElementGptBorderShadow(), checkElementGptBorderShadowDOM(), checkGptThinBorderWideShadow(), shadowLayerAlpha(), shadowMaxBlurPx()
 
 ### Community 227 - "Community 227"
 Cohesion: 0.40
@@ -1107,7 +1117,7 @@ Nodes (5): Colors (DSColor.swift), Design System, Fonts (DSFont.swift) — porte
   Anka_Code_Audit.md · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **1119 isolated node(s):** `COMMON_DEV_PORTS`, `SCANNABLE_EXT`, `SOURCE_DIRS`, `PRODUCT_NAMES`, `DESIGN_NAMES` (+1114 more)
+- **1115 isolated node(s):** `COMMON_DEV_PORTS`, `SCANNABLE_EXT`, `SOURCE_DIRS`, `PRODUCT_NAMES`, `DESIGN_NAMES` (+1110 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **37 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
