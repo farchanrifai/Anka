@@ -6,7 +6,10 @@ import SwiftUI
 /// not replace) the Stats sheet — always relative to "today", independent of
 /// the dashboard's selected period.
 struct HighlightsView: View {
+    let namespace: Namespace.ID
+
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
 
     @State private var daily: DailyHighlightData?
     @State private var weekly: WeeklyHighlightData?
@@ -28,6 +31,18 @@ struct HighlightsView: View {
         .background(DSColor.bgPrimary)
         .navigationTitle("Highlights")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbarBackground(.hidden, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button { dismiss() } label: {
+                    Image(systemName: "xmark")
+                }
+                .tint(.primary)
+                .accessibilityLabel("Close")
+            }
+        }
+        .navigationTransition(.zoom(sourceID: "highlights", in: namespace))
         .onAppear {
             guard daily == nil else { return }
             let engine = HighlightInsightEngine(modelContext: modelContext)
