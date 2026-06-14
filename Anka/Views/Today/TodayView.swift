@@ -11,6 +11,7 @@ import SwiftData
 
 struct TodayView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(CategoryPredictor.self) private var predictor
     @Query(sort: \Transaction.date, order: .reverse) private var allTransactions: [Transaction]
     @Query(sort: \Category.sortOrder) private var allCategories: [Category]
 
@@ -85,6 +86,7 @@ struct TodayView: View {
 
     private func feedVM() {
         vm.update(transactions: allTransactions, categories: allCategories)
+        predictor.updateRecentAmounts(allTransactions.filter { $0.type == .expense }.map(\.amount))
     }
 
     private func setupAmountVisibility() {

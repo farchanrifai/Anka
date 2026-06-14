@@ -10,20 +10,30 @@ import Foundation
 /// detached background task and the main-actor predictor alike.
 enum MLFeaturizer {
     /// Coarse amount tier appended to the note so the model can lean on spend
-    /// size. ⚠️ Tuned for IDR ranges (see CONTEXT "Internationalization concern").
-    static func amountBucket(_ amount: Double) -> String {
-        switch amount {
-        case ..<20_000:    return "micro"
-        case ..<100_000:   return "small"
-        case ..<500_000:   return "medium"
-        case ..<2_000_000: return "large"
-        default:           return "xlarge"
+    /// size, relative to the user's own recent spending — currency-agnostic.
+    /// Cold-start (no history) returns "medium" (neutral, no signal).
+    static func amountBucket(_ amount: Double, relativeTo recentAmounts: [Double]) -> String {
+        let sorted = recentAmounts.sorted()
+        guard !sorted.isEmpty else { return "medium" }
+        let mid = sorted.count / 2
+        let median = sorted.count.isMultiple(of: 2)
+            ? (sorted[mid - 1] + sorted[mid]) / 2
+            : sorted[mid]
+        guard median > 0 else { return "medium" }
+
+        let ratio = amount / median
+        switch ratio {
+        case ..<0.25: return "micro"
+        case ..<0.75: return "small"
+        case ..<1.5:  return "medium"
+        case ..<4:    return "large"
+        default:      return "xlarge"
         }
     }
 
     /// The exact training/inference input string: lowercased note + amount tier.
-    static func input(note: String, amount: Double) -> String {
-        "\(note.lowercased()) \(amountBucket(amount))"
+    static func input(note: String, amount: Double, recentAmounts: [Double]) -> String {
+        "\(note.lowercased()) \(amountBucket(amount, relativeTo: recentAmounts))"
     }
 }
 

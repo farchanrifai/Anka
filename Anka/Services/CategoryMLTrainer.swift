@@ -50,8 +50,12 @@ public enum CategoryMLTrainer {
         var texts:  [String] = []
         var labels: [String] = []
 
+        // Same amounts used to compute the median for inference's
+        // `amountBucket`, so train/inference buckets line up.
+        let recentAmounts = labeled.map { $0.amount }
+
         for tx in labeled {
-            texts.append(MLFeaturizer.input(note: tx.note, amount: tx.amount))
+            texts.append(MLFeaturizer.input(note: tx.note, amount: tx.amount, recentAmounts: recentAmounts))
             labels.append(tx.categoryName)
         }
 
@@ -63,7 +67,7 @@ public enum CategoryMLTrainer {
         for entry in corrections {
             guard let actual = entry.actual,
                   !entry.note.trimmingCharacters(in: .whitespaces).isEmpty else { continue }
-            let text = MLFeaturizer.input(note: entry.note, amount: entry.amount)
+            let text = MLFeaturizer.input(note: entry.note, amount: entry.amount, recentAmounts: recentAmounts)
             texts.append(contentsOf: [text, text])
             labels.append(contentsOf: [actual, actual])
         }

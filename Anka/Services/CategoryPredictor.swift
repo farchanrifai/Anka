@@ -52,9 +52,20 @@ public final class CategoryPredictor {
     private let starterModel: NLModel?
     private var userModel: NLModel?
 
+    /// Snapshot of the user's recent expense amounts, used to bucket new
+    /// amounts relative to their own spend (currency-agnostic). Updated by
+    /// the view layer alongside category/transaction feeds.
+    private var recentAmounts: [Double] = []
+
     public init() {
         starterModel = Self.loadStarterModel()
         loadUserModel()
+    }
+
+    /// Feeds the predictor a snapshot of the user's recent expense amounts so
+    /// `amountBucket` can scale to their spending instead of fixed IDR ranges.
+    public func updateRecentAmounts(_ amounts: [Double]) {
+        recentAmounts = amounts
     }
 
     // MARK: - Predict
@@ -163,7 +174,7 @@ public final class CategoryPredictor {
     }
 
     private func buildInput(note: String, amount: Double) -> String {
-        MLFeaturizer.input(note: note, amount: amount)
+        MLFeaturizer.input(note: note, amount: amount, recentAmounts: recentAmounts)
     }
 
     private func userModelURL() -> URL? {

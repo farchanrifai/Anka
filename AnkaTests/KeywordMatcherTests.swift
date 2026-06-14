@@ -42,22 +42,30 @@ struct KeywordMatcherTests {
     // MARK: - Shared amount-bucket featurizer (no predictor/trainer drift)
 
     @Test func amountBucketTiers() {
-        #expect(MLFeaturizer.amountBucket(5_000) == "micro")
-        #expect(MLFeaturizer.amountBucket(50_000) == "small")
-        #expect(MLFeaturizer.amountBucket(250_000) == "medium")
-        #expect(MLFeaturizer.amountBucket(1_000_000) == "large")
-        #expect(MLFeaturizer.amountBucket(5_000_000) == "xlarge")
+        // Median of recentAmounts is 100_000 — ratios drive the tier.
+        let recent = [100_000.0]
+        #expect(MLFeaturizer.amountBucket(5_000, relativeTo: recent) == "micro")    // 0.05x
+        #expect(MLFeaturizer.amountBucket(50_000, relativeTo: recent) == "small")   // 0.5x
+        #expect(MLFeaturizer.amountBucket(100_000, relativeTo: recent) == "medium") // 1.0x
+        #expect(MLFeaturizer.amountBucket(250_000, relativeTo: recent) == "large")  // 2.5x
+        #expect(MLFeaturizer.amountBucket(1_000_000, relativeTo: recent) == "xlarge") // 10x
     }
 
     @Test func amountBucketBoundariesAreHalfOpen() {
+        let recent = [100_000.0]
         // Upper bounds belong to the next tier up.
-        #expect(MLFeaturizer.amountBucket(20_000) == "small")
-        #expect(MLFeaturizer.amountBucket(100_000) == "medium")
-        #expect(MLFeaturizer.amountBucket(500_000) == "large")
-        #expect(MLFeaturizer.amountBucket(2_000_000) == "xlarge")
+        #expect(MLFeaturizer.amountBucket(25_000, relativeTo: recent) == "small")  // 0.25x
+        #expect(MLFeaturizer.amountBucket(75_000, relativeTo: recent) == "medium") // 0.75x
+        #expect(MLFeaturizer.amountBucket(150_000, relativeTo: recent) == "large") // 1.5x
+        #expect(MLFeaturizer.amountBucket(400_000, relativeTo: recent) == "xlarge") // 4.0x
+    }
+
+    @Test func amountBucketColdStartIsMedium() {
+        #expect(MLFeaturizer.amountBucket(5_000, relativeTo: []) == "medium")
+        #expect(MLFeaturizer.amountBucket(5_000_000, relativeTo: []) == "medium")
     }
 
     @Test func featurizerInputLowercasesNoteAndAppendsBucket() {
-        #expect(MLFeaturizer.input(note: "GoFood Lunch", amount: 50_000) == "gofood lunch small")
+        #expect(MLFeaturizer.input(note: "GoFood Lunch", amount: 50_000, recentAmounts: [100_000]) == "gofood lunch small")
     }
 }
