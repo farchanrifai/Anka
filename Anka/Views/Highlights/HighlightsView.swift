@@ -14,7 +14,7 @@ struct HighlightsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: DSSpacing.xl) {
+            VStack(alignment: .leading, spacing: DSSpacing.lg) {
                 if let daily, let weekly, let monthly {
                     section("Daily Highlights") { DailyHighlightCard(data: daily) }
                     section("Weekly Highlights") { WeeklyHighlightCard(data: weekly) }
@@ -38,9 +38,9 @@ struct HighlightsView: View {
     }
 
     private func section(_ title: String, @ViewBuilder card: () -> some View) -> some View {
-        VStack(alignment: .leading, spacing: DSSpacing.md) {
+        VStack(alignment: .leading, spacing: DSSpacing.sm) {
             Text(title)
-                .font(.dsTitle)
+                .font(.dsTitle2Bold)
                 .foregroundStyle(DSColor.textPrimary)
             card()
         }

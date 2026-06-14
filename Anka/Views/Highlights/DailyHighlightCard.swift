@@ -8,9 +8,9 @@ struct DailyHighlightCard: View {
     let data: DailyHighlightData
 
     var body: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.lg) {
+        VStack(alignment: .leading, spacing: DSSpacing.md) {
             Text("💰 Spending")
-                .font(.dsSubheadSemi)
+                .font(.dsFootnoteSemi)
                 .foregroundStyle(DSColor.accent)
 
             Text(data.descriptiveText)
@@ -19,7 +19,7 @@ struct DailyHighlightCard: View {
 
             Divider().background(Color.gray.opacity(0.3))
 
-            HStack(spacing: DSSpacing.xl) {
+            HStack(spacing: DSSpacing.lg) {
                 statColumn(dot: DSColor.accent, label: "Today", amount: data.todayTotal, color: DSColor.accent)
                 statColumn(dot: .gray, label: "Average", amount: data.averageTotal, color: .gray)
             }
@@ -33,7 +33,7 @@ struct DailyHighlightCard: View {
                             series: .value("Series", "Average")
                         )
                         .foregroundStyle(Color.gray.opacity(0.5))
-                        .interpolationMethod(.stepEnd)
+                        .interpolationMethod(.catmullRom)
                     }
                     ForEach(data.cumulativeToday, id: \.time) { point in
                         LineMark(
@@ -42,17 +42,17 @@ struct DailyHighlightCard: View {
                             series: .value("Series", "Today")
                         )
                         .foregroundStyle(DSColor.accent)
-                        .interpolationMethod(.stepEnd)
+                        .interpolationMethod(.catmullRom)
                     }
                     RuleMark(x: .value("Now", data.currentTimeMarker))
                         .foregroundStyle(Color.gray.opacity(0.4))
                         .lineStyle(StrokeStyle(lineWidth: 1, dash: [4]))
                 }
-                .frame(height: 200)
+                .frame(height: 160)
                 .chartYAxis(.hidden)
             }
         }
-        .padding(DSSpacing.lg)
+        .padding(DSSpacing.md)
         .background(DSColor.bgCard)
         .clipShape(RoundedRectangle(cornerRadius: DSRadius.large))
     }
@@ -64,8 +64,8 @@ struct DailyHighlightCard: View {
                 Text(label).font(.dsCaption).foregroundStyle(color)
             }
             HStack(alignment: .firstTextBaseline, spacing: 2) {
-                Text("Rp").font(.dsBody).foregroundStyle(color)
-                Text(amount.idrShort).font(.dsTitle).foregroundStyle(color)
+                Text("Rp").font(.dsCaption).foregroundStyle(color)
+                Text(amount.idrShort).font(.dsTitle2Bold).foregroundStyle(color)
             }
         }
     }

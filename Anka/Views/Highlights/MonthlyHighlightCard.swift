@@ -6,9 +6,9 @@ struct MonthlyHighlightCard: View {
     let data: MonthlyHighlightData
 
     var body: some View {
-        VStack(alignment: .leading, spacing: DSSpacing.lg) {
+        VStack(alignment: .leading, spacing: DSSpacing.md) {
             Text("💰 Spending")
-                .font(.dsSubheadSemi)
+                .font(.dsFootnoteSemi)
                 .foregroundStyle(DSColor.accent)
 
             Text(data.descriptiveText)
@@ -24,7 +24,7 @@ struct MonthlyHighlightCard: View {
             comparisonRow(amount: data.lastMonthAvgPerDay, label: data.lastMonthLabel,
                           color: Color.gray.opacity(0.4), maxAmount: maxAmount)
         }
-        .padding(DSSpacing.lg)
+        .padding(DSSpacing.md)
         .background(DSColor.bgCard)
         .clipShape(RoundedRectangle(cornerRadius: DSRadius.large))
     }
@@ -33,15 +33,15 @@ struct MonthlyHighlightCard: View {
         let ratio = maxAmount > 0 ? amount / maxAmount : 0
         return VStack(alignment: .leading, spacing: DSSpacing.sm) {
             HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text("Rp").font(.dsBody).foregroundStyle(DSColor.textPrimary)
-                Text(amount.idrShort).font(.dsTitle).foregroundStyle(DSColor.textPrimary)
+                Text("Rp").font(.dsCaption).foregroundStyle(DSColor.textPrimary)
+                Text(amount.idrShort).font(.dsTitle2Bold).foregroundStyle(DSColor.textPrimary)
                 Text("/day")
-                    .font(.dsBody)
+                    .font(.dsCaption)
                     .foregroundStyle(.gray)
             }
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    Capsule()
+                    RoundedRectangle(cornerRadius: DSRadius.small)
                         .fill(color)
                         .frame(width: max(geo.size.width * ratio, 60))
                     Text(label)
@@ -50,7 +50,7 @@ struct MonthlyHighlightCard: View {
                         .padding(.leading, DSSpacing.md)
                 }
             }
-            .frame(height: 52)
+            .frame(height: 44)
         }
     }
 }
