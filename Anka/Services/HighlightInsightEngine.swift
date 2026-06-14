@@ -42,11 +42,9 @@ final class HighlightInsightEngine {
     private let lookbackDays = 30
 
     init(modelContext: ModelContext) {
-        let descriptor = FetchDescriptor<Transaction>(
-            predicate: #Predicate<Transaction> { $0.type == TransactionType.expense },
-            sortBy: [SortDescriptor(\.date)]
-        )
-        expenses = (try? modelContext.fetch(descriptor)) ?? []
+        let descriptor = FetchDescriptor<Transaction>(sortBy: [SortDescriptor(\.date)])
+        let all = (try? modelContext.fetch(descriptor)) ?? []
+        expenses = all.filter { $0.type == .expense }
     }
 
     func weeklyHighlight() -> WeeklyHighlightData {
