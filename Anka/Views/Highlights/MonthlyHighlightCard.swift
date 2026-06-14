@@ -33,7 +33,7 @@ struct MonthlyHighlightCard: View {
         let ratio = maxAmount > 0 ? amount / maxAmount : 0
         return VStack(alignment: .leading, spacing: DSSpacing.sm) {
             HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text("Rp").font(.dsCaption).foregroundStyle(DSColor.textPrimary)
+                Text(CurrencyInfo.info(for: AppCurrency.code).symbol).font(.dsCaption).foregroundStyle(DSColor.textPrimary)
                 Text(amount.idrShort).font(.dsTitle2Bold).foregroundStyle(DSColor.textPrimary)
                 Text("/day")
                     .font(.dsCaption)

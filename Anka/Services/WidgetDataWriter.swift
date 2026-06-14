@@ -36,11 +36,11 @@ final class WidgetDataWriter {
 
         let expense = todayTxs
             .filter { $0.type == .expense }
-            .reduce(0.0) { $0 + $1.amount }
+            .reduce(0.0) { $0 + $1.convertedAmount(to: AppCurrency.code) }
 
         let income = todayTxs
             .filter { $0.type == .income }
-            .reduce(0.0) { $0 + $1.amount }
+            .reduce(0.0) { $0 + $1.convertedAmount(to: AppCurrency.code) }
 
         let recent = todayTxs
             .sorted { $0.date > $1.date }

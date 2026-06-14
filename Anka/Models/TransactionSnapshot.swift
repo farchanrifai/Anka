@@ -10,13 +10,20 @@ struct TransactionSnapshot: Sendable {
     let date: Date
     let type: TransactionType
     let amount: Double
+    let currencyCode: String
     let categoryID: UUID?
 
     init(_ tx: Transaction) {
-        self.id         = tx.id
-        self.date       = tx.date
-        self.type       = tx.type
-        self.amount     = tx.amount
-        self.categoryID = tx.category?.id
+        self.id           = tx.id
+        self.date         = tx.date
+        self.type         = tx.type
+        self.amount       = tx.amount
+        self.currencyCode = tx.currencyCode
+        self.categoryID   = tx.category?.id
+    }
+
+    /// Amount converted to `targetCurrency` (1:1 stub via `CurrencyConverter`).
+    func convertedAmount(to targetCurrency: String) -> Double {
+        CurrencyConverter.convert(amount, from: currencyCode, to: targetCurrency)
     }
 }

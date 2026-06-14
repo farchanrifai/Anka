@@ -97,23 +97,23 @@ final class HighlightInsightEngine {
         let todays = expenses
             .filter { $0.date >= todayStart && $0.date < todayStart.addingDays(1) }
             .sorted { $0.createdAt < $1.createdAt }
-        let todayTotal = todays.reduce(0) { $0 + $1.amount }
+        let todayTotal = todays.reduce(0) { $0 + $1.convertedAmount(to: AppCurrency.code) }
 
         var running = 0.0
         let cumulativeToday = todays.map { tx -> (time: Date, amount: Double) in
-            running += tx.amount
+            running += tx.convertedAmount(to: AppCurrency.code)
             return (time: tx.createdAt, amount: running)
         }
 
         let lookbackStart = todayStart.addingDays(-lookbackDays)
         let lookbackExpenses = expenses.filter { $0.date >= lookbackStart && $0.date < todayStart }
-        let averageTotal = lookbackExpenses.reduce(0) { $0 + $1.amount } / Double(lookbackDays)
+        let averageTotal = lookbackExpenses.reduce(0) { $0 + $1.convertedAmount(to: AppCurrency.code) } / Double(lookbackDays)
 
         let cumulativeAverage: [(time: Date, amount: Double)] = (0...23).map { hour in
             let hourDate = Calendar.current.date(byAdding: .hour, value: hour, to: todayStart) ?? todayStart
             let cumulative = lookbackExpenses
                 .filter { Calendar.current.component(.hour, from: $0.date) <= hour }
-                .reduce(0) { $0 + $1.amount }
+                .reduce(0) { $0 + $1.convertedAmount(to: AppCurrency.code) }
             return (time: hourDate, amount: cumulative / Double(lookbackDays))
         }
 
@@ -139,6 +139,6 @@ final class HighlightInsightEngine {
 
     private func sum(from start: Date, to end: Date) -> Double {
         let interval = DateInterval(start: start, end: end)
-        return expenses.filter { interval.containsHalfOpen($0.date) }.reduce(0) { $0 + $1.amount }
+        return expenses.filter { interval.containsHalfOpen($0.date) }.reduce(0) { $0 + $1.convertedAmount(to: AppCurrency.code) }
     }
 }

@@ -280,11 +280,11 @@ enum BalanceMode: String, CaseIterable, Hashable {
     }
 
     var expenseTotal: Double {
-        periodTransactions.filter { $0.type == .expense }.reduce(0) { $0 + $1.amount }
+        periodTransactions.filter { $0.type == .expense }.reduce(0) { $0 + $1.convertedAmount(to: AppCurrency.code) }
     }
 
     var incomeTotal: Double {
-        periodTransactions.filter { $0.type == .income }.reduce(0) { $0 + $1.amount }
+        periodTransactions.filter { $0.type == .income }.reduce(0) { $0 + $1.convertedAmount(to: AppCurrency.code) }
     }
 
     // MARK: - Derived: Display (cheap — operate on cached periodTransactions)
@@ -297,9 +297,9 @@ enum BalanceMode: String, CaseIterable, Hashable {
             // already filter to a single type, so a plain sum is correct.
             switch balanceMode {
             case .expense, .income:
-                return filteredTransactions.reduce(0) { $0 + $1.amount }
+                return filteredTransactions.reduce(0) { $0 + $1.convertedAmount(to: AppCurrency.code) }
             case .total:
-                return filteredTransactions.reduce(0) { $0 + ($1.type == .income ? $1.amount : -$1.amount) }
+                return filteredTransactions.reduce(0) { $0 + ($1.type == .income ? $1.convertedAmount(to: AppCurrency.code) : -$1.convertedAmount(to: AppCurrency.code)) }
             }
         }
         switch balanceMode {
@@ -458,11 +458,11 @@ enum BalanceMode: String, CaseIterable, Hashable {
     func dailyTotal(for transactions: [Transaction]) -> (amount: Double, sign: String) {
         switch balanceMode {
         case .expense:
-            return (transactions.reduce(0) { $0 + $1.amount }, "")
+            return (transactions.reduce(0) { $0 + $1.convertedAmount(to: AppCurrency.code) }, "")
         case .income:
-            return (transactions.reduce(0) { $0 + $1.amount }, "+")
+            return (transactions.reduce(0) { $0 + $1.convertedAmount(to: AppCurrency.code) }, "+")
         case .total:
-            let net = transactions.reduce(0) { $0 + ($1.type == .income ? $1.amount : -$1.amount) }
+            let net = transactions.reduce(0) { $0 + ($1.type == .income ? $1.convertedAmount(to: AppCurrency.code) : -$1.convertedAmount(to: AppCurrency.code)) }
             return (abs(net), net >= 0 ? "+" : "-")
         }
     }

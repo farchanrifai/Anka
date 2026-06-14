@@ -64,7 +64,7 @@ struct DailyHighlightCard: View {
                 Text(label).font(.dsCaption).foregroundStyle(color)
             }
             HStack(alignment: .firstTextBaseline, spacing: 2) {
-                Text("Rp").font(.dsCaption).foregroundStyle(color)
+                Text(CurrencyInfo.info(for: AppCurrency.code).symbol).font(.dsCaption).foregroundStyle(color)
                 Text(amount.idrShort).font(.dsTitle2Bold).foregroundStyle(color)
             }
         }

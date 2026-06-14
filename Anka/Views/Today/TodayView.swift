@@ -259,7 +259,7 @@ struct TodayView: View {
             // ── Currency prefix + amount ──────────────────────────────
             HStack(alignment: .bottom, spacing: 0) {
                 HStack(alignment: .top, spacing: 4) {
-                    Text("Rp")
+                    Text(CurrencyInfo.info(for: AppCurrency.code).symbol)
                         .font(.dsTitle2Bold)
                         .foregroundStyle(.secondary)
                         .padding(.top, 6)

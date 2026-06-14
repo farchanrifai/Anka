@@ -45,9 +45,8 @@ struct SettingsView: View {
                         .badge(viewModel.categories.count)
                     }
 
-                    LabeledContent {
-                        Text(viewModel.defaultCurrency)
-                            .foregroundStyle(DSColor.textSecondary)
+                    NavigationLink {
+                        CurrencySettingsView()
                     } label: {
                         Label {
                             Text("Default Currency")
@@ -55,6 +54,7 @@ struct SettingsView: View {
                             Image(systemName: "dollarsign.circle.fill")
                                 .foregroundStyle(DSColor.accent)
                         }
+                        .badge(AppCurrency.code)
                     }
                 }
                 .listRowBackground(appearance.bgCard(scheme))

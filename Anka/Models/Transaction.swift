@@ -37,4 +37,9 @@ final class Transaction {
         self.tags = tags
         self.paymentMethod = paymentMethod
     }
+
+    /// Amount converted to `targetCurrency` (1:1 stub via `CurrencyConverter`).
+    func convertedAmount(to targetCurrency: String) -> Double {
+        CurrencyConverter.convert(amount, from: currencyCode, to: targetCurrency)
+    }
 }

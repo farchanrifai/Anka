@@ -5,7 +5,6 @@ import SwiftData
 @MainActor
 final class SettingsViewModel {
     var categories: [Category] = []
-    var defaultCurrency: String = "IDR"
     var showAddCategory: Bool = false
     var editingCategory: Category?
 

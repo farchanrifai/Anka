@@ -128,19 +128,20 @@ final class StatsViewModel {
             // Income total for the month's summary line (not charted).
             let income = txSnaps
                 .filter { $0.type == .income && interval.containsHalfOpen($0.date) }
-                .reduce(0) { $0 + $1.amount }
+                .reduce(0) { $0 + $1.convertedAmount(to: AppCurrency.code) }
 
             // Previous-month expense total, for the change-vs-last-month pill.
             let prevTotal = txSnaps
                 .filter { $0.type == .expense && prevInterval.containsHalfOpen($0.date) }
-                .reduce(0) { $0 + $1.amount }
+                .reduce(0) { $0 + $1.convertedAmount(to: AppCurrency.code) }
 
             var totals: [UUID: Double] = [:]
             var total: Double = 0
             for snap in monthExpenses {
                 guard let cid = snap.categoryID else { continue }
-                totals[cid, default: 0] += snap.amount
-                total += snap.amount
+                let converted = snap.convertedAmount(to: AppCurrency.code)
+                totals[cid, default: 0] += converted
+                total += converted
             }
             let sorted = totals.sorted { $0.value > $1.value }
 
@@ -149,7 +150,7 @@ final class StatsViewModel {
             // chart's x-axis stays consistent across months.
             var weeklyAgg: [Date: Double] = [:]
             for snap in monthExpenses {
-                weeklyAgg[snap.date.startOfWeek, default: 0] += snap.amount
+                weeklyAgg[snap.date.startOfWeek, default: 0] += snap.convertedAmount(to: AppCurrency.code)
             }
             // Plain Sendable tuples — the `WeeklySpendData` value objects are
             // built on the main actor below (its initializer is main-actor

@@ -22,7 +22,7 @@ struct WeeklyHighlightCard: View {
                     .font(.dsCaption)
                     .foregroundStyle(.gray)
                 HStack(alignment: .firstTextBaseline, spacing: 2) {
-                    Text("Rp").font(.dsCaption).foregroundStyle(DSColor.textPrimary)
+                    Text(CurrencyInfo.info(for: AppCurrency.code).symbol).font(.dsCaption).foregroundStyle(DSColor.textPrimary)
                     Text(data.dailyAverage.idrShort).font(.dsTitle2Bold).foregroundStyle(DSColor.textPrimary)
                 }
             }
