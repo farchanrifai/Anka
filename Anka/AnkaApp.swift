@@ -39,8 +39,7 @@ struct AnkaApp: App {
     /// categories. Throws (rather than crashing) if the store can't be opened
     /// so the caller can surface a recovery UI.
     private static func makeContainer() throws -> ModelContainer {
-        let config = ModelConfiguration()
-        let container = try ModelContainer(for: Transaction.self, Category.self, configurations: config)
+        let container = try AnkaModelContainer.makeContainer()
         seedOrMigrateCategories(in: container.mainContext)
         return container
     }
@@ -54,7 +53,7 @@ struct AnkaApp: App {
     /// then build a fresh, empty container.
     private func resetStore() {
         let fm = FileManager.default
-        let base = ModelConfiguration().url.path
+        let base = AnkaModelContainer.makeConfiguration().url.path
         for path in [base, base + "-wal", base + "-shm"] {
             try? fm.removeItem(atPath: path)
         }
