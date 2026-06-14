@@ -43,7 +43,7 @@ final class HighlightInsightEngine {
 
     init(modelContext: ModelContext) {
         let descriptor = FetchDescriptor<Transaction>(
-            predicate: #Predicate<Transaction> { $0.type == .expense },
+            predicate: #Predicate<Transaction> { $0.type == TransactionType.expense },
             sortBy: [SortDescriptor(\.date)]
         )
         expenses = (try? modelContext.fetch(descriptor)) ?? []

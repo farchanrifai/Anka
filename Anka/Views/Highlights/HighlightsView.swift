@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 /// Apple Health-inspired Highlights page: Daily, Weekly, and Monthly spending
