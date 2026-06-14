@@ -1,0 +1,1037 @@
+{
+  "/Users/farchan/Xcode/Anka/.claude/settings.local.json": {
+    "mtime": 1781433468.9215183,
+    "ast_hash": "09ca1f224bc20aa6fa8da7362ffdeba5",
+    "semantic_hash": "09ca1f224bc20aa6fa8da7362ffdeba5"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/command-metadata.json": {
+    "mtime": 1781434323.4657674,
+    "ast_hash": "883d1962f87b23b4a0f6229e1aadd484",
+    "semantic_hash": "883d1962f87b23b4a0f6229e1aadd484"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/context-signals.mjs": {
+    "mtime": 1781434323.4658403,
+    "ast_hash": "ed7a5fe15dbaebb1513d5e6db09cc32c",
+    "semantic_hash": "ed7a5fe15dbaebb1513d5e6db09cc32c"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/context.mjs": {
+    "mtime": 1781434323.465914,
+    "ast_hash": "26b624040ebbd99d4828a523cdd188b1",
+    "semantic_hash": "26b624040ebbd99d4828a523cdd188b1"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/critique-storage.mjs": {
+    "mtime": 1781434323.465991,
+    "ast_hash": "942bbd0169358eecab57d82ad9c29f18",
+    "semantic_hash": "942bbd0169358eecab57d82ad9c29f18"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/detect-csp.mjs": {
+    "mtime": 1781434323.4660697,
+    "ast_hash": "02c5a9a8ad69f87d23af72bf580fd3f4",
+    "semantic_hash": "02c5a9a8ad69f87d23af72bf580fd3f4"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/detect.mjs": {
+    "mtime": 1781434323.4661388,
+    "ast_hash": "11dbeb9341477d06d1a24c3ad1f37ac9",
+    "semantic_hash": "11dbeb9341477d06d1a24c3ad1f37ac9"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/detector/browser/injected/index.mjs": {
+    "mtime": 1781434323.4663978,
+    "ast_hash": "c4846ef42ab73951d7de2fdfb28a25f6",
+    "semantic_hash": "c4846ef42ab73951d7de2fdfb28a25f6"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/detector/cli/main.mjs": {
+    "mtime": 1781434323.4665196,
+    "ast_hash": "5208183c07f839d8ff178d4614b0a5e8",
+    "semantic_hash": "5208183c07f839d8ff178d4614b0a5e8"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/detector/detect-antipatterns-browser.js": {
+    "mtime": 1781434323.4666235,
+    "ast_hash": "b972b4c90fd7eb235c76c38acbfcad57",
+    "semantic_hash": "b972b4c90fd7eb235c76c38acbfcad57"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/detector/detect-antipatterns.mjs": {
+    "mtime": 1781434323.466707,
+    "ast_hash": "1ee45163c27e086f43af1a3bb6b76504",
+    "semantic_hash": "1ee45163c27e086f43af1a3bb6b76504"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/detector/engines/browser/detect-url.mjs": {
+    "mtime": 1781434323.466891,
+    "ast_hash": "f9a37e92021f13b178b860eb52a33f98",
+    "semantic_hash": "f9a37e92021f13b178b860eb52a33f98"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/detector/engines/regex/detect-text.mjs": {
+    "mtime": 1781434323.4670138,
+    "ast_hash": "89acd35ed7aed77c7c89b6077f4481d2",
+    "semantic_hash": "89acd35ed7aed77c7c89b6077f4481d2"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/detector/engines/static-html/css-cascade.mjs": {
+    "mtime": 1781434323.4671452,
+    "ast_hash": "689ec9d7f83a11443141c48b0f6514e8",
+    "semantic_hash": "689ec9d7f83a11443141c48b0f6514e8"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/detector/engines/static-html/detect-html.mjs": {
+    "mtime": 1781434323.4672172,
+    "ast_hash": "48549abcbb3e1fee4f93f07661d77ac0",
+    "semantic_hash": "48549abcbb3e1fee4f93f07661d77ac0"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/detector/engines/visual/screenshot-contrast.mjs": {
+    "mtime": 1781434323.4673398,
+    "ast_hash": "6312c6dbc048c4445f50e69f167a297d",
+    "semantic_hash": "6312c6dbc048c4445f50e69f167a297d"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/detector/findings.mjs": {
+    "mtime": 1781434323.4674046,
+    "ast_hash": "f7f3de6f00121150c4762809df00df9f",
+    "semantic_hash": "f7f3de6f00121150c4762809df00df9f"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/detector/node/file-system.mjs": {
+    "mtime": 1781434323.4675274,
+    "ast_hash": "21d55d864c78f1a6c20794551e3901d5",
+    "semantic_hash": "21d55d864c78f1a6c20794551e3901d5"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/detector/profile/profiler.mjs": {
+    "mtime": 1781434323.4676487,
+    "ast_hash": "88c5d2027852842be578edf349a0f9c8",
+    "semantic_hash": "88c5d2027852842be578edf349a0f9c8"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/detector/registry/antipatterns.mjs": {
+    "mtime": 1781434323.4677832,
+    "ast_hash": "30ed4f1a91098bf96a2dd2e0582a8162",
+    "semantic_hash": "30ed4f1a91098bf96a2dd2e0582a8162"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/detector/rules/checks.mjs": {
+    "mtime": 1781434323.4679313,
+    "ast_hash": "c0df66beab10180beaff8fd9e222b8bc",
+    "semantic_hash": "c0df66beab10180beaff8fd9e222b8bc"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/detector/shared/color.mjs": {
+    "mtime": 1781434323.468059,
+    "ast_hash": "2363d500ccf490f9ff285119b613276d",
+    "semantic_hash": "2363d500ccf490f9ff285119b613276d"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/detector/shared/constants.mjs": {
+    "mtime": 1781434323.4681304,
+    "ast_hash": "5700477c8a86d876b90de9d6eb63f191",
+    "semantic_hash": "5700477c8a86d876b90de9d6eb63f191"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/detector/shared/page.mjs": {
+    "mtime": 1781434323.4682028,
+    "ast_hash": "ab3a243b690b4f70c4ef639cdf970d82",
+    "semantic_hash": "ab3a243b690b4f70c4ef639cdf970d82"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/hook-admin.mjs": {
+    "mtime": 1781434323.4682753,
+    "ast_hash": "3aea59154e75752c27c311d33b90d267",
+    "semantic_hash": "3aea59154e75752c27c311d33b90d267"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/hook-before-edit.mjs": {
+    "mtime": 1781434323.468353,
+    "ast_hash": "368ee9ae5b14613f0a6d80dff97c1e11",
+    "semantic_hash": "368ee9ae5b14613f0a6d80dff97c1e11"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/hook-lib.mjs": {
+    "mtime": 1781434323.4684353,
+    "ast_hash": "9a2f4fd41afa67f569d300f72aca9375",
+    "semantic_hash": "9a2f4fd41afa67f569d300f72aca9375"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/hook.mjs": {
+    "mtime": 1781434323.4685013,
+    "ast_hash": "b17a38c988ec5694067ec8b042813315",
+    "semantic_hash": "b17a38c988ec5694067ec8b042813315"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/lib/design-parser.mjs": {
+    "mtime": 1781434323.468617,
+    "ast_hash": "77bbd8593cdea6e08a0b3e7870e93fc8",
+    "semantic_hash": "77bbd8593cdea6e08a0b3e7870e93fc8"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/lib/impeccable-paths.mjs": {
+    "mtime": 1781434323.468688,
+    "ast_hash": "2dd4310d900b4e7678f8b3620e634687",
+    "semantic_hash": "2dd4310d900b4e7678f8b3620e634687"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/lib/is-generated.mjs": {
+    "mtime": 1781434323.4687648,
+    "ast_hash": "edd718b1a4737edbf9631ff7f6f512ef",
+    "semantic_hash": "edd718b1a4737edbf9631ff7f6f512ef"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live-accept.mjs": {
+    "mtime": 1781434323.470357,
+    "ast_hash": "63a98882c6e9cee6155ec14f0541cf6b",
+    "semantic_hash": "63a98882c6e9cee6155ec14f0541cf6b"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live-browser-dom.js": {
+    "mtime": 1781434323.4704323,
+    "ast_hash": "b96db5b10874366237a40305c5dc72a1",
+    "semantic_hash": "b96db5b10874366237a40305c5dc72a1"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live-browser-session.js": {
+    "mtime": 1781434323.4705017,
+    "ast_hash": "5dec3dae6158050d69762fb79facaf48",
+    "semantic_hash": "5dec3dae6158050d69762fb79facaf48"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live-browser.js": {
+    "mtime": 1781434323.4706476,
+    "ast_hash": "d600f17ae3d7619f5fcb802120fe3362",
+    "semantic_hash": "d600f17ae3d7619f5fcb802120fe3362"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live-commit-manual-edits.mjs": {
+    "mtime": 1781434323.4707496,
+    "ast_hash": "866079c1dea82be936f92cf11adf01d3",
+    "semantic_hash": "866079c1dea82be936f92cf11adf01d3"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live-complete.mjs": {
+    "mtime": 1781434323.4708266,
+    "ast_hash": "18ddd6db2567d7d385291b813d310518",
+    "semantic_hash": "18ddd6db2567d7d385291b813d310518"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live-copy-edit-agent.mjs": {
+    "mtime": 1781434323.470914,
+    "ast_hash": "1c4926b56d5442775dab0138bf71a790",
+    "semantic_hash": "1c4926b56d5442775dab0138bf71a790"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live-discard-manual-edits.mjs": {
+    "mtime": 1781434323.4709904,
+    "ast_hash": "bbd49a16f77178fc8e778759653dd4c5",
+    "semantic_hash": "bbd49a16f77178fc8e778759653dd4c5"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live-inject.mjs": {
+    "mtime": 1781434323.471071,
+    "ast_hash": "953ad604895fa47278b7a98c0195b4b7",
+    "semantic_hash": "953ad604895fa47278b7a98c0195b4b7"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live-insert.mjs": {
+    "mtime": 1781434323.4711552,
+    "ast_hash": "a0ce4a29836987cc67cad70e630d5dcf",
+    "semantic_hash": "a0ce4a29836987cc67cad70e630d5dcf"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live-manual-edit-evidence.mjs": {
+    "mtime": 1781434323.4712312,
+    "ast_hash": "aafd35ccb714ec883362d7dde83f61d1",
+    "semantic_hash": "aafd35ccb714ec883362d7dde83f61d1"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live-poll.mjs": {
+    "mtime": 1781434323.4713712,
+    "ast_hash": "765dd3974cce3c380200bde3c3cb9426",
+    "semantic_hash": "765dd3974cce3c380200bde3c3cb9426"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live-resume.mjs": {
+    "mtime": 1781434323.471446,
+    "ast_hash": "0791b79bb824ffc6b52fcec25c6982a7",
+    "semantic_hash": "0791b79bb824ffc6b52fcec25c6982a7"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live-server.mjs": {
+    "mtime": 1781434323.4715173,
+    "ast_hash": "59d8a8437f1dec1597a2285f602d09ba",
+    "semantic_hash": "59d8a8437f1dec1597a2285f602d09ba"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live-status.mjs": {
+    "mtime": 1781434323.4715917,
+    "ast_hash": "039529830229f091246f26baabaaa0dd",
+    "semantic_hash": "039529830229f091246f26baabaaa0dd"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live-wrap.mjs": {
+    "mtime": 1781434323.4716597,
+    "ast_hash": "bc09a57b1adf3f796e57055f702df208",
+    "semantic_hash": "bc09a57b1adf3f796e57055f702df208"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live.mjs": {
+    "mtime": 1781434323.471737,
+    "ast_hash": "20c20abb6254d328f575e6ee62e83e97",
+    "semantic_hash": "20c20abb6254d328f575e6ee62e83e97"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live/browser-script-parts.mjs": {
+    "mtime": 1781434323.4689002,
+    "ast_hash": "f04f047fda5e9b2a3b1e510983da153d",
+    "semantic_hash": "f04f047fda5e9b2a3b1e510983da153d"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live/completion.mjs": {
+    "mtime": 1781434323.4689682,
+    "ast_hash": "77185bc6cced6322e6892af8e05839f0",
+    "semantic_hash": "77185bc6cced6322e6892af8e05839f0"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live/event-validation.mjs": {
+    "mtime": 1781434323.4690378,
+    "ast_hash": "97a304ab4b04080bcdbaf3816d3ee968",
+    "semantic_hash": "97a304ab4b04080bcdbaf3816d3ee968"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live/insert-ui.mjs": {
+    "mtime": 1781434323.4691741,
+    "ast_hash": "b6c5c82e14218c0c1b1e66f0851bff3f",
+    "semantic_hash": "b6c5c82e14218c0c1b1e66f0851bff3f"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live/manual-apply.mjs": {
+    "mtime": 1781434323.4692492,
+    "ast_hash": "043d0a1a7a4a373178648502bbe7da81",
+    "semantic_hash": "043d0a1a7a4a373178648502bbe7da81"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live/manual-edit-routes.mjs": {
+    "mtime": 1781434323.469384,
+    "ast_hash": "5f801f9370461d1faa9ae4cde85a96be",
+    "semantic_hash": "5f801f9370461d1faa9ae4cde85a96be"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live/manual-edits-buffer.mjs": {
+    "mtime": 1781434323.4694607,
+    "ast_hash": "a36834f2a77dd6a81ee324ef4f6f8baa",
+    "semantic_hash": "a36834f2a77dd6a81ee324ef4f6f8baa"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live/session-store.mjs": {
+    "mtime": 1781434323.4695325,
+    "ast_hash": "1f464fe28989247246d53927a1698265",
+    "semantic_hash": "1f464fe28989247246d53927a1698265"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live/svelte-component.mjs": {
+    "mtime": 1781434323.46963,
+    "ast_hash": "b23495379a1527dbb9c7c3171041819e",
+    "semantic_hash": "b23495379a1527dbb9c7c3171041819e"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live/sveltekit-adapter.mjs": {
+    "mtime": 1781434323.4697077,
+    "ast_hash": "66e07d2c07827af6099ce81a442bd66e",
+    "semantic_hash": "66e07d2c07827af6099ce81a442bd66e"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live/ui-core.mjs": {
+    "mtime": 1781434323.4697754,
+    "ast_hash": "fd7d2bdbdab291957cffacfce95a19d1",
+    "semantic_hash": "fd7d2bdbdab291957cffacfce95a19d1"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/live/vocabulary.mjs": {
+    "mtime": 1781434323.470272,
+    "ast_hash": "e7e5650764fceb61f2197769c7f5864e",
+    "semantic_hash": "e7e5650764fceb61f2197769c7f5864e"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/modern-screenshot.umd.js": {
+    "mtime": 1781434323.471816,
+    "ast_hash": "4fe5f9e490ab4f107afc707d7eafc819",
+    "semantic_hash": "4fe5f9e490ab4f107afc707d7eafc819"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/palette.mjs": {
+    "mtime": 1781434323.4718945,
+    "ast_hash": "adbc82e1e9021b4948901b21563277a2",
+    "semantic_hash": "adbc82e1e9021b4948901b21563277a2"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/scripts/pin.mjs": {
+    "mtime": 1781434323.4719682,
+    "ast_hash": "867ca7fdded9987e84a128a3b4fb6bab",
+    "semantic_hash": "867ca7fdded9987e84a128a3b4fb6bab"
+  },
+  "/Users/farchan/Xcode/Anka/Anka.app/StarterCategoryClassifier.mlmodelc/metadata.json": {
+    "mtime": 1781310595.8850732,
+    "ast_hash": "0a4a371aac85cf23c5863991f7ae86f1",
+    "semantic_hash": "0a4a371aac85cf23c5863991f7ae86f1"
+  },
+  "/Users/farchan/Xcode/Anka/Anka.swiftmodule/arm64-apple-ios-simulator.abi.json": {
+    "mtime": 1781310595.8854804,
+    "ast_hash": "0a4af882c2c2f56d36e8540ae8c40bbf",
+    "semantic_hash": "0a4af882c2c2f56d36e8540ae8c40bbf"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/AnkaApp.swift": {
+    "mtime": 1781405042.2476377,
+    "ast_hash": "2ce7fc4db3e91ab8a3a0a4ab51463f60",
+    "semantic_hash": "2ce7fc4db3e91ab8a3a0a4ab51463f60"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/App/AppRouter.swift": {
+    "mtime": 1781343494.221276,
+    "ast_hash": "0945d5f92fb4d0160347053ac8790546",
+    "semantic_hash": "0945d5f92fb4d0160347053ac8790546"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/AppIntents/AddTransactionIntent.swift": {
+    "mtime": 1781413616.6871464,
+    "ast_hash": "29261ef829cdc8d4173f4bd24d62118e",
+    "semantic_hash": "29261ef829cdc8d4173f4bd24d62118e"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/AppIntents/AnkaIntentSupport.swift": {
+    "mtime": 1781413606.6754103,
+    "ast_hash": "394b68d238babccfcd391fbec2abfc14",
+    "semantic_hash": "394b68d238babccfcd391fbec2abfc14"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/AppIntents/AnkaShortcuts.swift": {
+    "mtime": 1781405163.3180387,
+    "ast_hash": "1a145f0ae7d656371b331e4ddd8b292e",
+    "semantic_hash": "1a145f0ae7d656371b331e4ddd8b292e"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/AppIntents/CategoryEntity.swift": {
+    "mtime": 1781413612.0349436,
+    "ast_hash": "1293c4478d17d6842488f482cbd033e0",
+    "semantic_hash": "1293c4478d17d6842488f482cbd033e0"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/AppIntents/QuickAddTransactionIntent.swift": {
+    "mtime": 1781413620.4947925,
+    "ast_hash": "6290faad1985419dc185034eaf6136fa",
+    "semantic_hash": "6290faad1985419dc185034eaf6136fa"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Assets.xcassets/AccentColor.colorset/Contents.json": {
+    "mtime": 1780759104.4170885,
+    "ast_hash": "55019f7265dde0a78318b0807f98e847",
+    "semantic_hash": "55019f7265dde0a78318b0807f98e847"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Assets.xcassets/AppIcon.appiconset/Contents.json": {
+    "mtime": 1780759104.4172523,
+    "ast_hash": "cbe75704b2680422c4156009a528e292",
+    "semantic_hash": "cbe75704b2680422c4156009a528e292"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Assets.xcassets/Contents.json": {
+    "mtime": 1780759104.417341,
+    "ast_hash": "9deb2ada1cc834bbebf8bbad9c8978a1",
+    "semantic_hash": "9deb2ada1cc834bbebf8bbad9c8978a1"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Components/AmountLabel.swift": {
+    "mtime": 1781310595.888842,
+    "ast_hash": "4db7a4cea1481b65f4f1ff37099aa3be",
+    "semantic_hash": "4db7a4cea1481b65f4f1ff37099aa3be"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Components/AutoFocusTextField.swift": {
+    "mtime": 1781000690.911611,
+    "ast_hash": "a2bc8b15e37ce2c0d67e1ad6e4b5f4c7",
+    "semantic_hash": "a2bc8b15e37ce2c0d67e1ad6e4b5f4c7"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Components/DateRangePicker.swift": {
+    "mtime": 1781314361.698337,
+    "ast_hash": "cfcdda97593902f4267f50236a154a2e",
+    "semantic_hash": "cfcdda97593902f4267f50236a154a2e"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Components/DonutChartView.swift": {
+    "mtime": 1781312107.6152089,
+    "ast_hash": "f4754c13407bd960b93506c7af9e3078",
+    "semantic_hash": "f4754c13407bd960b93506c7af9e3078"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Components/TransactionRow.swift": {
+    "mtime": 1781196290.5005915,
+    "ast_hash": "8ca3c795876f1e3a1eacabe2e107957d",
+    "semantic_hash": "8ca3c795876f1e3a1eacabe2e107957d"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/DesignSystem/Color+Hex.swift": {
+    "mtime": 1781196281.6850727,
+    "ast_hash": "5e5ab1ff429322939044ac680e793384",
+    "semantic_hash": "5e5ab1ff429322939044ac680e793384"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/DesignSystem/DSAnimation.swift": {
+    "mtime": 1781195620.5316343,
+    "ast_hash": "9ba37369fa1fb0e8b87c0b2a06d2a681",
+    "semantic_hash": "9ba37369fa1fb0e8b87c0b2a06d2a681"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/DesignSystem/DSColor.swift": {
+    "mtime": 1781312064.8178396,
+    "ast_hash": "778fc68a2bca6c7cd680c041761d818a",
+    "semantic_hash": "778fc68a2bca6c7cd680c041761d818a"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/DesignSystem/DSFont.swift": {
+    "mtime": 1781314245.0911787,
+    "ast_hash": "64c166f78d1a5a731e6922d724c7f3cc",
+    "semantic_hash": "64c166f78d1a5a731e6922d724c7f3cc"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/DesignSystem/DSOpacity.swift": {
+    "mtime": 1781195627.7596714,
+    "ast_hash": "12f560fa557918002b99226f935ff624",
+    "semantic_hash": "12f560fa557918002b99226f935ff624"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/DesignSystem/DSRadius.swift": {
+    "mtime": 1780759104.4178627,
+    "ast_hash": "651b5250e148aebcab4c35a4b75b94a9",
+    "semantic_hash": "651b5250e148aebcab4c35a4b75b94a9"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/DesignSystem/DSSpacing.swift": {
+    "mtime": 1781104813.9325185,
+    "ast_hash": "51b5bbc5d34ab06081f5ca00aa3b05a2",
+    "semantic_hash": "51b5bbc5d34ab06081f5ca00aa3b05a2"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/DesignSystem/DateHelpers.swift": {
+    "mtime": 1781346021.105576,
+    "ast_hash": "7fdf7a8a1c1ffae3a5c7f64bc37c2983",
+    "semantic_hash": "7fdf7a8a1c1ffae3a5c7f64bc37c2983"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/DesignSystem/NumberFormatter+Amount.swift": {
+    "mtime": 1781310595.889076,
+    "ast_hash": "f7e5166a08d8f8a27f323de6deb5f738",
+    "semantic_hash": "f7e5166a08d8f8a27f323de6deb5f738"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/DesignSystem/PressableButtonStyle.swift": {
+    "mtime": 1781195653.2903244,
+    "ast_hash": "80817aa76b1de47ff8a905f4946ac059",
+    "semantic_hash": "80817aa76b1de47ff8a905f4946ac059"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Models/Category.swift": {
+    "mtime": 1781310595.8891726,
+    "ast_hash": "f6623a9ce9fdb9491f3e74401071b599",
+    "semantic_hash": "f6623a9ce9fdb9491f3e74401071b599"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Models/SampleData.swift": {
+    "mtime": 1780811235.2665446,
+    "ast_hash": "42323b7790920d6a4a670f299c7a9023",
+    "semantic_hash": "42323b7790920d6a4a670f299c7a9023"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Models/Transaction.swift": {
+    "mtime": 1781103164.3140125,
+    "ast_hash": "c6877914991349c90b1adc51d3ad4f3b",
+    "semantic_hash": "c6877914991349c90b1adc51d3ad4f3b"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Models/TransactionSnapshot.swift": {
+    "mtime": 1781314414.776702,
+    "ast_hash": "4bb06f35a813398d90524a68271c66fb",
+    "semantic_hash": "4bb06f35a813398d90524a68271c66fb"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Models/TransactionType.swift": {
+    "mtime": 1780804618.2189298,
+    "ast_hash": "8819fbf59c0e0e612055253b8edd72f3",
+    "semantic_hash": "8819fbf59c0e0e612055253b8edd72f3"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Models/WeeklySpendData.swift": {
+    "mtime": 1781166760.9681025,
+    "ast_hash": "9e99d6135cf4701a68c18e94a3ecc248",
+    "semantic_hash": "9e99d6135cf4701a68c18e94a3ecc248"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Services/AppLockManager.swift": {
+    "mtime": 1781318469.822627,
+    "ast_hash": "0d9792a604b62341c692a4e907626307",
+    "semantic_hash": "0d9792a604b62341c692a4e907626307"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Services/AppearanceManager.swift": {
+    "mtime": 1781343556.1184165,
+    "ast_hash": "383d6e5e46bfda7f8c8e5760dd9ecda9",
+    "semantic_hash": "383d6e5e46bfda7f8c8e5760dd9ecda9"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Services/AutoBackupService.swift": {
+    "mtime": 1781310595.8893356,
+    "ast_hash": "648d32bb0f96cc0c912372c5ccf2e65c",
+    "semantic_hash": "648d32bb0f96cc0c912372c5ccf2e65c"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Services/BackupService.swift": {
+    "mtime": 1781313351.1529553,
+    "ast_hash": "a0e3f4e309cdeea2f4b2d920127fe49b",
+    "semantic_hash": "a0e3f4e309cdeea2f4b2d920127fe49b"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Services/CSVService.swift": {
+    "mtime": 1781313343.7744775,
+    "ast_hash": "34fc55a8a7cdf9cbdc9a1320d13cd1b9",
+    "semantic_hash": "34fc55a8a7cdf9cbdc9a1320d13cd1b9"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Services/CategoryMLTrainer.swift": {
+    "mtime": 1781314310.1935434,
+    "ast_hash": "013237fa36aa632b1b4ecab2ad93af50",
+    "semantic_hash": "013237fa36aa632b1b4ecab2ad93af50"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Services/CategoryPredictor.swift": {
+    "mtime": 1781314295.3077319,
+    "ast_hash": "35881a3f8fcb9ac1b1a50a2fb59e98f4",
+    "semantic_hash": "35881a3f8fcb9ac1b1a50a2fb59e98f4"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Services/DeepLinkRouter.swift": {
+    "mtime": 1781343729.1770163,
+    "ast_hash": "04654a300097f0abfe3fb028dc44a200",
+    "semantic_hash": "04654a300097f0abfe3fb028dc44a200"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Services/HighlightInsightEngine.swift": {
+    "mtime": 1781414791.7864482,
+    "ast_hash": "73f34c0ca02946cd3636df693c504eb7",
+    "semantic_hash": "73f34c0ca02946cd3636df693c504eb7"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Services/InlineTransactionParser.swift": {
+    "mtime": 1781368268.4587626,
+    "ast_hash": "1845c560eac4f252e27b3c88a9522998",
+    "semantic_hash": "1845c560eac4f252e27b3c88a9522998"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Services/KeychainHelper.swift": {
+    "mtime": 1781311057.687749,
+    "ast_hash": "36535520816ad6915ed049b6d5838752",
+    "semantic_hash": "36535520816ad6915ed049b6d5838752"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Services/KeywordMatcher.swift": {
+    "mtime": 1781313102.5449848,
+    "ast_hash": "f6c83efcd0926038937fd53f01c8c04e",
+    "semantic_hash": "f6c83efcd0926038937fd53f01c8c04e"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Services/MLFeaturizer.swift": {
+    "mtime": 1781314289.5706477,
+    "ast_hash": "df0f05d41da263d3d815fe46083d31f6",
+    "semantic_hash": "df0f05d41da263d3d815fe46083d31f6"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Services/PlatformPaths.swift": {
+    "mtime": 1780827448.5343516,
+    "ast_hash": "10322ce50621e3d9a752430a93197b76",
+    "semantic_hash": "10322ce50621e3d9a752430a93197b76"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Services/TransactionParser.swift": {
+    "mtime": 1781310595.8897245,
+    "ast_hash": "8c1b559f4352e2193d518c1228d707af",
+    "semantic_hash": "8c1b559f4352e2193d518c1228d707af"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Services/WidgetDataWriter.swift": {
+    "mtime": 1781313324.3787718,
+    "ast_hash": "57ef5a291e80b6f47c293d779fd9945b",
+    "semantic_hash": "57ef5a291e80b6f47c293d779fd9945b"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Services/WidgetSharedTypes.swift": {
+    "mtime": 1781410899.1436179,
+    "ast_hash": "94ad8d393a6a3f70e927f2d4538dd670",
+    "semantic_hash": "94ad8d393a6a3f70e927f2d4538dd670"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/AddTransaction/AddTransactionView.swift": {
+    "mtime": 1781314379.1155145,
+    "ast_hash": "2f5bd1af220b595faac5afa6f99f8a95",
+    "semantic_hash": "2f5bd1af220b595faac5afa6f99f8a95"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/AddTransaction/AddTransactionViewModel.swift": {
+    "mtime": 1781313675.0836537,
+    "ast_hash": "b7b944080906318bdb567a7396138baf",
+    "semantic_hash": "b7b944080906318bdb567a7396138baf"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/AddTransaction/CategoryPickerSheet.swift": {
+    "mtime": 1781314235.9827783,
+    "ast_hash": "d81a9c934939d5830d50611f07b8c328",
+    "semantic_hash": "d81a9c934939d5830d50611f07b8c328"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/AddTransaction/InlineTransactionEntryView.swift": {
+    "mtime": 1781371496.3760922,
+    "ast_hash": "54d72a8957e829b74e65627b5215d66f",
+    "semantic_hash": "54d72a8957e829b74e65627b5215d66f"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/AddTransaction/InlineTransactionEntryViewModel.swift": {
+    "mtime": 1781343409.8111978,
+    "ast_hash": "ae1b7f03ae2fef16623b60a51710ae68",
+    "semantic_hash": "ae1b7f03ae2fef16623b60a51710ae68"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/AppLock/AppLockView.swift": {
+    "mtime": 1781318253.8597276,
+    "ast_hash": "8cc0af28b39f8ae5af45e6e9ce92d5b2",
+    "semantic_hash": "8cc0af28b39f8ae5af45e6e9ce92d5b2"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/AppLock/PINSetupSheet.swift": {
+    "mtime": 1781314361.6975112,
+    "ast_hash": "f5744c731140c61c5013e4b6c9e11271",
+    "semantic_hash": "f5744c731140c61c5013e4b6c9e11271"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Highlights/DailyHighlightCard.swift": {
+    "mtime": 1781415700.4246879,
+    "ast_hash": "8f46b0769c75484d9b642c4309a915c1",
+    "semantic_hash": "8f46b0769c75484d9b642c4309a915c1"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Highlights/HighlightsView.swift": {
+    "mtime": 1781435103.6469476,
+    "ast_hash": "908b5ff61aa9e4b2853b57d8211d2cc4",
+    "semantic_hash": "908b5ff61aa9e4b2853b57d8211d2cc4"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Highlights/MonthlyHighlightCard.swift": {
+    "mtime": 1781415733.7895515,
+    "ast_hash": "6af29d428a84bc4adb9e3f408be3d815",
+    "semantic_hash": "6af29d428a84bc4adb9e3f408be3d815"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Highlights/WeeklyHighlightCard.swift": {
+    "mtime": 1781415713.9346585,
+    "ast_hash": "9c1e1e75b170f998ba5b210af2fe8ac1",
+    "semantic_hash": "9c1e1e75b170f998ba5b210af2fe8ac1"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Onboarding/OnboardingPages.swift": {
+    "mtime": 1781312032.522518,
+    "ast_hash": "270429d4f81c059a4823988bf89ad313",
+    "semantic_hash": "270429d4f81c059a4823988bf89ad313"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Onboarding/OnboardingPaywallView.swift": {
+    "mtime": 1781113264.9882517,
+    "ast_hash": "59b005791d5f906c934ca07053b4f383",
+    "semantic_hash": "59b005791d5f906c934ca07053b4f383"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Onboarding/OnboardingView.swift": {
+    "mtime": 1781112911.185868,
+    "ast_hash": "b797bc669a3115d85ea9ea37ce575ef0",
+    "semantic_hash": "b797bc669a3115d85ea9ea37ce575ef0"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Settings/AddEditCategorySheet.swift": {
+    "mtime": 1781312252.9290743,
+    "ast_hash": "53e0689565494e5a5fc2296947ed6243",
+    "semantic_hash": "53e0689565494e5a5fc2296947ed6243"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Settings/AppearanceSettingsView.swift": {
+    "mtime": 1781343593.1466377,
+    "ast_hash": "effb12150b005d25e83a3896914a4f9c",
+    "semantic_hash": "effb12150b005d25e83a3896914a4f9c"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Settings/BackupSettingsView.swift": {
+    "mtime": 1781310595.8901055,
+    "ast_hash": "ee2f798970d0570f49219cde23f935a5",
+    "semantic_hash": "ee2f798970d0570f49219cde23f935a5"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Settings/CategoryManagementView.swift": {
+    "mtime": 1781312268.8764348,
+    "ast_hash": "02f5ab4c434bc4670f8a6f4f6d3b85af",
+    "semantic_hash": "02f5ab4c434bc4670f8a6f4f6d3b85af"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Settings/DataManagementView.swift": {
+    "mtime": 1781310595.890314,
+    "ast_hash": "aea884094894bb30a07098b933ce181e",
+    "semantic_hash": "aea884094894bb30a07098b933ce181e"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Settings/ExportSheet.swift": {
+    "mtime": 1781310595.890426,
+    "ast_hash": "8a2cb4c2bb4ab46f773ab0c06bf636de",
+    "semantic_hash": "8a2cb4c2bb4ab46f773ab0c06bf636de"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Settings/ImportPreviewSheet.swift": {
+    "mtime": 1781310595.8905447,
+    "ast_hash": "2ab86be2b57aee49d194029ca34021fb",
+    "semantic_hash": "2ab86be2b57aee49d194029ca34021fb"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Settings/ImportSummarySheet.swift": {
+    "mtime": 1780880105.9595938,
+    "ast_hash": "9643b3208c47955f4475dc47eb239b46",
+    "semantic_hash": "9643b3208c47955f4475dc47eb239b46"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Settings/SettingsView.swift": {
+    "mtime": 1781343429.330366,
+    "ast_hash": "587715919e3f9b331c429a84b30edc3d",
+    "semantic_hash": "587715919e3f9b331c429a84b30edc3d"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Settings/SettingsViewModel.swift": {
+    "mtime": 1781312201.997808,
+    "ast_hash": "b2edce3ef056647b235f3e595f01328e",
+    "semantic_hash": "b2edce3ef056647b235f3e595f01328e"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Stats/CategoryBreakdownRow.swift": {
+    "mtime": 1781311949.0043864,
+    "ast_hash": "2aa0f31d4cbc265c764483764740bf75",
+    "semantic_hash": "2aa0f31d4cbc265c764483764740bf75"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Stats/StatsView.swift": {
+    "mtime": 1781312075.270829,
+    "ast_hash": "a2d401f1ebd01c645f293f07b9695819",
+    "semantic_hash": "a2d401f1ebd01c645f293f07b9695819"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Stats/StatsViewModel.swift": {
+    "mtime": 1781314443.1195402,
+    "ast_hash": "fa703c8f56304100bf21035173317600",
+    "semantic_hash": "fa703c8f56304100bf21035173317600"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Stats/WeeklyTrendChartView.swift": {
+    "mtime": 1781310595.8910294,
+    "ast_hash": "6266960282e167f666b97e53e07e3168",
+    "semantic_hash": "6266960282e167f666b97e53e07e3168"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Today/CategoryFilterSheet.swift": {
+    "mtime": 1781195718.1378825,
+    "ast_hash": "a7130ecfd9af0a3109746b355e46d7ca",
+    "semantic_hash": "a7130ecfd9af0a3109746b355e46d7ca"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Today/Shared/AutoBackupModifier.swift": {
+    "mtime": 1781343687.6679072,
+    "ast_hash": "c296e1270ba3b11f80fefd3080387af4",
+    "semantic_hash": "c296e1270ba3b11f80fefd3080387af4"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Today/Shared/DayHeaderView.swift": {
+    "mtime": 1781310595.8912013,
+    "ast_hash": "c4e073c3262708548c9f0d37cbea95ec",
+    "semantic_hash": "c4e073c3262708548c9f0d37cbea95ec"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Today/Shared/PeriodMenuPill.swift": {
+    "mtime": 1781312070.4089382,
+    "ast_hash": "b1d39baa0876be4616a91ed38604a51c",
+    "semantic_hash": "b1d39baa0876be4616a91ed38604a51c"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Today/Shared/SkeletonTransactionRow.swift": {
+    "mtime": 1781314460.4878082,
+    "ast_hash": "71ab7a5634b43357728b85ed2a8b5d8f",
+    "semantic_hash": "71ab7a5634b43357728b85ed2a8b5d8f"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Today/Shared/TodaySheets.swift": {
+    "mtime": 1781332194.8726594,
+    "ast_hash": "e508dc28cf0f9540a86e073bf890fadf",
+    "semantic_hash": "e508dc28cf0f9540a86e073bf890fadf"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Today/Shared/TodayToolbarButtons.swift": {
+    "mtime": 1781435089.7497735,
+    "ast_hash": "84c9101d43c6c3cef03b4a59e0543535",
+    "semantic_hash": "84c9101d43c6c3cef03b4a59e0543535"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Today/Shared/TransactionEmptyStateView.swift": {
+    "mtime": 1781311541.0883126,
+    "ast_hash": "2e99061107cdaed969e135c108799753",
+    "semantic_hash": "2e99061107cdaed969e135c108799753"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Today/TodayView.swift": {
+    "mtime": 1781435255.8301442,
+    "ast_hash": "054cf990910b439dd1b0d64c1d9bbd21",
+    "semantic_hash": "054cf990910b439dd1b0d64c1d9bbd21"
+  },
+  "/Users/farchan/Xcode/Anka/Anka/Views/Today/TodayViewModel.swift": {
+    "mtime": 1781407182.1019301,
+    "ast_hash": "8203da064b5f04339a8416e04276cf7f",
+    "semantic_hash": "8203da064b5f04339a8416e04276cf7f"
+  },
+  "/Users/farchan/Xcode/Anka/AnkaTests/AmountParsingTests.swift": {
+    "mtime": 1781310595.8916698,
+    "ast_hash": "1627d9d6be0afc653e3bc448e9f5b73f",
+    "semantic_hash": "1627d9d6be0afc653e3bc448e9f5b73f"
+  },
+  "/Users/farchan/Xcode/Anka/AnkaTests/BackupServiceTests.swift": {
+    "mtime": 1781310595.8917305,
+    "ast_hash": "c1fdade3f3fec4c92839ce79f533f318",
+    "semantic_hash": "c1fdade3f3fec4c92839ce79f533f318"
+  },
+  "/Users/farchan/Xcode/Anka/AnkaTests/CSVServiceTests.swift": {
+    "mtime": 1781310595.8917882,
+    "ast_hash": "7fa299f8f1b9cb6b5e89f99de34f1b67",
+    "semantic_hash": "7fa299f8f1b9cb6b5e89f99de34f1b67"
+  },
+  "/Users/farchan/Xcode/Anka/AnkaTests/CategoryMigrationTests.swift": {
+    "mtime": 1781346976.7787628,
+    "ast_hash": "86a0c1a60649859b4ed3fa44e13cdc3d",
+    "semantic_hash": "86a0c1a60649859b4ed3fa44e13cdc3d"
+  },
+  "/Users/farchan/Xcode/Anka/AnkaTests/InlineTransactionParserTests.swift": {
+    "mtime": 1781331010.0130274,
+    "ast_hash": "1750c8f274a3c0d39a42e653372cf223",
+    "semantic_hash": "1750c8f274a3c0d39a42e653372cf223"
+  },
+  "/Users/farchan/Xcode/Anka/AnkaTests/KeywordMatcherTests.swift": {
+    "mtime": 1781313752.3427935,
+    "ast_hash": "31d7e3961b27073bd64f30649b6a18f9",
+    "semantic_hash": "31d7e3961b27073bd64f30649b6a18f9"
+  },
+  "/Users/farchan/Xcode/Anka/AnkaTests/StatsViewModelTests.swift": {
+    "mtime": 1781346952.8168385,
+    "ast_hash": "f73dbc5059b8e8800b755029a1760144",
+    "semantic_hash": "f73dbc5059b8e8800b755029a1760144"
+  },
+  "/Users/farchan/Xcode/Anka/AnkaTests/TodayViewModelTests.swift": {
+    "mtime": 1781346931.648409,
+    "ast_hash": "14aea4d2e98ad771262a953f0c0f3cdb",
+    "semantic_hash": "14aea4d2e98ad771262a953f0c0f3cdb"
+  },
+  "/Users/farchan/Xcode/Anka/AnkaTests/TransactionParserTests.swift": {
+    "mtime": 1781137975.6679204,
+    "ast_hash": "dc7afacef15ea6c99eb1e804c2198256",
+    "semantic_hash": "dc7afacef15ea6c99eb1e804c2198256"
+  },
+  "/Users/farchan/Xcode/Anka/AnkaUITests/AddTransactionUITests.swift": {
+    "mtime": 1781367829.6236763,
+    "ast_hash": "eb289bc5e4e37c5dcf1b80d3ed9e054b",
+    "semantic_hash": "eb289bc5e4e37c5dcf1b80d3ed9e054b"
+  },
+  "/Users/farchan/Xcode/Anka/AnkaUITests/AnkaUITests.swift": {
+    "mtime": 1780759104.4190466,
+    "ast_hash": "5b15ff4755b1fc48b731a877878c8c1d",
+    "semantic_hash": "5b15ff4755b1fc48b731a877878c8c1d"
+  },
+  "/Users/farchan/Xcode/Anka/AnkaUITests/AnkaUITestsLaunchTests.swift": {
+    "mtime": 1781347060.277897,
+    "ast_hash": "5c78ddc723340628a5c9215fb77d6464",
+    "semantic_hash": "5c78ddc723340628a5c9215fb77d6464"
+  },
+  "/Users/farchan/Xcode/Anka/AnkaUITests/InlineComposerUITests.swift": {
+    "mtime": 1781369379.363158,
+    "ast_hash": "9fce3ab9641b31e79a0df454fa8c8e2f",
+    "semantic_hash": "9fce3ab9641b31e79a0df454fa8c8e2f"
+  },
+  "/Users/farchan/Xcode/Anka/AnkaWidgets/AnkaHomeWidget.swift": {
+    "mtime": 1781410909.1819382,
+    "ast_hash": "19c4821101418544483504df3afc5bb5",
+    "semantic_hash": "19c4821101418544483504df3afc5bb5"
+  },
+  "/Users/farchan/Xcode/Anka/AnkaWidgets/AnkaLockScreenWidget.swift": {
+    "mtime": 1781410909.1823628,
+    "ast_hash": "f5695bbd5e18a9d17d0a8001ad422227",
+    "semantic_hash": "f5695bbd5e18a9d17d0a8001ad422227"
+  },
+  "/Users/farchan/Xcode/Anka/AnkaWidgets/AnkaWidgetsBundle.swift": {
+    "mtime": 1780819423.0401587,
+    "ast_hash": "e59f55cf2a06b0a8e50305cd4247797e",
+    "semantic_hash": "e59f55cf2a06b0a8e50305cd4247797e"
+  },
+  "/Users/farchan/Xcode/Anka/AnkaWidgets/Assets.xcassets/AccentColor.colorset/Contents.json": {
+    "mtime": 1780818996.5592635,
+    "ast_hash": "55019f7265dde0a78318b0807f98e847",
+    "semantic_hash": "55019f7265dde0a78318b0807f98e847"
+  },
+  "/Users/farchan/Xcode/Anka/AnkaWidgets/Assets.xcassets/AppIcon.appiconset/Contents.json": {
+    "mtime": 1780818997.649887,
+    "ast_hash": "cbe75704b2680422c4156009a528e292",
+    "semantic_hash": "cbe75704b2680422c4156009a528e292"
+  },
+  "/Users/farchan/Xcode/Anka/AnkaWidgets/Assets.xcassets/Contents.json": {
+    "mtime": 1780818996.5600042,
+    "ast_hash": "9deb2ada1cc834bbebf8bbad9c8978a1",
+    "semantic_hash": "9deb2ada1cc834bbebf8bbad9c8978a1"
+  },
+  "/Users/farchan/Xcode/Anka/AnkaWidgets/Assets.xcassets/WidgetBackground.colorset/Contents.json": {
+    "mtime": 1780818996.5581784,
+    "ast_hash": "55019f7265dde0a78318b0807f98e847",
+    "semantic_hash": "55019f7265dde0a78318b0807f98e847"
+  },
+  "/Users/farchan/Xcode/Anka/AnkaWidgetsExtension.swiftmodule/arm64-apple-ios-simulator.abi.json": {
+    "mtime": 1781310595.8935869,
+    "ast_hash": "0a4af882c2c2f56d36e8540ae8c40bbf",
+    "semantic_hash": "0a4af882c2c2f56d36e8540ae8c40bbf"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/SKILL.md": {
+    "mtime": 1781434323.4630437,
+    "ast_hash": "93aa7c2a285e44044d76c6298ce617bb",
+    "semantic_hash": "93aa7c2a285e44044d76c6298ce617bb"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/adapt.md": {
+    "mtime": 1781434323.4632373,
+    "ast_hash": "677c79a3dfdb092d711e5e59c46b41bb",
+    "semantic_hash": "677c79a3dfdb092d711e5e59c46b41bb"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/animate.md": {
+    "mtime": 1781434323.4633322,
+    "ast_hash": "87e75f869b8289acb616dce325e1d008",
+    "semantic_hash": "87e75f869b8289acb616dce325e1d008"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/audit.md": {
+    "mtime": 1781434323.463412,
+    "ast_hash": "fb3a1ab9b014ecc9fe0d22075616702a",
+    "semantic_hash": "fb3a1ab9b014ecc9fe0d22075616702a"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/bolder.md": {
+    "mtime": 1781434323.4634938,
+    "ast_hash": "60c92579e8c0b55945bac5f3fbdd7746",
+    "semantic_hash": "60c92579e8c0b55945bac5f3fbdd7746"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/brand.md": {
+    "mtime": 1781434323.4635782,
+    "ast_hash": "f70d1cd822ae916a55a2c26e775885aa",
+    "semantic_hash": "f70d1cd822ae916a55a2c26e775885aa"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/clarify.md": {
+    "mtime": 1781434323.4636712,
+    "ast_hash": "59f37b001528ffa685aa9fc8b815ac0c",
+    "semantic_hash": "59f37b001528ffa685aa9fc8b815ac0c"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/codex.md": {
+    "mtime": 1781434323.463768,
+    "ast_hash": "6d97d559484916f05fa74f6b74f3da07",
+    "semantic_hash": "6d97d559484916f05fa74f6b74f3da07"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/colorize.md": {
+    "mtime": 1781434323.4639351,
+    "ast_hash": "69f597448e78f518d64617c0137bc533",
+    "semantic_hash": "69f597448e78f518d64617c0137bc533"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/craft.md": {
+    "mtime": 1781434323.4640143,
+    "ast_hash": "30b636d36ebb80efb147c409fbd56ef0",
+    "semantic_hash": "30b636d36ebb80efb147c409fbd56ef0"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/critique.md": {
+    "mtime": 1781434323.4640937,
+    "ast_hash": "8f6903ba0a98fff1c229bfd091bb56fa",
+    "semantic_hash": "8f6903ba0a98fff1c229bfd091bb56fa"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/delight.md": {
+    "mtime": 1781434323.4641678,
+    "ast_hash": "994a24c88a90cd4497831f73ad50e92c",
+    "semantic_hash": "994a24c88a90cd4497831f73ad50e92c"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/distill.md": {
+    "mtime": 1781434323.4642448,
+    "ast_hash": "d47f1e82b6f7728ed0cad7e7ea0711b4",
+    "semantic_hash": "d47f1e82b6f7728ed0cad7e7ea0711b4"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/document.md": {
+    "mtime": 1781434323.4643204,
+    "ast_hash": "ae73c8b196b13f02a2616080f4db0709",
+    "semantic_hash": "ae73c8b196b13f02a2616080f4db0709"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/extract.md": {
+    "mtime": 1781434323.4643893,
+    "ast_hash": "85e31dfecff207358c2ac0e335085245",
+    "semantic_hash": "85e31dfecff207358c2ac0e335085245"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/harden.md": {
+    "mtime": 1781434323.4644613,
+    "ast_hash": "e87b0bff32be86e7825e7ff4c50157e3",
+    "semantic_hash": "e87b0bff32be86e7825e7ff4c50157e3"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/hooks.md": {
+    "mtime": 1781434323.4645295,
+    "ast_hash": "ef55a31d3f9160ee3e4223a657bb8e28",
+    "semantic_hash": "ef55a31d3f9160ee3e4223a657bb8e28"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/init.md": {
+    "mtime": 1781434323.4646626,
+    "ast_hash": "77ef1cf6a45cfcc629b1be3bc9469ea4",
+    "semantic_hash": "77ef1cf6a45cfcc629b1be3bc9469ea4"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/interaction-design.md": {
+    "mtime": 1781434323.4647396,
+    "ast_hash": "1dd83bb8a96d7e250914064aa7389f8b",
+    "semantic_hash": "1dd83bb8a96d7e250914064aa7389f8b"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/layout.md": {
+    "mtime": 1781434323.4648082,
+    "ast_hash": "0df4b2064cadee109afe865ce7d20d1e",
+    "semantic_hash": "0df4b2064cadee109afe865ce7d20d1e"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/live.md": {
+    "mtime": 1781434323.4648814,
+    "ast_hash": "6e4be1931ac0a93ccaf23a781f001ec0",
+    "semantic_hash": "6e4be1931ac0a93ccaf23a781f001ec0"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/onboard.md": {
+    "mtime": 1781434323.4649568,
+    "ast_hash": "7095aaea9e2994e37afb3cf1743bc092",
+    "semantic_hash": "7095aaea9e2994e37afb3cf1743bc092"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/optimize.md": {
+    "mtime": 1781434323.465042,
+    "ast_hash": "d01f252b7e5cb35b8443d57eaad40b58",
+    "semantic_hash": "d01f252b7e5cb35b8443d57eaad40b58"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/overdrive.md": {
+    "mtime": 1781434323.465121,
+    "ast_hash": "dadd48faf8bc6dbb63196215a7195abb",
+    "semantic_hash": "dadd48faf8bc6dbb63196215a7195abb"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/polish.md": {
+    "mtime": 1781434323.4652574,
+    "ast_hash": "fe186b5a0d88279bc0675d0ba1c5213f",
+    "semantic_hash": "fe186b5a0d88279bc0675d0ba1c5213f"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/product.md": {
+    "mtime": 1781434323.465334,
+    "ast_hash": "6408a63ddbfe7003c732650381506860",
+    "semantic_hash": "6408a63ddbfe7003c732650381506860"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/quieter.md": {
+    "mtime": 1781434323.4654093,
+    "ast_hash": "2f534f1c782f998a78ef17b34eedb0ce",
+    "semantic_hash": "2f534f1c782f998a78ef17b34eedb0ce"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/shape.md": {
+    "mtime": 1781434323.4654841,
+    "ast_hash": "328ad4e06423eed564fa9391985f834c",
+    "semantic_hash": "328ad4e06423eed564fa9391985f834c"
+  },
+  "/Users/farchan/Xcode/Anka/.claude/skills/impeccable/reference/typeset.md": {
+    "mtime": 1781434323.4656045,
+    "ast_hash": "8e8e3a58858713ff62de8ffa1a740cc6",
+    "semantic_hash": "8e8e3a58858713ff62de8ffa1a740cc6"
+  },
+  "/Users/farchan/Xcode/Anka/AUDIT.md": {
+    "mtime": 1781343893.550461,
+    "ast_hash": "585e1021e0d9585e16be05febbba0ab8",
+    "semantic_hash": "585e1021e0d9585e16be05febbba0ab8"
+  },
+  "/Users/farchan/Xcode/Anka/Anka_Code_Audit.md": {
+    "mtime": 1781101616.2895012,
+    "ast_hash": "eb3b14aa9ad5433af34c825721888896",
+    "semantic_hash": "eb3b14aa9ad5433af34c825721888896"
+  },
+  "/Users/farchan/Xcode/Anka/CONTEXT.md": {
+    "mtime": 1781343873.2038648,
+    "ast_hash": "8375b482fc1f6f0245865dab8c8e0e91",
+    "semantic_hash": "8375b482fc1f6f0245865dab8c8e0e91"
+  },
+  "/Users/farchan/Xcode/Anka/DESIGN.md": {
+    "mtime": 1781434656.9118521,
+    "ast_hash": "413e679635b153ff2453598d0edaafc5",
+    "semantic_hash": "413e679635b153ff2453598d0edaafc5"
+  },
+  "/Users/farchan/Xcode/Anka/PRODUCT.md": {
+    "mtime": 1781434466.0131185,
+    "ast_hash": "c88dc1cab1012daca8bf7df505ee714c",
+    "semantic_hash": "c88dc1cab1012daca8bf7df505ee714c"
+  },
+  "/Users/farchan/Xcode/Anka/phase-8-7-highlights-prompt.md": {
+    "mtime": 1781413733.5138817,
+    "ast_hash": "3d7f793f80f67318b4cbf22036530403",
+    "semantic_hash": "3d7f793f80f67318b4cbf22036530403"
+  }
+}
