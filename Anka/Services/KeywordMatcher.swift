@@ -24,6 +24,29 @@ public enum KeywordMatcher {
         ("grab bike",      "Taxi"),
         ("go car",         "Taxi"),
         ("go ride",        "Taxi"),
+
+        // ── Global Food Delivery compounds ────────────────────────────────
+        ("uber eats",      "Food Delivery"),
+        ("ubereats",       "Food Delivery"),
+
+        // ── Global Eating Out compounds ─────────────────────────────────
+        ("in n out",       "Eating Out"),
+        ("in-n-out",       "Eating Out"),
+        ("five guys",      "Eating Out"),
+        ("shake shack",    "Eating Out"),
+        ("chick fil a",    "Eating Out"),
+        ("chick-fil-a",    "Eating Out"),
+        ("panda express",  "Eating Out"),
+        ("taco bell",      "Eating Out"),
+
+        // ── Global Groceries compounds ──────────────────────────────────
+        ("whole foods",    "Groceries"),
+        ("trader joe's",   "Groceries"),
+        ("trader joes",    "Groceries"),
+
+        // ── Global Shopping compounds ───────────────────────────────────
+        ("best buy",       "Shopping"),
+        ("home depot",     "Shopping"),
     ]
 
     // MARK: - Single keywords (checked after compounds)
@@ -40,10 +63,28 @@ public enum KeywordMatcher {
         ("indriver",      "Taxi"),
         ("ojek",          "Taxi"),
 
+        // ── Global Taxi / Rideshare ──────────────────────────────────────
+        ("uber",          "Taxi"),
+        ("lyft",          "Taxi"),
+        ("bolt",          "Taxi"),
+        ("careem",        "Taxi"),
+
         // ── Food Delivery ────────────────────────────────────────────────
         ("anterin",       "Food Delivery"),
         ("delivery",      "Food Delivery"),
         ("pesan makan",   "Food Delivery"),
+
+        // ── Global Food Delivery ─────────────────────────────────────────
+        ("doordash",      "Food Delivery"),
+        ("postmates",     "Food Delivery"),
+        ("deliveroo",     "Food Delivery"),
+        ("grubhub",       "Food Delivery"),
+        ("seamless",      "Food Delivery"),
+        ("wolt",          "Food Delivery"),
+        ("glovo",         "Food Delivery"),
+        ("justeat",       "Food Delivery"),
+        ("just eat",      "Food Delivery"),
+        ("takeaway",      "Food Delivery"),
 
         // ── Groceries ────────────────────────────────────────────────────
         ("indomaret",     "Groceries"),
@@ -63,6 +104,27 @@ public enum KeywordMatcher {
         ("sayur",         "Groceries"),
         ("beras",         "Groceries"),
         ("sembako",       "Groceries"),
+
+        // ── Global Groceries ─────────────────────────────────────────────
+        ("walmart",       "Groceries"),
+        ("target",        "Groceries"),
+        ("costco",        "Groceries"),
+        ("kroger",        "Groceries"),
+        ("aldi",          "Groceries"),
+        ("lidl",          "Groceries"),
+        ("tesco",         "Groceries"),
+        ("sainsbury",     "Groceries"),
+        ("sainsburys",    "Groceries"),
+        ("asda",          "Groceries"),
+        ("morrisons",     "Groceries"),
+        ("waitrose",      "Groceries"),
+        ("rewe",          "Groceries"),
+        ("edeka",         "Groceries"),
+        ("kaufland",      "Groceries"),
+        ("mercadona",     "Groceries"),
+        ("publix",        "Groceries"),
+        ("safeway",       "Groceries"),
+        ("wegmans",       "Groceries"),
 
         // ── Eating Out ───────────────────────────────────────────────────
         ("kfc",           "Eating Out"),
@@ -85,6 +147,16 @@ public enum KeywordMatcher {
         ("restaurant",    "Eating Out"),
         ("mie",           "Eating Out"),
 
+        // ── Global Eating Out ────────────────────────────────────────────
+        ("chipotle",      "Eating Out"),
+        ("wendy",         "Eating Out"),
+        ("wendys",        "Eating Out"),
+        ("nando",         "Eating Out"),
+        ("nandos",        "Eating Out"),
+        ("wagamama",      "Eating Out"),
+        ("greggs",        "Eating Out"),
+        ("pret",          "Eating Out"),
+
         // ── Coffee ───────────────────────────────────────────────────────
         ("starbucks",     "Coffee"),
         ("kopi",          "Coffee"),
@@ -102,6 +174,13 @@ public enum KeywordMatcher {
         ("kafe",          "Coffee"),
         ("teh",           "Coffee"),
 
+        // ── Global Coffee ────────────────────────────────────────────────
+        ("costa",         "Coffee"),
+        ("peet",          "Coffee"),
+        ("peets",         "Coffee"),
+        ("tim hortons",   "Coffee"),
+        ("caribou",       "Coffee"),
+
         // ── Car / Fuel ───────────────────────────────────────────────────
         ("spbu",          "Car"),
         ("pertamina",     "Car"),
@@ -115,6 +194,15 @@ public enum KeywordMatcher {
         ("ganti oli",     "Car"),
         ("servis motor",  "Car"),
         ("servis mobil",  "Car"),
+
+        // ── Global Car / Fuel ────────────────────────────────────────────
+        ("chevron",       "Car"),
+        ("exxon",         "Car"),
+        ("mobil",         "Car"),
+        ("texaco",        "Car"),
+        ("esso",          "Car"),
+        ("totalenergies", "Car"),
+        ("aral",          "Car"),
 
         // ── Health ───────────────────────────────────────────────────────
         ("apotek",        "Health"),
@@ -130,6 +218,12 @@ public enum KeywordMatcher {
         ("vitamin",       "Health"),
         ("kesehatan",     "Health"),
 
+        // ── Global Health ────────────────────────────────────────────────
+        ("cvs",           "Health"),
+        ("walgreens",     "Health"),
+        ("boots",         "Health"),
+        ("riteaid",       "Health"),
+
         // ── Shopping ─────────────────────────────────────────────────────
         ("shopee",        "Shopping"),
         ("tokopedia",     "Shopping"),
@@ -139,6 +233,21 @@ public enum KeywordMatcher {
         ("zalora",        "Shopping"),
         ("tiktok shop",   "Shopping"),
         ("belanja",       "Shopping"),
+
+        // ── Global Shopping ──────────────────────────────────────────────
+        ("amazon",        "Shopping"),
+        ("ebay",          "Shopping"),
+        ("etsy",          "Shopping"),
+        ("ikea",          "Shopping"),
+        ("bestbuy",       "Shopping"),
+        ("homedepot",     "Shopping"),
+        ("lowes",         "Shopping"),
+        ("asos",          "Shopping"),
+        ("zara",          "Shopping"),
+        ("primark",       "Shopping"),
+        ("argos",         "Shopping"),
+        ("wayfair",       "Shopping"),
+        ("shein",         "Shopping"),
 
         // ── Entertainment ────────────────────────────────────────────────
         ("netflix",       "Entertainment"),
@@ -155,6 +264,17 @@ public enum KeywordMatcher {
         ("nonton",        "Entertainment"),
         ("hiburan",       "Entertainment"),
 
+        // ── Global Entertainment ─────────────────────────────────────────
+        ("hulu",          "Entertainment"),
+        ("disneyplus",    "Entertainment"),
+        ("hbomax",        "Entertainment"),
+        ("hbo",           "Entertainment"),
+        ("paramount",     "Entertainment"),
+        ("apple tv",      "Entertainment"),
+        ("twitch",        "Entertainment"),
+        ("xbox",          "Entertainment"),
+        ("nintendo",      "Entertainment"),
+
         // ── Home / Bills ─────────────────────────────────────────────────
         ("pln",           "Home"),
         ("pdam",          "Home"),
@@ -170,6 +290,13 @@ public enum KeywordMatcher {
         ("kost",          "Home"),
         ("ipl",           "Home"),
         ("token",         "Home"),
+
+        // ── Global Home / Bills ──────────────────────────────────────────
+        ("comcast",       "Home"),
+        ("xfinity",       "Home"),
+        ("verizon",       "Home"),
+        ("vodafone",      "Home"),
+        ("mortgage",      "Home"),
 
         // ── Income ───────────────────────────────────────────────────────
         ("gaji",          "Salary"),
@@ -251,9 +378,12 @@ public enum KeywordMatcher {
     /// still need word-boundary matching because they're common English/Indonesian
     /// words that appear as substrings in unrelated words.
     private static let shortKeywords: Set<String> = [
-        // These are already ≤5 chars so they're covered by the length check,
-        // but listed here for documentation. Add longer keywords here if
-        // new false-positive cases appear.
+        // Longer global keywords that double as common English words —
+        // word-boundary matching avoids "of paramount importance" → Entertainment,
+        // "savings target" → Groceries, "muscle twitch" → Entertainment.
+        "target",
+        "paramount",
+        "twitch",
     ]
 
     // MARK: - Levenshtein distance
