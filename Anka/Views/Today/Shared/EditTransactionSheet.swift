@@ -142,7 +142,7 @@ struct EditTransactionSheet: View {
         .padding(.horizontal, DSSpacing.lg)
         .frame(height: 56)
         .frame(maxWidth: .infinity)
-        .glassEffect(.regular, in: .capsule)
+        .glassEffect(.regular.interactive(), in: .capsule)
         .glassEffectID("amount", in: glassNS)
     }
 
@@ -167,7 +167,7 @@ struct EditTransactionSheet: View {
             }
             .padding(.horizontal, DSSpacing.lg)
             .frame(height: 44)
-            .glassEffect(.regular, in: .capsule)
+            .glassEffect(.regular.interactive(), in: .capsule)
             .glassEffectID("date", in: glassNS)
         }
     }
@@ -182,7 +182,7 @@ struct EditTransactionSheet: View {
             .padding(.horizontal, DSSpacing.lg)
             .frame(height: 44)
             .frame(maxWidth: .infinity)
-            .glassEffect(.regular, in: .capsule)
+            .glassEffect(.regular.interactive(), in: .capsule)
             .glassEffectID("note", in: glassNS)
     }
 
@@ -196,9 +196,10 @@ struct EditTransactionSheet: View {
                 .font(.dsBodyBold)
                 .foregroundStyle(DSColor.negative)
                 .frame(width: 50, height: 50)
-                .glassEffect(.regular, in: .circle)
+                .glassEffect(.regular.tint(DSColor.negative.opacity(0.22)).interactive(), in: .circle)
                 .glassEffectID("delete", in: glassNS)
         }
+        .buttonStyle(.plain)
         .accessibilityLabel("Delete transaction")
     }
 
@@ -218,12 +219,15 @@ struct EditTransactionSheet: View {
                 Text("Save")
                     .font(.dsHeadline)
             }
-            .foregroundStyle(DSColor.bgPrimary)
+            .foregroundStyle(vm.isValid ? DSColor.textOnAccent : DSColor.textMuted)
             .frame(maxWidth: .infinity)
             .frame(height: 50)
+            .glassEffect(
+                vm.isValid ? .regular.tint(DSColor.accent).interactive() : .regular,
+                in: .capsule
+            )
         }
-        .background(Color.primary, in: Capsule())
-        .opacity(vm.isValid ? 1.0 : 0.45)
+        .buttonStyle(.plain)
         .disabled(!vm.isValid)
         .accessibilityLabel("Save transaction")
     }

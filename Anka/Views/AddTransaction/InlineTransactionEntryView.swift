@@ -182,7 +182,7 @@ struct InlineTransactionEntryView: View {
             .padding(.horizontal, DSSpacing.lg)
             .frame(height: 44)
             .frame(maxWidth: .infinity)
-            .glassEffect(.regular, in: .capsule)
+            .glassEffect(.regular.interactive(), in: .capsule)
             .glassEffectID("field", in: glassNS)
     }
 
@@ -200,6 +200,7 @@ struct InlineTransactionEntryView: View {
                 )
                 .glassEffectID("send", in: glassNS)
         }
+        .buttonStyle(.plain)
         .disabled(!vm.canSend)
         .accessibilityLabel("Add transaction")
     }
