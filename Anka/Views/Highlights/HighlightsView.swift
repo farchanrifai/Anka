@@ -37,8 +37,11 @@ struct HighlightsView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Button { dismiss() } label: {
                     Image(systemName: "xmark")
+                        .foregroundStyle(DSColor.textPrimary)
+                        .frame(width: 44, height: 44)
+                        .glassEffect(.regular.interactive(), in: .circle)
                 }
-                .tint(.primary)
+                .buttonStyle(.plain)
                 .accessibilityLabel("Close")
             }
         }

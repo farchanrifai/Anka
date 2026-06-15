@@ -1,7 +1,9 @@
 import SwiftUI
 
 /// A pinned day-section header: the day label on the left and (when non-zero)
-/// the day's signed total on the right, both in `.ultraThinMaterial` capsules.
+/// the day's signed total on the right, both in subtle Liquid Glass capsules
+/// so the sticky chips now belong to the same shell vocabulary as the toolbar
+/// and transaction flows.
 /// Pure presentation — the total/sign are computed by
 /// `TodayViewModel.dailyTotal(for:)`. Shared by the Today view variants.
 struct DayHeaderView: View {
@@ -16,7 +18,7 @@ struct DayHeaderView: View {
                 .foregroundStyle(.primary)
                 .frame(height: 28)
                 .padding(.horizontal, DSSpacing.md)
-                .background(.ultraThinMaterial, in: Capsule())
+                .glassEffect(.regular, in: .capsule)
 
             Spacer()
 
@@ -26,7 +28,7 @@ struct DayHeaderView: View {
                     .foregroundStyle(.primary)
                     .frame(height: 28)
                     .padding(.horizontal, DSSpacing.md)
-                    .background(.ultraThinMaterial, in: Capsule())
+                    .glassEffect(.regular, in: .capsule)
             }
         }
         .padding(.horizontal, DSSpacing.screenEdge)

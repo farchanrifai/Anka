@@ -135,8 +135,11 @@ struct SettingsView: View {
                     } label: {
                         Image(systemName: "xmark")
                             .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(DSColor.textPrimary)
+                            .frame(width: 44, height: 44)
+                            .glassEffect(.regular.interactive(), in: .circle)
                     }
-                    .tint(DSColor.textSecondary)
+                    .buttonStyle(.plain)
                 }
             }
         }

@@ -29,11 +29,18 @@ struct FilterToolbarButton: View {
                         }
                     }
                 }
+                .foregroundStyle(DSColor.textPrimary)
+                .padding(.horizontal, DSSpacing.md)
+                .frame(height: 44)
+                .glassEffect(.regular.interactive(), in: .capsule)
             } else {
                 Image(systemName: "line.3.horizontal.decrease")
+                    .foregroundStyle(DSColor.textPrimary)
+                    .frame(width: 44, height: 44)
+                    .glassEffect(.regular.interactive(), in: .circle)
             }
         }
-        .tint(vm.filterLabel == nil ? .primary : DSColor.accent)
+        .buttonStyle(.plain)
         .accessibilityLabel(accessibilityLabel)
         // Mail-style zoom: sheet expands out of the filter button.
         .matchedTransitionSource(id: "filter", in: namespace)
@@ -64,9 +71,10 @@ struct AddToolbarButton: View {
         } label: {
             Image(systemName: "plus")
                 .foregroundStyle(DSColor.textOnAccent)
+                .frame(width: 44, height: 44)
+                .glassEffect(.regular.tint(DSColor.accent).interactive(), in: .circle)
         }
-        .buttonStyle(.borderedProminent)
-        .tint(DSColor.accent)
+        .buttonStyle(.plain)
         .accessibilityLabel("Add transaction")
         .matchedTransitionSource(id: "addTransaction", in: namespace)
     }
@@ -80,8 +88,11 @@ struct StatsToolbarButton: View {
     var body: some View {
         Button { vm.showStats = true } label: {
             Image(systemName: "chart.pie")
+                .foregroundStyle(DSColor.textPrimary)
+                .frame(width: 44, height: 44)
+                .glassEffect(.regular.interactive(), in: .circle)
         }
-        .tint(.primary)
+        .buttonStyle(.plain)
         .accessibilityLabel("Stats")
         .matchedTransitionSource(id: "stats", in: namespace)
     }
@@ -94,8 +105,11 @@ struct SettingsToolbarButton: View {
     var body: some View {
         Button { vm.showSettings = true } label: {
             Image(systemName: "gearshape")
+                .foregroundStyle(DSColor.textPrimary)
+                .frame(width: 44, height: 44)
+                .glassEffect(.regular.interactive(), in: .circle)
         }
-        .tint(.primary)
+        .buttonStyle(.plain)
         .accessibilityLabel("Settings")
     }
 }
