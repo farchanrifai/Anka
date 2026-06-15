@@ -28,7 +28,7 @@ struct HighlightsView: View {
             }
             .padding(DSSpacing.screenEdge)
         }
-        .background(DSColor.bgPrimary)
+        .background(DSColor.bgGrouped)
         .navigationTitle("Highlights")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)

@@ -115,6 +115,7 @@ final class StatsViewModel {
         let catMeta: [UUID: (name: String, colorHex: String, emoji: String)] = Dictionary(
             uniqueKeysWithValues: categories.map { ($0.id, ($0.name, $0.colorHex, $0.emoji)) }
         )
+        let targetCurrency = AppCurrency.code
 
         // 2. Heavy aggregation off-main.
         let result = await Task.detached(priority: .userInitiated) {
@@ -128,18 +129,18 @@ final class StatsViewModel {
             // Income total for the month's summary line (not charted).
             let income = txSnaps
                 .filter { $0.type == .income && interval.containsHalfOpen($0.date) }
-                .reduce(0) { $0 + $1.convertedAmount(to: AppCurrency.code) }
+                .reduce(0) { $0 + $1.convertedAmount(to: targetCurrency) }
 
             // Previous-month expense total, for the change-vs-last-month pill.
             let prevTotal = txSnaps
                 .filter { $0.type == .expense && prevInterval.containsHalfOpen($0.date) }
-                .reduce(0) { $0 + $1.convertedAmount(to: AppCurrency.code) }
+                .reduce(0) { $0 + $1.convertedAmount(to: targetCurrency) }
 
             var totals: [UUID: Double] = [:]
             var total: Double = 0
             for snap in monthExpenses {
                 guard let cid = snap.categoryID else { continue }
-                let converted = snap.convertedAmount(to: AppCurrency.code)
+                let converted = snap.convertedAmount(to: targetCurrency)
                 totals[cid, default: 0] += converted
                 total += converted
             }
@@ -150,7 +151,7 @@ final class StatsViewModel {
             // chart's x-axis stays consistent across months.
             var weeklyAgg: [Date: Double] = [:]
             for snap in monthExpenses {
-                weeklyAgg[snap.date.startOfWeek, default: 0] += snap.convertedAmount(to: AppCurrency.code)
+                weeklyAgg[snap.date.startOfWeek, default: 0] += snap.convertedAmount(to: targetCurrency)
             }
             // Plain Sendable tuples — the `WeeklySpendData` value objects are
             // built on the main actor below (its initializer is main-actor
