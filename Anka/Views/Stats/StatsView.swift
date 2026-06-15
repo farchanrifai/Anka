@@ -29,10 +29,6 @@ struct StatsView: View {
     /// capsule). First frame shows a cheap ring placeholder instead; the real
     /// chart fades in once the push has landed.
     @State private var chartReady = false
-    /// Delay before the charts + breakdown fade in together, after the
-    /// present transition has settled.
-    private let chartReadyDelay: TimeInterval = 0.38
-
     // Tightened from Spendy's 336 — the sheet reads more compact, in line with
     // the app's overall scale.
     private static let chartHeight: CGFloat = 280
@@ -49,14 +45,6 @@ struct StatsView: View {
             // crowd the period label.
             .padding(.top, DSSpacing.lg)
             .padding(.bottom, DSSpacing.xl)
-            // Flip `chartReady` once, after the present transition has settled.
-            // Lives on the stable VStack (not the conditional chart subview) so
-            // it always runs, even when the month is empty.
-            .task {
-                guard !chartReady else { return }
-                try? await Task.sleep(nanoseconds: UInt64(chartReadyDelay * 1_000_000_000))
-                withAnimation(.easeOut(duration: 0.2)) { chartReady = true }
-            }
         }
         .background(DSColor.bgPrimary.ignoresSafeArea())
         .navigationTitle("Stats")
@@ -72,6 +60,14 @@ struct StatsView: View {
         .onChange(of: transactions) { feedVM() }
         .onChange(of: categories)   { feedVM() }
         .onChange(of: vm.currentMonth) { selectedCategoryID = nil }
+        .onChange(of: vm.isLoading) { _, isLoading in
+            // Reveal the heavy chart the moment the first real refresh settles,
+            // instead of after a hand-tuned sleep. This keeps the cheap
+            // placeholder on first frame without baking in a fixed delay that
+            // may feel early on fast devices or late on slow ones.
+            guard !isLoading, !chartReady, didApplyInitialMonth else { return }
+            withAnimation(.dsEaseSlow) { chartReady = true }
+        }
         .task(id: vm.refreshKey) { await vm.refresh() }
     }
 

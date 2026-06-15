@@ -95,9 +95,8 @@ struct AppLockView: View {
     private func authenticateOnAppear(resetToBiometric: Bool) async {
         guard lock.isLocked, !isLockedOut, !isAuthenticating else { return }
         guard lock.useBiometrics else {
-            // PIN-only — bring up the keypad straight away.
-            try? await Task.sleep(for: .milliseconds(400))
-            pinFocused = true
+            // PIN-only — the PIN section is already visible, and its field
+            // requests focus on appear. No hand-tuned delay needed here.
             return
         }
         if resetToBiometric, showPINEntry, pinInput.isEmpty {
@@ -199,9 +198,6 @@ struct AppLockView: View {
                     withAnimation(.dsEase) {
                         showPINEntry = true
                     }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        pinFocused = true
-                    }
                 } label: {
                     Text(lock.useBiometrics ? "Use PIN instead" : "Enter PIN")
                         .font(.dsCaption)
@@ -255,6 +251,12 @@ struct AppLockView: View {
                 .background(DSColor.bgCard)
                 .cornerRadius(DSRadius.medium)
                 .focused($pinFocused)
+                .onAppear {
+                    Task { @MainActor in
+                        await Task.yield()
+                        pinFocused = true
+                    }
+                }
                 .onChange(of: pinInput) { _, new in
                     if new.count > 4 { pinInput = String(new.prefix(4)) }
                     if pinInput.count == 4 { attemptPINUnlock() }
@@ -295,9 +297,6 @@ struct AppLockView: View {
             if lock.hasPIN {
                 withAnimation(.dsEase) {
                     showPINEntry = true
-                }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    pinFocused = true
                 }
             }
         case .unavailable:
