@@ -6,6 +6,8 @@ import SwiftData
 /// section headers, checkmarks for selected rows, and a "Clear All" action.
 struct CategoryFilterSheet: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var scheme
+    @Environment(AppearanceManager.self) private var appearance
     @Query(sort: \Category.sortOrder) private var allCategories: [Category]
 
     /// Two-way binding with TodayViewModel.selectedCategories.
@@ -37,8 +39,9 @@ struct CategoryFilterSheet: View {
                     }
                 }
                 .scrollContentBackground(.hidden)
+                .background(appearance.bgGrouped(scheme))
             }
-            .background(.clear)
+            .background(appearance.bgGrouped(scheme))
             .navigationTitle("Filters")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -56,7 +59,7 @@ struct CategoryFilterSheet: View {
                 }
             }
         }
-        .presentationBackground(.regularMaterial)
+        .presentationBackground(appearance.bgGrouped(scheme))
     }
 
     @ViewBuilder
@@ -140,7 +143,10 @@ struct CategoryFilterSheet: View {
         .foregroundStyle(isSelected ? DSColor.textOnAccent : DSColor.textPrimary)
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
-        .background(isSelected ? DSColor.accent : DSColor.bgSecondary, in: Capsule())
+        .glassEffect(
+            isSelected ? .regular.tint(DSColor.accent).interactive() : .regular.interactive(),
+            in: .capsule
+        )
         .scaleEffect(isSelected ? 1.05 : 1.0)
     }
 }

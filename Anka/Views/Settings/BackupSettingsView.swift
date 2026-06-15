@@ -371,7 +371,7 @@ private struct RestoreProgressOverlay: View {
                 }
             }
             .padding(32)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 18))
+            .glassEffect(.regular, in: .rect(cornerRadius: 18))
         }
     }
 
