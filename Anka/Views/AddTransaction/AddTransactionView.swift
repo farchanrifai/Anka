@@ -137,13 +137,14 @@ struct AddTransactionView: View {
                     metadataChips
                         .transaction { $0.animation = nil }
 
-                    DatePicker("", selection: $vm.selectedDate, displayedComponents: .date)
-                        .datePickerStyle(.graphical)
-                        .labelsHidden()
-                        .onChange(of: vm.selectedDate) { closeDatePicker() }
-                        .frame(height: showDatePicker ? nil : 0)
-                        .clipped()
-                        .opacity(datePickerOpacity)
+                    if showDatePicker {
+                        DatePicker("", selection: $vm.selectedDate, displayedComponents: .date)
+                            .datePickerStyle(.graphical)
+                            .labelsHidden()
+                            .onChange(of: vm.selectedDate) { closeDatePicker() }
+                            .clipped()
+                            .opacity(datePickerOpacity)
+                    }
 
                     descriptionField
                     amountField

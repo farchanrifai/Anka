@@ -266,12 +266,12 @@ struct InlineComposerModifier: ViewModifier {
                 if vm.showInlineComposer {
                     // Open: plain opacity (no zoom) — the bar just fades in while
                     // the keyboard lifts the safe-area inset.
-                    // Close: shrink back into the bottom-trailing corner (where
-                    // the `+` sits). Asymmetric so only the close zooms.
+                    // Close: shrink down into the bottom edge. Asymmetric so
+                    // only the close zooms.
                     InlineTransactionEntryView(focus: $composerFocused, onDismiss: dismiss)
                         .transition(.asymmetric(
                             insertion: .opacity,
-                            removal: .scale(scale: 0.2, anchor: .bottomTrailing)
+                            removal: .scale(scale: 0.2, anchor: .bottom)
                                 .combined(with: .opacity)
                         ))
                 }
