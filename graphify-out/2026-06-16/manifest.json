@@ -565,9 +565,9 @@
     "semantic_hash": "94ad8d393a6a3f70e927f2d4538dd670"
   },
   "Anka/Views/AddTransaction/AddTransactionView.swift": {
-    "mtime": 1781549774.9812548,
-    "ast_hash": "0e3dcba3531664bf322d5a0a2fcdba28",
-    "semantic_hash": ""
+    "mtime": 1781314379.1155145,
+    "ast_hash": "2f5bd1af220b595faac5afa6f99f8a95",
+    "semantic_hash": "2f5bd1af220b595faac5afa6f99f8a95"
   },
   "Anka/Views/AddTransaction/AddTransactionViewModel.swift": {
     "mtime": 1781313675.0836537,
@@ -580,8 +580,8 @@
     "semantic_hash": "d81a9c934939d5830d50611f07b8c328"
   },
   "Anka/Views/AddTransaction/InlineTransactionEntryView.swift": {
-    "mtime": 1781549782.2257366,
-    "ast_hash": "58c1b8dfd49e614ea23ef76429fb837c",
+    "mtime": 1781547761.349877,
+    "ast_hash": "1dc77ca347128a3c6bb5facd83540a72",
     "semantic_hash": ""
   },
   "Anka/Views/AddTransaction/InlineTransactionEntryViewModel.swift": {
@@ -645,9 +645,9 @@
     "semantic_hash": "effb12150b005d25e83a3896914a4f9c"
   },
   "Anka/Views/Settings/BackupSettingsView.swift": {
-    "mtime": 1781549796.0562873,
-    "ast_hash": "907ffefeec94660ca83020f97286cb1a",
-    "semantic_hash": ""
+    "mtime": 1781310595.8901055,
+    "ast_hash": "ee2f798970d0570f49219cde23f935a5",
+    "semantic_hash": "ee2f798970d0570f49219cde23f935a5"
   },
   "Anka/Views/Settings/CategoryManagementView.swift": {
     "mtime": 1781312268.8764348,
@@ -705,9 +705,9 @@
     "semantic_hash": "6266960282e167f666b97e53e07e3168"
   },
   "Anka/Views/Today/CategoryFilterSheet.swift": {
-    "mtime": 1781549791.59962,
-    "ast_hash": "f28d0dfa5c54dde50ff86715ec2410ac",
-    "semantic_hash": ""
+    "mtime": 1781195718.1378825,
+    "ast_hash": "a7130ecfd9af0a3109746b355e46d7ca",
+    "semantic_hash": "a7130ecfd9af0a3109746b355e46d7ca"
   },
   "Anka/Views/Today/Shared/AutoBackupModifier.swift": {
     "mtime": 1781343687.6679072,

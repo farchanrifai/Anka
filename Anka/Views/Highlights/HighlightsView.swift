@@ -39,7 +39,6 @@ struct HighlightsView: View {
                     Image(systemName: "xmark")
                         .foregroundStyle(DSColor.textPrimary)
                         .frame(width: 44, height: 44)
-                        .glassEffect(.regular.interactive(), in: .circle)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Close")

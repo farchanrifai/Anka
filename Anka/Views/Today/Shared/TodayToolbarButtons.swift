@@ -32,12 +32,10 @@ struct FilterToolbarButton: View {
                 .foregroundStyle(DSColor.textPrimary)
                 .padding(.horizontal, DSSpacing.md)
                 .frame(height: 44)
-                .glassEffect(.regular.interactive(), in: .capsule)
             } else {
                 Image(systemName: "line.3.horizontal.decrease")
                     .foregroundStyle(DSColor.textPrimary)
                     .frame(width: 44, height: 44)
-                    .glassEffect(.regular.interactive(), in: .circle)
             }
         }
         .buttonStyle(.plain)
@@ -72,7 +70,6 @@ struct AddToolbarButton: View {
             Image(systemName: "plus")
                 .foregroundStyle(DSColor.textOnAccent)
                 .frame(width: 44, height: 44)
-                .glassEffect(.regular.tint(DSColor.accent).interactive(), in: .circle)
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Add transaction")
@@ -90,7 +87,6 @@ struct StatsToolbarButton: View {
             Image(systemName: "chart.pie")
                 .foregroundStyle(DSColor.textPrimary)
                 .frame(width: 44, height: 44)
-                .glassEffect(.regular.interactive(), in: .circle)
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Stats")
@@ -107,7 +103,6 @@ struct SettingsToolbarButton: View {
             Image(systemName: "gearshape")
                 .foregroundStyle(DSColor.textPrimary)
                 .frame(width: 44, height: 44)
-                .glassEffect(.regular.interactive(), in: .circle)
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Settings")
