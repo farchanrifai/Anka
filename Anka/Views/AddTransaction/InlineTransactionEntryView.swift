@@ -222,13 +222,9 @@ struct InlineTransactionEntryView: View {
             focus.wrappedValue = true
             return
         }
-        // Let the bubble shrink-and-fly-up play, then close. `onDismiss` removes
-        // the composer, which dismisses the keyboard — so the bar and keyboard
-        // slide down together (no separate `focused = false` beat).
-        Task {
-            try? await Task.sleep(for: .milliseconds(240))
-            onDismiss()
-        }
+        // Close immediately off the same save state change, so the bar and
+        // keyboard move together with no hard-coded delay.
+        onDismiss()
     }
 }
 

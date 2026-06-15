@@ -67,7 +67,10 @@ private struct SparkleCategoryLabel: View {
         }
         .foregroundStyle(.white)
         .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) { revealed = true }
+            Task { @MainActor in
+                await Task.yield()
+                revealed = true
+            }
         }
     }
 }
