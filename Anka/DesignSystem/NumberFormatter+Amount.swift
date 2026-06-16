@@ -6,14 +6,21 @@ import Foundation
 /// compiled into both the main app target AND the widget extension, while
 /// settings files may be main-app-only.
 enum AppCurrency {
-    private static let storageKey = "anka.defaultCurrency"
+    private static let storageKey   = "anka.defaultCurrency"
+    private static let decimalsKey  = "anka.showDecimals"
 
-    /// The user's chosen currency (Settings → Currency). Defaults to "IDR"
-    /// for existing installs that never set it. Backed by the shared App
-    /// Group defaults so the widget extension sees the same value.
+    /// The user's chosen currency (Settings → Currency). Defaults to "IDR".
     static var code: String {
         get { PlatformPaths.sharedDefaults.string(forKey: storageKey) ?? "IDR" }
         set { PlatformPaths.sharedDefaults.set(newValue, forKey: storageKey) }
+    }
+
+    /// When true, forces 2 decimal places on all currency amounts system-wide.
+    /// When false (default), uses the currency's natural decimal count (0 for
+    /// IDR/JPY, 2 for USD/EUR, etc.).
+    static var showDecimals: Bool {
+        get { PlatformPaths.sharedDefaults.bool(forKey: decimalsKey) }
+        set { PlatformPaths.sharedDefaults.set(newValue, forKey: decimalsKey) }
     }
 }
 
@@ -42,8 +49,9 @@ extension Double {
     /// "1,234,567" — the amount only, formatted for the current app currency
     /// (decimal places follow `CurrencyInfo`; "IDR"/"JPY" show 0, "USD"/"EUR" show 2).
     var idrShort: String {
-        let info = CurrencyInfo.info(for: AppCurrency.code)
-        return NumberFormatter.amount(decimalDigits: info.decimalDigits).string(from: NSNumber(value: self)) ?? "0"
+        let info   = CurrencyInfo.info(for: AppCurrency.code)
+        let digits = AppCurrency.showDecimals ? 2 : info.decimalDigits
+        return NumberFormatter.amount(decimalDigits: digits).string(from: NSNumber(value: self)) ?? "0"
     }
     /// "Rp 1,234,567" / "$1,234.56" — the app's canonical amount rendering,
     /// symbol + amount in the current app currency (AUDIT.md U4).

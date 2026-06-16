@@ -156,6 +156,14 @@ enum BalanceMode: String, CaseIterable, Hashable {
     /// Filtered, date-sorted, day-grouped transactions for the main list.
     private(set) var groupedByDay: [(date: Date, transactions: [Transaction])] = []
 
+    /// Main Page V2: one point per day in `periodInterval`, netted per
+    /// `balanceMode` — feeds `MainPageV2LineChart`.
+    private(set) var dailySeries: [DailySpendPoint] = []
+
+    /// Main Page V2: % change of the current period's total vs. the same
+    /// metric one month back. `nil` when the previous period's total is 0.
+    private(set) var previousPeriodChangePercent: Double?
+
     /// `groupedByDay` further narrowed by `searchQuery` — cheap, view-layer pass
     /// so each keystroke doesn't re-fire the heavy refresh pipeline.
     var displayedGroupedByDay: [(date: Date, transactions: [Transaction])] {
@@ -356,20 +364,42 @@ enum BalanceMode: String, CaseIterable, Hashable {
         }()
         let capturedCatIDs: Set<UUID>     = Set(selectedCategories.map(\.id))
         let tz                            = TimeZone.current
+        let targetCurrency                = AppCurrency.code
+        let previousInterval = DateInterval(
+            start: interval.start.addingMonths(-1),
+            end: interval.end.addingMonths(-1)
+        )
 
         // 2. Heavy computation on a background thread.
         let result = await Task.detached(priority: .userInitiated) {
             var cal = Calendar(identifier: .gregorian)
             cal.timeZone = tz
 
+            // Nets income − expense in Total mode (matches `heroAmount`'s
+            // Total branch); Expense/Income modes are already type-filtered,
+            // so this is a plain sum.
+            func netTotal(_ snaps: [TransactionSnapshot]) -> Double {
+                if capturedType == nil {
+                    return snaps.reduce(0) {
+                        $0 + ($1.type == .income ? $1.convertedAmount(to: targetCurrency) : -$1.convertedAmount(to: targetCurrency))
+                    }
+                }
+                return snaps.reduce(0) { $0 + $1.convertedAmount(to: targetCurrency) }
+            }
+
+            func typeAndCategoryFiltered(_ snaps: [TransactionSnapshot]) -> [TransactionSnapshot] {
+                var filtered = capturedType == nil ? snaps : snaps.filter { $0.type == capturedType }
+                if !capturedCatIDs.isEmpty {
+                    filtered = filtered.filter { capturedCatIDs.contains($0.categoryID ?? UUID()) }
+                }
+                return filtered
+            }
+
             // Period filter (half-open so boundary transactions land in one period)
             let periodSnaps = txSnaps.filter { interval.containsHalfOpen($0.date) }
 
             // Filtered + sorted snaps (type + optional category filter)
-            var filtered = capturedType == nil ? periodSnaps : periodSnaps.filter { $0.type == capturedType }
-            if !capturedCatIDs.isEmpty {
-                filtered = filtered.filter { capturedCatIDs.contains($0.categoryID ?? UUID()) }
-            }
+            var filtered = typeAndCategoryFiltered(periodSnaps)
             filtered.sort { $0.date > $1.date }
 
             // Group by calendar day → [Date: [UUID]]
@@ -381,9 +411,36 @@ enum BalanceMode: String, CaseIterable, Hashable {
             let sortedDays = dayDict.map { ($0.key, $0.value) }
                                     .sorted { $0.0 > $1.0 }
 
+            // V2 line chart: one point per day in the period, netted per
+            // `balanceMode`. Iterate the half-open interval day-by-day so
+            // days with zero spend still get a point (consistent x-axis).
+            var dayTotals: [Date: Double] = [:]
+            for snap in filtered {
+                let day = cal.startOfDay(for: snap.date)
+                dayTotals[day, default: 0] += capturedType == nil
+                    ? (snap.type == .income ? snap.convertedAmount(to: targetCurrency) : -snap.convertedAmount(to: targetCurrency))
+                    : snap.convertedAmount(to: targetCurrency)
+            }
+            var series: [DailySpendPoint] = []
+            var day = cal.startOfDay(for: interval.start)
+            let end = interval.end
+            while day < end {
+                series.append(DailySpendPoint(date: day, total: dayTotals[day] ?? 0))
+                guard let next = cal.date(byAdding: .day, value: 1, to: day) else { break }
+                day = next
+            }
+
+            // V2 % change vs the same metric one month back.
+            let previousSnaps = typeAndCategoryFiltered(txSnaps.filter { previousInterval.containsHalfOpen($0.date) })
+            let currentTotal  = netTotal(filtered)
+            let previousTotal = netTotal(previousSnaps)
+            let changePercent: Double? = previousTotal == 0 ? nil : (currentTotal - previousTotal) / abs(previousTotal) * 100
+
             return (
                 periodIDs: Set(periodSnaps.map(\.id)),
-                dayGroups: sortedDays
+                dayGroups: sortedDays,
+                dailySeries: series,
+                changePercent: changePercent
             )
         }.value
 
@@ -404,10 +461,17 @@ enum BalanceMode: String, CaseIterable, Hashable {
             withAnimation(.dsSnappy) {
                 periodTransactions = transactions.filter { result.periodIDs.contains($0.id) }
                 groupedByDay = newGroups
+                previousPeriodChangePercent = result.changePercent
             }
+            // Assigned outside withAnimation so the chart's own
+            // .animation(value: series) drives the in-place tween without
+            // being overridden by .dsSnappy (which caused the slide).
+            dailySeries = result.dailySeries
         } else {
             periodTransactions = transactions.filter { result.periodIDs.contains($0.id) }
             groupedByDay = newGroups
+            dailySeries = result.dailySeries
+            previousPeriodChangePercent = result.changePercent
             hasLoadedOnce = true
         }
     }

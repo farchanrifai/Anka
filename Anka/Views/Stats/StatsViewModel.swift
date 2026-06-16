@@ -27,46 +27,24 @@ final class StatsViewModel {
     /// First day of the month currently being shown.
     var currentMonth: Date = Date().startOfMonth
 
+    // MARK: - Filter state (mode)
+
+    var balanceMode: BalanceMode = .expense
+
     // MARK: - Cached output
 
     private(set) var categorySpend: [CategorySpendData] = []
+    /// Sum of category-slice amounts (donut denominator). Expense total for
+    /// expense/total modes; income total for income mode.
     private(set) var monthTotal: Double = 0
-    private(set) var incomeTotal: Double = 0
-    private(set) var previousMonthExpenseTotal: Double = 0
     private(set) var weeklySpend: [WeeklySpendData] = []
     private(set) var weeklyAverage: Double = 0
     var isLoading: Bool = false
 
-    /// Income minus expenses for the selected month (signed).
-    var netTotal: Double { incomeTotal - monthTotal }
-
-    /// Expense change vs the previous month, as a percentage. `nil` when the
-    /// previous month had no expenses (no meaningful baseline to compare).
-    var expenseDeltaPercent: Double? {
-        guard previousMonthExpenseTotal > 0 else { return nil }
-        return (monthTotal - previousMonthExpenseTotal) / previousMonthExpenseTotal * 100
-    }
-
-    /// Average expense per elapsed day. For the live month this divides by the
-    /// number of days *so far*; for a past month it divides by the month's full
-    /// day count.
-    var dailyAverage: Double {
-        let days: Int
-        if isOnCurrentMonth {
-            days = max(Date().dayOfMonth, 1)
-        } else {
-            days = Calendar.current.range(of: .day, in: .month, for: currentMonth)?.count ?? 30
-        }
-        return monthTotal / Double(days)
-    }
-
-    /// Short month name of the previous month — e.g. "May" — for the delta pill.
-    var previousMonthShortLabel: String { currentMonth.addingMonths(-1).shortMonthName }
-
     /// Encodes every dependency of the cached vars so `.task(id:)` reruns
-    /// whenever the data or selected month changes.
+    /// whenever the data, selected month, or mode changes.
     var refreshKey: String {
-        "\(dataVersion)-\(currentMonth.timeIntervalSince1970)"
+        "\(dataVersion)-\(currentMonth.timeIntervalSince1970)-\(balanceMode.rawValue)"
     }
 
     var monthLabel: String { currentMonth.monthYearLabel }
@@ -100,63 +78,61 @@ final class StatsViewModel {
     // MARK: - Async refresh
 
     func refresh() async {
-        // `.task(id: refreshKey)` fires once with the pre-feed key (dataVersion
-        // 0, empty data) before onAppear's update() restarts it — skip that
-        // no-op pass instead of spinning up a detached task during the push.
         guard dataVersion > 0 else { return }
 
         isLoading = true
         defer { isLoading = false }
 
-        // 1. Snapshot value types on the main actor.
-        let txSnaps      = transactions.map(TransactionSnapshot.init)
-        let interval     = currentMonth.monthInterval
-        let prevInterval = currentMonth.addingMonths(-1).monthInterval
+        let txSnaps        = transactions.map(TransactionSnapshot.init)
+        let interval       = currentMonth.monthInterval
         let catMeta: [UUID: (name: String, colorHex: String, emoji: String)] = Dictionary(
             uniqueKeysWithValues: categories.map { ($0.id, ($0.name, $0.colorHex, $0.emoji)) }
         )
         let targetCurrency = AppCurrency.code
+        let capturedMode   = balanceMode
 
-        // 2. Heavy aggregation off-main.
         let result = await Task.detached(priority: .userInitiated) {
-            // Expense only — the donut shows where the user's money goes.
-            // Half-open membership so a boundary transaction isn't counted in
-            // both this month and the next (AUDIT.md D8).
-            let monthExpenses = txSnaps.filter {
-                $0.type == .expense && interval.containsHalfOpen($0.date)
+            let allPeriod   = txSnaps.filter { interval.containsHalfOpen($0.date) }
+            let expenseSnaps = allPeriod.filter { $0.type == .expense }
+            let incomeSnaps  = allPeriod.filter { $0.type == .income }
+
+            // Donut slices: expense categories for expense/total, income for income.
+            let donutSnaps: [TransactionSnapshot]
+            switch capturedMode {
+            case .expense, .total: donutSnaps = expenseSnaps
+            case .income:          donutSnaps = incomeSnaps
             }
 
-            // Income total for the month's summary line (not charted).
-            let income = txSnaps
-                .filter { $0.type == .income && interval.containsHalfOpen($0.date) }
-                .reduce(0) { $0 + $1.convertedAmount(to: targetCurrency) }
-
-            // Previous-month expense total, for the change-vs-last-month pill.
-            let prevTotal = txSnaps
-                .filter { $0.type == .expense && prevInterval.containsHalfOpen($0.date) }
-                .reduce(0) { $0 + $1.convertedAmount(to: targetCurrency) }
-
             var totals: [UUID: Double] = [:]
-            var total: Double = 0
-            for snap in monthExpenses {
+            var donutTotal: Double = 0
+            for snap in donutSnaps {
                 guard let cid = snap.categoryID else { continue }
                 let converted = snap.convertedAmount(to: targetCurrency)
                 totals[cid, default: 0] += converted
-                total += converted
+                donutTotal += converted
             }
             let sorted = totals.sorted { $0.value > $1.value }
 
-            // Weekly aggregation, spanning every week that overlaps the
-            // selected month — including weeks with zero spend, so the trend
-            // chart's x-axis stays consistent across months.
+            // Weekly: expense or income amounts; total mode nets income − expense.
             var weeklyAgg: [Date: Double] = [:]
-            for snap in monthExpenses {
-                weeklyAgg[snap.date.startOfWeek, default: 0] += snap.convertedAmount(to: targetCurrency)
+            switch capturedMode {
+            case .expense:
+                for snap in expenseSnaps {
+                    weeklyAgg[snap.date.startOfWeek, default: 0] += snap.convertedAmount(to: targetCurrency)
+                }
+            case .income:
+                for snap in incomeSnaps {
+                    weeklyAgg[snap.date.startOfWeek, default: 0] += snap.convertedAmount(to: targetCurrency)
+                }
+            case .total:
+                for snap in allPeriod {
+                    let amt = snap.type == .income
+                        ? snap.convertedAmount(to: targetCurrency)
+                        : -snap.convertedAmount(to: targetCurrency)
+                    weeklyAgg[snap.date.startOfWeek, default: 0] += amt
+                }
             }
-            // Plain Sendable tuples — the `WeeklySpendData` value objects are
-            // built on the main actor below (its initializer is main-actor
-            // isolated under the project's default-actor-isolation setting, so
-            // it can't be constructed inside this detached closure).
+
             var weeklyRaw: [(weekStart: Date, weekEnd: Date, total: Double, weekNumber: Int)] = []
             var weekStart = interval.start.startOfWeek
             var weekNumber = 1
@@ -167,12 +143,10 @@ final class StatsViewModel {
                 weekNumber += 1
             }
 
-            // Mean of weeks that actually had spend — the trend chart's
-            // reference line (zero-spend weeks would drag the average down).
-            let spentWeeks = weeklyRaw.filter { $0.total > 0 }
-            let weeklyAvg = spentWeeks.isEmpty ? 0 : spentWeeks.reduce(0) { $0 + $1.total } / Double(spentWeeks.count)
+            let activeWeeks = weeklyRaw.filter { abs($0.total) > 0 }
+            let weeklyAvg = activeWeeks.isEmpty ? 0 : activeWeeks.reduce(0) { $0 + $1.total } / Double(activeWeeks.count)
 
-            return (sorted, total, weeklyRaw, income, prevTotal, weeklyAvg)
+            return (sorted, donutTotal, weeklyRaw, weeklyAvg)
         }.value
 
         guard !Task.isCancelled else { return }
@@ -192,15 +166,11 @@ final class StatsViewModel {
             WeeklySpendData(weekStart: $0.weekStart, weekEnd: $0.weekEnd, total: $0.total, weekNumber: $0.weekNumber)
         }
 
-        // Animate the donut crossfade + top-categories list to the new month's
-        // data (the chart's internal transition needs an enclosing animation).
         withAnimation(.dsSnappy) {
-            monthTotal = result.1
+            monthTotal    = result.1
             categorySpend = newSpend
-            weeklySpend = newWeekly
-            incomeTotal = result.3
-            previousMonthExpenseTotal = result.4
-            weeklyAverage = result.5
+            weeklySpend   = newWeekly
+            weeklyAverage = result.3
         }
     }
 }

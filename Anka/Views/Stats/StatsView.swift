@@ -41,7 +41,6 @@ struct StatsView: View {
         ScrollView {
             VStack(spacing: DSSpacing.xl) {
                 monthStepper
-                summaryHero
                 statsContent
                 weeklyTrendSection
             }
@@ -71,7 +70,8 @@ struct StatsView: View {
         }
         .onChange(of: transactions) { feedVM() }
         .onChange(of: categories)   { feedVM() }
-        .onChange(of: vm.currentMonth) { selectedCategoryID = nil }
+        .onChange(of: vm.currentMonth)   { selectedCategoryID = nil }
+        .onChange(of: vm.balanceMode)    { selectedCategoryID = nil }
         .task(id: vm.refreshKey) { await vm.refresh() }
     }
 
@@ -128,74 +128,35 @@ struct StatsView: View {
         .accessibilityLabel(delta < 0 ? "Previous month" : "Next month")
     }
 
-    // MARK: - Summary hero
+    // MARK: - Balance mode picker
 
-    private var summaryHero: some View {
-        VStack(spacing: DSSpacing.md) {
-            Text(rp(vm.monthTotal))
-                .font(.dsTitle2Bold)
-                .foregroundStyle(DSColor.textPrimary)
-                .contentTransition(.numericText())
-                .minimumScaleFactor(0.6)
-                .lineLimit(1)
-
-            HStack(spacing: DSSpacing.md) {
-                if let delta = vm.expenseDeltaPercent {
-                    deltaPill(delta)
+    private var balanceModePicker: some View {
+        HStack(spacing: 8) {
+            ForEach(BalanceMode.allCases, id: \.self) { mode in
+                let isActive = vm.balanceMode == mode
+                Button {
+                    withAnimation(.dsSpring) { vm.balanceMode = mode }
+                } label: {
+                    HStack(spacing: isActive ? 6 : 0) {
+                        Image(systemName: mode.icon)
+                            .font(.dsFootnoteMedium)
+                        if isActive {
+                            Text(mode.title)
+                                .font(.dsFootnoteMedium)
+                                .lineLimit(1)
+                        }
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .foregroundStyle(isActive ? DSColor.bgPrimary : .primary)
+                    .background(isActive ? Color.primary : DSColor.bgSecondary, in: Capsule())
+                    .animation(.dsSpring, value: isActive)
                 }
-                Text("\(vm.dailyAverage.idrShort)/day")
-                    .font(.dsCaption)
-                    .foregroundStyle(DSColor.textSecondary)
+                .buttonStyle(.pressable)
             }
-
-            HStack(spacing: DSSpacing.md) {
-                summaryChip(label: "Income", value: rp(vm.incomeTotal), color: DSColor.positive)
-                summaryChip(label: "Net", value: signedAmount(vm.netTotal),
-                            color: vm.netTotal >= 0 ? DSColor.positive : DSColor.negative)
-            }
-            .padding(.top, DSSpacing.xs)
         }
         .padding(.horizontal, DSSpacing.screenEdge)
     }
-
-    private func deltaPill(_ delta: Double) -> some View {
-        // Spending *less* than last month is good → green/down.
-        let isDown = delta <= 0
-        let color: Color = isDown ? DSColor.positive : DSColor.negative
-        return HStack(spacing: 3) {
-            Image(systemName: isDown ? "arrow.down" : "arrow.up")
-                .font(.dsCaption2Bold)
-            Text("\(abs(Int(delta.rounded())))% vs \(vm.previousMonthShortLabel)")
-                .font(.dsCaptionSemi)
-        }
-        .foregroundStyle(color)
-        .padding(.horizontal, DSSpacing.md)
-        .padding(.vertical, DSSpacing.xs)
-        .background(color.opacity(DSOpacity.subtle), in: Capsule())
-    }
-
-    private func summaryChip(label: String, value: String, color: Color) -> some View {
-        VStack(spacing: 2) {
-            Text(label)
-                .font(.dsCaption2)
-                .foregroundStyle(DSColor.textSecondary)
-            Text(value)
-                .font(.dsSubheadSemi)
-                .foregroundStyle(color)
-                .contentTransition(.numericText())
-                .minimumScaleFactor(0.6)
-                .lineLimit(1)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, DSSpacing.md)
-        .background(DSColor.bgSecondary, in: RoundedRectangle(cornerRadius: DSRadius.medium))
-    }
-
-    /// "Rp 1,234,567" — matches the app's amount convention (never "IDR …").
-    private func rp(_ value: Double) -> String { value.rupiah }
-
-    /// "+Rp 1,200,000" / "-Rp 300,000" — signed, for the Net chip.
-    private func signedAmount(_ value: Double) -> String { value.signedRupiah }
 
     // MARK: - Chart + breakdown content
 
@@ -210,11 +171,12 @@ struct StatsView: View {
                 .padding(.horizontal, DSSpacing.screenEdge)
         } else if vm.categorySpend.isEmpty {
             emptyState
+            balanceModePicker
         } else {
             DonutChartView(
                 categoryData: vm.categorySpend,
                 totalSpent:   vm.monthTotal,
-                budget:       0, // budgets not implemented yet
+                budget:       0,
                 monthName:    vm.shortMonthLabel,
                 onSetBudget:  {},
                 onSwipe:      { vm.navigateMonth(by: $0) },
@@ -224,13 +186,15 @@ struct StatsView: View {
             .padding(.horizontal, DSSpacing.screenEdge)
             .transition(.opacity)
 
+            balanceModePicker
+
             categoryBreakdown
         }
     }
 
     private var categoryBreakdown: some View {
         VStack(alignment: .leading, spacing: DSSpacing.md) {
-            Text("Spending by category")
+            Text(vm.balanceMode == .income ? "Income by category" : "Spending by category")
                 .font(.dsSubheadSemi)
                 .foregroundStyle(DSColor.textSecondary)
 
@@ -258,10 +222,10 @@ struct StatsView: View {
             Image(systemName: "chart.pie")
                 .font(.system(size: 34, relativeTo: .title))
                 .foregroundStyle(DSColor.textMuted)
-            Text("No expenses in \(vm.shortMonthLabel)")
+            Text("No \(vm.balanceMode == .income ? "income" : "expenses") in \(vm.shortMonthLabel)")
                 .font(.dsSubhead)
                 .foregroundStyle(DSColor.textPrimary)
-            Text("Add an expense or step to another month.")
+            Text("Add a transaction or step to another month.")
                 .font(.dsCaption)
                 .foregroundStyle(DSColor.textSecondary)
                 .multilineTextAlignment(.center)

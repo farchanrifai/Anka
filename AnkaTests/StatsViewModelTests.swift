@@ -28,51 +28,36 @@ struct StatsViewModelTests {
         #expect(vm.isOnCurrentMonth)
     }
 
-    @Test func refreshComputesCategorySpendIncomeAndDelta() async throws {
+    @Test func refreshComputesCategorySpendByMode() async throws {
         let context = try makeContext()
         let groceries = Anka.Category(name: "Groceries", emoji: "🛒", colorHex: "FF6B6B", type: .expense, sortOrder: 0)
-        let salary = Anka.Category(name: "Salary", emoji: "💼", colorHex: "66BB6A", type: .income, sortOrder: 0)
+        let salary    = Anka.Category(name: "Salary",    emoji: "💼", colorHex: "66BB6A", type: .income,  sortOrder: 0)
         context.insert(groceries)
         context.insert(salary)
 
-        let now = Date()
-        let monthStart = now.startOfMonth
-        let prevMonth = monthStart.addingMonths(-1)
-
-        // This month: 100 expense (groceries), 500 income (salary).
+        let monthStart = Date().startOfMonth
         context.insert(Transaction(amount: 100, type: .expense, date: monthStart, category: groceries))
-        context.insert(Transaction(amount: 500, type: .income, date: monthStart, category: salary))
-        // Previous month: 50 expense — baseline for the delta.
-        context.insert(Transaction(amount: 50, type: .expense, date: prevMonth, category: groceries))
+        context.insert(Transaction(amount: 500, type: .income,  date: monthStart, category: salary))
         try context.save()
 
+        let txs = try context.fetch(FetchDescriptor<Transaction>())
+
+        // Expense mode (default): donut shows expense categories.
         let vm = StatsViewModel()
-        vm.update(transactions: try context.fetch(FetchDescriptor<Transaction>()), categories: [groceries, salary])
+        vm.update(transactions: txs, categories: [groceries, salary])
         await vm.refresh()
 
         #expect(vm.monthTotal == 100)
-        #expect(vm.incomeTotal == 500)
-        #expect(vm.netTotal == 400)
         #expect(vm.categorySpend.first?.name == "Groceries")
         #expect(vm.categorySpend.first?.amount == 100)
 
-        // (100 - 50) / 50 * 100 = 100%
-        let delta = try #require(vm.expenseDeltaPercent)
-        #expect(abs(delta - 100) < 0.0001)
-    }
-
-    @Test func expenseDeltaPercentIsNilWithoutPreviousMonthBaseline() async throws {
-        let context = try makeContext()
-        let cat = Anka.Category(name: "Coffee", emoji: "☕", colorHex: "FF8A65", type: .expense, sortOrder: 0)
-        context.insert(cat)
-        context.insert(Transaction(amount: 30, type: .expense, date: Date().startOfMonth, category: cat))
-        try context.save()
-
-        let vm = StatsViewModel()
-        vm.update(transactions: try context.fetch(FetchDescriptor<Transaction>()), categories: [cat])
+        // Income mode: donut switches to income categories.
+        vm.balanceMode = .income
         await vm.refresh()
 
-        #expect(vm.expenseDeltaPercent == nil)
+        #expect(vm.monthTotal == 500)
+        #expect(vm.categorySpend.first?.name == "Salary")
+        #expect(vm.categorySpend.first?.amount == 500)
     }
 
     @Test func boundaryTransactionAtStartOfNextMonthIsExcludedFromCurrentMonth() async throws {

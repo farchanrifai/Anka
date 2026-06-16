@@ -8,8 +8,16 @@ struct AppRouter: View {
     @Environment(\.colorScheme) private var scheme
     @Environment(AppearanceManager.self) private var appearance
 
+    @AppStorage("useMainPageV2") private var useMainPageV2 = false
+
     var body: some View {
-        TodayView()
+        Group {
+            if useMainPageV2 {
+                MainPageV2View()
+            } else {
+                TodayView()
+            }
+        }
             // AppRouter sits inside the WindowGroup's
             // `.preferredColorScheme(mode.preferredColorScheme)` modifier.
             // When mode is `.system`, that resolves to nil → window follows
@@ -25,3 +33,4 @@ struct AppRouter: View {
             }
     }
 }
+

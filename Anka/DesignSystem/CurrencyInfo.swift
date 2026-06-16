@@ -51,7 +51,7 @@ public enum CurrencyConverter {
     /// ponytail: 1:1 stub rate for every pair. Swap in a live FX provider
     /// (cached daily rates) when available — call sites already convert
     /// before summing, so this is the only place that needs to change.
-    public static func convert(_ amount: Double, from: String, to: String) -> Double {
+    public nonisolated static func convert(_ amount: Double, from: String, to: String) -> Double {
         amount
     }
 }

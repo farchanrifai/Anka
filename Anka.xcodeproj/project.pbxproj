@@ -78,7 +78,7 @@
 		73D1AA942FD55CC2002330E9 /* Exceptions for "Anka" folder in "AnkaWidgetsExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				"DesignSystem/CurrencyInfo.swift",
+				DesignSystem/CurrencyInfo.swift,
 				"DesignSystem/NumberFormatter+Amount.swift",
 				Services/PlatformPaths.swift,
 				Services/WidgetSharedTypes.swift,
