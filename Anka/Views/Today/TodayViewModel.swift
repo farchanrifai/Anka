@@ -295,6 +295,39 @@ enum BalanceMode: String, CaseIterable, Hashable {
         periodTransactions.filter { $0.type == .income }.reduce(0) { $0 + $1.convertedAmount(to: AppCurrency.code) }
     }
 
+    // MARK: - Category stats shortcut
+
+    struct TopCategoryItem: Equatable {
+        let emoji: String
+        let colorHex: String
+    }
+
+    /// Top 2 categories by spend in the current period, respecting balanceMode.
+    /// Expense/Total → expense categories; Income → income categories.
+    var topCategoryItems: [TopCategoryItem] {
+        let relevant = periodTransactions.filter {
+            balanceMode == .income ? $0.type == .income : $0.type == .expense
+        }
+        var totals: [UUID: (item: TopCategoryItem, amount: Double)] = [:]
+        for tx in relevant {
+            guard let cat = tx.category else { continue }
+            let prev = totals[cat.id]?.amount ?? 0
+            totals[cat.id] = (TopCategoryItem(emoji: cat.emoji, colorHex: cat.colorHex), prev + tx.amount)
+        }
+        return totals.values
+            .sorted { $0.amount > $1.amount }
+            .prefix(2)
+            .map(\.item)
+    }
+
+    /// Total distinct categories with transactions in the current period.
+    var periodCategoryCount: Int {
+        let relevant = periodTransactions.filter {
+            balanceMode == .income ? $0.type == .income : $0.type == .expense
+        }
+        return Set(relevant.compactMap { $0.category?.id }).count
+    }
+
     // MARK: - Derived: Display (cheap — operate on cached periodTransactions)
 
     var heroAmount: Double {

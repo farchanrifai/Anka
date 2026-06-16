@@ -56,6 +56,9 @@ struct MainPageV2View: View {
                 .toolbarBackground(.hidden, for: .navigationBar)
                 .background(DSColor.bgPrimary.ignoresSafeArea())
                 .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        categoryStatsButton
+                    }
                     ToolbarItemGroup(placement: .topBarTrailing) {
                         SettingsToolbarButton(vm: vm)
                     }
@@ -243,6 +246,59 @@ struct MainPageV2View: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .center)
+    }
+
+    // MARK: - Category stats shortcut
+
+    // All 3 rectangles are 30×30 pt with cornerRadius 9 and a white stroke.
+    // Left icon tilts −7° (back), right icon tilts +7° (front, drop shadow).
+    // Pill height is fixed at 40pt to match the viewModePicker circle buttons below.
+    @ViewBuilder
+    private var categoryStatsButton: some View {
+        let items = vm.topCategoryItems
+        let count = vm.periodCategoryCount
+        if !items.isEmpty {
+            Button { vm.showStats = true } label: {
+                HStack(spacing: 6) {
+                    // Stacked category icons
+                    ZStack(alignment: .leading) {
+                        categoryBadge(items[0], rotation: -7, front: false)
+                            .zIndex(0)
+                        if items.count > 1 {
+                            categoryBadge(items[1], rotation: 7, front: true)
+                                .offset(x: 18)
+                                .zIndex(1)
+                        }
+                    }
+                    .frame(width: items.count > 1 ? 48 : 30, height: 30)
+
+                    // "+N" — same 30×30 rect, flat
+                    if count > 2 {
+                        RoundedRectangle(cornerRadius: 9)
+                            .fill(DSColor.bgSecondary)
+                            .frame(width: 30, height: 30)
+                            .overlay {
+                                Text("+\(count - 2)")
+                                    .font(.system(size: 11, weight: .bold))
+                                    .foregroundStyle(DSColor.textPrimary)
+                            }
+                    }
+                }
+                .drawingGroup()
+                .padding(.horizontal, 4)
+            }
+            .buttonStyle(.plain)
+            .animation(.dsSnappy, value: items)
+        }
+    }
+
+    private func categoryBadge(_ item: TodayViewModel.TopCategoryItem, rotation: Double, front: Bool) -> some View {
+        RoundedRectangle(cornerRadius: 9)
+            .fill(Color(hex: item.colorHex))
+            .frame(width: 30, height: 30)
+            .overlay { Text(item.emoji).font(.system(size: 15)) }
+            .rotationEffect(.degrees(rotation))
+            .shadow(color: .black.opacity(front ? 0.18 : 0.06), radius: 4, x: 0, y: 2)
     }
 
     // MARK: - View mode picker (icon-only)

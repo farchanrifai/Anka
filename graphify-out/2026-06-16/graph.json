@@ -1138,7 +1138,7 @@
       "source_location": "L234",
       "_origin": "ast",
       "id": "injected_index_detachoverlay",
-      "community": 22,
+      "community": 232,
       "norm_label": "detachoverlay()"
     },
     {
@@ -1258,7 +1258,7 @@
       "source_location": "L737",
       "_origin": "ast",
       "id": "injected_index_pickworstcontrastcolor",
-      "community": 88,
+      "community": 22,
       "norm_label": "pickworstcontrastcolor()"
     },
     {
@@ -1268,7 +1268,7 @@
       "source_location": "L752",
       "_origin": "ast",
       "id": "injected_index_firstcssurl",
-      "community": 88,
+      "community": 22,
       "norm_label": "firstcssurl()"
     },
     {
@@ -1278,7 +1278,7 @@
       "source_location": "L758",
       "_origin": "ast",
       "id": "injected_index_getlayervalue",
-      "community": 88,
+      "community": 22,
       "norm_label": "getlayervalue()"
     },
     {
@@ -1288,7 +1288,7 @@
       "source_location": "L762",
       "_origin": "ast",
       "id": "injected_index_parsepositiontoken",
-      "community": 88,
+      "community": 22,
       "norm_label": "parsepositiontoken()"
     },
     {
@@ -1298,7 +1298,7 @@
       "source_location": "L774",
       "_origin": "ast",
       "id": "injected_index_parsepositionpair",
-      "community": 88,
+      "community": 22,
       "norm_label": "parsepositionpair()"
     },
     {
@@ -1308,7 +1308,7 @@
       "source_location": "L784",
       "_origin": "ast",
       "id": "injected_index_resolvepaintedimagerect",
-      "community": 88,
+      "community": 22,
       "norm_label": "resolvepaintedimagerect()"
     },
     {
@@ -1318,7 +1318,7 @@
       "source_location": "L821",
       "_origin": "ast",
       "id": "injected_index_parseobjectposition",
-      "community": 88,
+      "community": 22,
       "norm_label": "parseobjectposition()"
     },
     {
@@ -1328,7 +1328,7 @@
       "source_location": "L825",
       "_origin": "ast",
       "id": "injected_index_resolveobjectimagerect",
-      "community": 88,
+      "community": 22,
       "norm_label": "resolveobjectimagerect()"
     },
     {
@@ -1338,7 +1338,7 @@
       "source_location": "L856",
       "_origin": "ast",
       "id": "injected_index_pointtoimagesource",
-      "community": 88,
+      "community": 22,
       "norm_label": "pointtoimagesource()"
     },
     {
@@ -1348,7 +1348,7 @@
       "source_location": "L871",
       "_origin": "ast",
       "id": "injected_index_loadvisualcontrastimage",
-      "community": 88,
+      "community": 22,
       "norm_label": "loadvisualcontrastimage()"
     },
     {
@@ -1358,7 +1358,7 @@
       "source_location": "L900",
       "_origin": "ast",
       "id": "injected_index_sampledrawablepixel",
-      "community": 88,
+      "community": 22,
       "norm_label": "sampledrawablepixel()"
     },
     {
@@ -1368,7 +1368,7 @@
       "source_location": "L956",
       "_origin": "ast",
       "id": "injected_index_samplecssbackground",
-      "community": 88,
+      "community": 22,
       "norm_label": "samplecssbackground()"
     },
     {
@@ -1378,7 +1378,7 @@
       "source_location": "L985",
       "_origin": "ast",
       "id": "injected_index_sampleimageelement",
-      "community": 88,
+      "community": 22,
       "norm_label": "sampleimageelement()"
     },
     {
@@ -1398,7 +1398,7 @@
       "source_location": "L1026",
       "_origin": "ast",
       "id": "injected_index_samplevisualbackgroundatpoint",
-      "community": 88,
+      "community": 22,
       "norm_label": "samplevisualbackgroundatpoint()"
     },
     {
@@ -1458,7 +1458,7 @@
       "source_location": "L1252",
       "_origin": "ast",
       "id": "injected_index_addbrowserfindings",
-      "community": 22,
+      "community": 232,
       "norm_label": "addbrowserfindings()"
     },
     {
@@ -1488,7 +1488,7 @@
       "source_location": "L1370",
       "_origin": "ast",
       "id": "injected_index_shouldrunvisualcontrast",
-      "community": 22,
+      "community": 232,
       "norm_label": "shouldrunvisualcontrast()"
     },
     {
@@ -1498,7 +1498,7 @@
       "source_location": "L1374",
       "_origin": "ast",
       "id": "injected_index_visualcontrastoptions",
-      "community": 22,
+      "community": 232,
       "norm_label": "visualcontrastoptions()"
     },
     {
@@ -1518,7 +1518,7 @@
       "source_location": "L1412",
       "_origin": "ast",
       "id": "injected_index_disconnectlazyvisualcontrastobserver",
-      "community": 22,
+      "community": 232,
       "norm_label": "disconnectlazyvisualcontrastobserver()"
     },
     {
@@ -1528,7 +1528,7 @@
       "source_location": "L1420",
       "_origin": "ast",
       "id": "injected_index_addvisualcontrastresult",
-      "community": 22,
+      "community": 232,
       "norm_label": "addvisualcontrastresult()"
     },
     {
@@ -1578,7 +1578,7 @@
       "source_location": "L1481",
       "_origin": "ast",
       "id": "injected_index_schedulelazyvisualcontrast",
-      "community": 22,
+      "community": 232,
       "norm_label": "schedulelazyvisualcontrast()"
     },
     {
@@ -1588,7 +1588,7 @@
       "source_location": "L1541",
       "_origin": "ast",
       "id": "injected_index_addvisualcontrastfindings",
-      "community": 22,
+      "community": 232,
       "norm_label": "addvisualcontrastfindings()"
     },
     {
@@ -1608,7 +1608,7 @@
       "source_location": "L1568",
       "_origin": "ast",
       "id": "injected_index_clearoverlays",
-      "community": 22,
+      "community": 232,
       "norm_label": "clearoverlays()"
     },
     {
@@ -1818,7 +1818,7 @@
       "source_location": "L730",
       "_origin": "ast",
       "id": "detector_detect_antipatterns_browser_iscardlikefromprops",
-      "community": 113,
+      "community": 11,
       "norm_label": "iscardlikefromprops()"
     },
     {
@@ -1948,7 +1948,7 @@
       "source_location": "L1297",
       "_origin": "ast",
       "id": "detector_detect_antipatterns_browser_parseradiustopx",
-      "community": 113,
+      "community": 11,
       "norm_label": "parseradiustopx()"
     },
     {
@@ -1958,7 +1958,7 @@
       "source_location": "L1311",
       "_origin": "ast",
       "id": "detector_detect_antipatterns_browser_resolveborderradiuspx",
-      "community": 113,
+      "community": 11,
       "norm_label": "resolveborderradiuspx()"
     },
     {
@@ -2368,7 +2368,7 @@
       "source_location": "L2534",
       "_origin": "ast",
       "id": "detector_detect_antipatterns_browser_iscardlikedom",
-      "community": 113,
+      "community": 11,
       "norm_label": "iscardlikedom()"
     },
     {
@@ -2378,7 +2378,7 @@
       "source_location": "L2546",
       "_origin": "ast",
       "id": "detector_detect_antipatterns_browser_checklayout",
-      "community": 113,
+      "community": 11,
       "norm_label": "checklayout()"
     },
     {
@@ -2398,7 +2398,7 @@
       "source_location": "L2658",
       "_origin": "ast",
       "id": "detector_detect_antipatterns_browser_iscardlike",
-      "community": 113,
+      "community": 11,
       "norm_label": "iscardlike()"
     },
     {
@@ -2408,7 +2408,7 @@
       "source_location": "L2678",
       "_origin": "ast",
       "id": "detector_detect_antipatterns_browser_checkpagelayout",
-      "community": 113,
+      "community": 11,
       "norm_label": "checkpagelayout()"
     },
     {
@@ -2818,7 +2818,7 @@
       "source_location": "L3400",
       "_origin": "ast",
       "id": "detector_detect_antipatterns_browser_detachoverlay",
-      "community": 11,
+      "community": 228,
       "norm_label": "detachoverlay()"
     },
     {
@@ -2858,7 +2858,7 @@
       "source_location": "L3665",
       "_origin": "ast",
       "id": "detector_detect_antipatterns_browser_buildselectorsegment",
-      "community": 120,
+      "community": 11,
       "norm_label": "buildselectorsegment()"
     },
     {
@@ -2868,7 +2868,7 @@
       "source_location": "L3696",
       "_origin": "ast",
       "id": "detector_detect_antipatterns_browser_generateselector",
-      "community": 120,
+      "community": 11,
       "norm_label": "generateselector()"
     },
     {
@@ -3138,7 +3138,7 @@
       "source_location": "L4418",
       "_origin": "ast",
       "id": "detector_detect_antipatterns_browser_addbrowserfindings",
-      "community": 11,
+      "community": 228,
       "norm_label": "addbrowserfindings()"
     },
     {
@@ -3168,7 +3168,7 @@
       "source_location": "L4536",
       "_origin": "ast",
       "id": "detector_detect_antipatterns_browser_shouldrunvisualcontrast",
-      "community": 11,
+      "community": 228,
       "norm_label": "shouldrunvisualcontrast()"
     },
     {
@@ -3178,7 +3178,7 @@
       "source_location": "L4540",
       "_origin": "ast",
       "id": "detector_detect_antipatterns_browser_visualcontrastoptions",
-      "community": 11,
+      "community": 228,
       "norm_label": "visualcontrastoptions()"
     },
     {
@@ -3198,7 +3198,7 @@
       "source_location": "L4578",
       "_origin": "ast",
       "id": "detector_detect_antipatterns_browser_disconnectlazyvisualcontrastobserver",
-      "community": 11,
+      "community": 228,
       "norm_label": "disconnectlazyvisualcontrastobserver()"
     },
     {
@@ -3208,7 +3208,7 @@
       "source_location": "L4586",
       "_origin": "ast",
       "id": "detector_detect_antipatterns_browser_addvisualcontrastresult",
-      "community": 11,
+      "community": 228,
       "norm_label": "addvisualcontrastresult()"
     },
     {
@@ -3258,7 +3258,7 @@
       "source_location": "L4647",
       "_origin": "ast",
       "id": "detector_detect_antipatterns_browser_schedulelazyvisualcontrast",
-      "community": 11,
+      "community": 228,
       "norm_label": "schedulelazyvisualcontrast()"
     },
     {
@@ -3268,7 +3268,7 @@
       "source_location": "L4707",
       "_origin": "ast",
       "id": "detector_detect_antipatterns_browser_addvisualcontrastfindings",
-      "community": 11,
+      "community": 228,
       "norm_label": "addvisualcontrastfindings()"
     },
     {
@@ -3288,7 +3288,7 @@
       "source_location": "L4734",
       "_origin": "ast",
       "id": "detector_detect_antipatterns_browser_clearoverlays",
-      "community": 11,
+      "community": 228,
       "norm_label": "clearoverlays()"
     },
     {
@@ -3948,7 +3948,7 @@
       "source_location": "L815",
       "_origin": "ast",
       "id": "static_html_css_cascade_staticdocument_queryselectorall",
-      "community": 27,
+      "community": 60,
       "norm_label": ".queryselectorall()"
     },
     {
@@ -3998,7 +3998,7 @@
       "source_location": "L839",
       "_origin": "ast",
       "id": "static_html_css_cascade_staticdocument_getstyle",
-      "community": 96,
+      "community": 60,
       "norm_label": ".getstyle()"
     },
     {
@@ -4008,7 +4008,7 @@
       "source_location": "L844",
       "_origin": "ast",
       "id": "static_html_css_cascade_makestaticstyle",
-      "community": 96,
+      "community": 60,
       "norm_label": "makestaticstyle()"
     },
     {
@@ -4018,7 +4018,7 @@
       "source_location": "L853",
       "_origin": "ast",
       "id": "static_html_css_cascade_buildstaticwindow",
-      "community": 90,
+      "community": 6,
       "norm_label": "buildstaticwindow()"
     },
     {
@@ -4048,7 +4048,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "static_html_detect_html",
-      "community": 90,
+      "community": 6,
       "norm_label": "detect-html.mjs"
     },
     {
@@ -4058,7 +4058,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "static_html_detect_html_checkstaticpagetypography",
-      "community": 90,
+      "community": 6,
       "norm_label": "checkstaticpagetypography()"
     },
     {
@@ -4068,7 +4068,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "static_html_detect_html_checkelementbrokenimage",
-      "community": 90,
+      "community": 6,
       "norm_label": "checkelementbrokenimage()"
     },
     {
@@ -4098,7 +4098,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "visual_screenshot_contrast",
-      "community": 6,
+      "community": 239,
       "norm_label": "screenshot-contrast.mjs"
     },
     {
@@ -4108,7 +4108,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "visual_screenshot_contrast_sanitizescreenshotclip",
-      "community": 6,
+      "community": 239,
       "norm_label": "sanitizescreenshotclip()"
     },
     {
@@ -4118,7 +4118,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "visual_screenshot_contrast_comparescreenshotcontrast",
-      "community": 6,
+      "community": 239,
       "norm_label": "comparescreenshotcontrast()"
     },
     {
@@ -4128,7 +4128,7 @@
       "source_location": "L108",
       "_origin": "ast",
       "id": "visual_screenshot_contrast_capturevisualcontrastcandidate",
-      "community": 6,
+      "community": 239,
       "norm_label": "capturevisualcontrastcandidate()"
     },
     {
@@ -4468,7 +4468,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "rules_checks_checkborders",
-      "community": 1,
+      "community": 86,
       "norm_label": "checkborders()"
     },
     {
@@ -4478,7 +4478,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "rules_checks_isemojionlytext",
-      "community": 1,
+      "community": 74,
       "norm_label": "isemojionlytext()"
     },
     {
@@ -4488,7 +4488,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "rules_checks_checkcolors",
-      "community": 1,
+      "community": 74,
       "norm_label": "checkcolors()"
     },
     {
@@ -4518,7 +4518,7 @@
       "source_location": "L179",
       "_origin": "ast",
       "id": "rules_checks_checkicontile",
-      "community": 1,
+      "community": 74,
       "norm_label": "checkicontile()"
     },
     {
@@ -4568,7 +4568,7 @@
       "source_location": "L356",
       "_origin": "ast",
       "id": "rules_checks_checkrepeatedsectionkickers",
-      "community": 96,
+      "community": 1,
       "norm_label": "checkrepeatedsectionkickers()"
     },
     {
@@ -4598,7 +4598,7 @@
       "source_location": "L410",
       "_origin": "ast",
       "id": "rules_checks_checkglow",
-      "community": 1,
+      "community": 74,
       "norm_label": "checkglow()"
     },
     {
@@ -4608,7 +4608,7 @@
       "source_location": "L446",
       "_origin": "ast",
       "id": "rules_checks_checkhtmlpatterns",
-      "community": 90,
+      "community": 6,
       "norm_label": "checkhtmlpatterns()"
     },
     {
@@ -4618,7 +4618,7 @@
       "source_location": "L612",
       "_origin": "ast",
       "id": "rules_checks_readownbackgroundcolor",
-      "community": 1,
+      "community": 74,
       "norm_label": "readownbackgroundcolor()"
     },
     {
@@ -4628,7 +4628,7 @@
       "source_location": "L633",
       "_origin": "ast",
       "id": "rules_checks_resolvebackground",
-      "community": 1,
+      "community": 74,
       "norm_label": "resolvebackground()"
     },
     {
@@ -4638,7 +4638,7 @@
       "source_location": "L695",
       "_origin": "ast",
       "id": "rules_checks_resolvegradientstops",
-      "community": 1,
+      "community": 74,
       "norm_label": "resolvegradientstops()"
     },
     {
@@ -4668,7 +4668,7 @@
       "source_location": "L751",
       "_origin": "ast",
       "id": "rules_checks_checkelementbordersdom",
-      "community": 1,
+      "community": 86,
       "norm_label": "checkelementbordersdom()"
     },
     {
@@ -4678,7 +4678,7 @@
       "source_location": "L766",
       "_origin": "ast",
       "id": "rules_checks_checkelementcolorsdom",
-      "community": 1,
+      "community": 74,
       "norm_label": "checkelementcolorsdom()"
     },
     {
@@ -4688,7 +4688,7 @@
       "source_location": "L793",
       "_origin": "ast",
       "id": "rules_checks_checkelementicontiledom",
-      "community": 1,
+      "community": 74,
       "norm_label": "checkelementicontiledom()"
     },
     {
@@ -4738,7 +4738,7 @@
       "source_location": "L921",
       "_origin": "ast",
       "id": "rules_checks_oklchtorgb",
-      "community": 82,
+      "community": 1,
       "norm_label": "oklchtorgb()"
     },
     {
@@ -4748,7 +4748,7 @@
       "source_location": "L947",
       "_origin": "ast",
       "id": "rules_checks_parseanycolor",
-      "community": 82,
+      "community": 1,
       "norm_label": "parseanycolor()"
     },
     {
@@ -4758,7 +4758,7 @@
       "source_location": "L994",
       "_origin": "ast",
       "id": "rules_checks_parsecolorresolved",
-      "community": 1,
+      "community": 74,
       "norm_label": "parsecolorresolved()"
     },
     {
@@ -4788,7 +4788,7 @@
       "source_location": "L1028",
       "_origin": "ast",
       "id": "rules_checks_cleaninlinetext",
-      "community": 96,
+      "community": 1,
       "norm_label": "cleaninlinetext()"
     },
     {
@@ -4798,7 +4798,7 @@
       "source_location": "L1037",
       "_origin": "ast",
       "id": "rules_checks_isrepeatedkickercardcontext",
-      "community": 96,
+      "community": 1,
       "norm_label": "isrepeatedkickercardcontext()"
     },
     {
@@ -4808,7 +4808,7 @@
       "source_location": "L1042",
       "_origin": "ast",
       "id": "rules_checks_isrepeatedkickercandidate",
-      "community": 96,
+      "community": 1,
       "norm_label": "isrepeatedkickercandidate()"
     },
     {
@@ -4818,7 +4818,7 @@
       "source_location": "L1071",
       "_origin": "ast",
       "id": "rules_checks_collectrepeatedsectionkickercandidates",
-      "community": 96,
+      "community": 1,
       "norm_label": "collectrepeatedsectionkickercandidates()"
     },
     {
@@ -4828,7 +4828,7 @@
       "source_location": "L1109",
       "_origin": "ast",
       "id": "rules_checks_checkrepeatedsectionkickersdom",
-      "community": 96,
+      "community": 1,
       "norm_label": "checkrepeatedsectionkickersdom()"
     },
     {
@@ -4848,7 +4848,7 @@
       "source_location": "L1131",
       "_origin": "ast",
       "id": "rules_checks_checkelementglowdom",
-      "community": 1,
+      "community": 74,
       "norm_label": "checkelementglowdom()"
     },
     {
@@ -4858,7 +4858,7 @@
       "source_location": "L1160",
       "_origin": "ast",
       "id": "rules_checks_checkelementaipalettedom",
-      "community": 1,
+      "community": 74,
       "norm_label": "checkelementaipalettedom()"
     },
     {
@@ -4878,7 +4878,7 @@
       "source_location": "L1222",
       "_origin": "ast",
       "id": "rules_checks_resolvefontsizepx",
-      "community": 90,
+      "community": 1,
       "norm_label": "resolvefontsizepx()"
     },
     {
@@ -4888,7 +4888,7 @@
       "source_location": "L1248",
       "_origin": "ast",
       "id": "rules_checks_resolvelengthpx",
-      "community": 27,
+      "community": 1,
       "norm_label": "resolvelengthpx()"
     },
     {
@@ -4898,7 +4898,7 @@
       "source_location": "L1260",
       "_origin": "ast",
       "id": "rules_checks_csscoloristransparent",
-      "community": 82,
+      "community": 1,
       "norm_label": "csscoloristransparent()"
     },
     {
@@ -4908,7 +4908,7 @@
       "source_location": "L1269",
       "_origin": "ast",
       "id": "rules_checks_colorsnearlymatch",
-      "community": 82,
+      "community": 1,
       "norm_label": "colorsnearlymatch()"
     },
     {
@@ -4918,7 +4918,7 @@
       "source_location": "L1282",
       "_origin": "ast",
       "id": "rules_checks_getcomputedstylefor",
-      "community": 82,
+      "community": 1,
       "norm_label": "getcomputedstylefor()"
     },
     {
@@ -4928,7 +4928,7 @@
       "source_location": "L1292",
       "_origin": "ast",
       "id": "rules_checks_hasvisiblebackgroundboundary",
-      "community": 82,
+      "community": 1,
       "norm_label": "hasvisiblebackgroundboundary()"
     },
     {
@@ -4948,7 +4948,7 @@
       "source_location": "L1311",
       "_origin": "ast",
       "id": "rules_checks_hasmeaningfuldirecttext",
-      "community": 82,
+      "community": 1,
       "norm_label": "hasmeaningfuldirecttext()"
     },
     {
@@ -4958,7 +4958,7 @@
       "source_location": "L1319",
       "_origin": "ast",
       "id": "rules_checks_textdescendantsflushsides",
-      "community": 82,
+      "community": 1,
       "norm_label": "textdescendantsflushsides()"
     },
     {
@@ -4968,7 +4968,7 @@
       "source_location": "L1345",
       "_origin": "ast",
       "id": "rules_checks_checkquality",
-      "community": 82,
+      "community": 1,
       "norm_label": "checkquality()"
     },
     {
@@ -4978,7 +4978,7 @@
       "source_location": "L1656",
       "_origin": "ast",
       "id": "rules_checks_checkelementqualitydom",
-      "community": 27,
+      "community": 1,
       "norm_label": "checkelementqualitydom()"
     },
     {
@@ -4988,7 +4988,7 @@
       "source_location": "L1674",
       "_origin": "ast",
       "id": "rules_checks_checkpagequalityfromdoc",
-      "community": 90,
+      "community": 1,
       "norm_label": "checkpagequalityfromdoc()"
     },
     {
@@ -4998,7 +4998,7 @@
       "source_location": "L1695",
       "_origin": "ast",
       "id": "rules_checks_checkpagequalitydom",
-      "community": 90,
+      "community": 1,
       "norm_label": "checkpagequalitydom()"
     },
     {
@@ -5008,7 +5008,7 @@
       "source_location": "L1705",
       "_origin": "ast",
       "id": "rules_checks_checkelementquality",
-      "community": 90,
+      "community": 1,
       "norm_label": "checkelementquality()"
     },
     {
@@ -5018,7 +5018,7 @@
       "source_location": "L1714",
       "_origin": "ast",
       "id": "rules_checks_checkelementborders",
-      "community": 1,
+      "community": 86,
       "norm_label": "checkelementborders()"
     },
     {
@@ -5028,7 +5028,7 @@
       "source_location": "L1744",
       "_origin": "ast",
       "id": "rules_checks_checkelementcolors",
-      "community": 1,
+      "community": 74,
       "norm_label": "checkelementcolors()"
     },
     {
@@ -5038,7 +5038,7 @@
       "source_location": "L1798",
       "_origin": "ast",
       "id": "rules_checks_checkelementicontile",
-      "community": 1,
+      "community": 74,
       "norm_label": "checkelementicontile()"
     },
     {
@@ -5068,7 +5068,7 @@
       "source_location": "L1877",
       "_origin": "ast",
       "id": "rules_checks_checkrepeatedsectionkickersfromdoc",
-      "community": 96,
+      "community": 6,
       "norm_label": "checkrepeatedsectionkickersfromdoc()"
     },
     {
@@ -5088,7 +5088,7 @@
       "source_location": "L1896",
       "_origin": "ast",
       "id": "rules_checks_checkelementglow",
-      "community": 90,
+      "community": 74,
       "norm_label": "checkelementglow()"
     },
     {
@@ -5098,7 +5098,7 @@
       "source_location": "L1905",
       "_origin": "ast",
       "id": "rules_checks_checktypography",
-      "community": 1,
+      "community": 90,
       "norm_label": "checktypography()"
     },
     {
@@ -5128,7 +5128,7 @@
       "source_location": "L2010",
       "_origin": "ast",
       "id": "rules_checks_checkpagetypography",
-      "community": 1,
+      "community": 86,
       "norm_label": "checkpagetypography()"
     },
     {
@@ -5148,7 +5148,7 @@
       "source_location": "L2108",
       "_origin": "ast",
       "id": "rules_checks_checkpagelayout",
-      "community": 1,
+      "community": 6,
       "norm_label": "checkpagelayout()"
     },
     {
@@ -5158,7 +5158,7 @@
       "source_location": "L2158",
       "_origin": "ast",
       "id": "rules_checks_iscreamcolor",
-      "community": 82,
+      "community": 1,
       "norm_label": "iscreamcolor()"
     },
     {
@@ -5178,7 +5178,7 @@
       "source_location": "L2180",
       "_origin": "ast",
       "id": "rules_checks_creamfromclasslist",
-      "community": 82,
+      "community": 1,
       "norm_label": "creamfromclasslist()"
     },
     {
@@ -5188,7 +5188,7 @@
       "source_location": "L2192",
       "_origin": "ast",
       "id": "rules_checks_checkcreampalette",
-      "community": 82,
+      "community": 1,
       "norm_label": "checkcreampalette()"
     },
     {
@@ -5198,7 +5198,7 @@
       "source_location": "L2231",
       "_origin": "ast",
       "id": "rules_checks_checkoversizedh1",
-      "community": 90,
+      "community": 1,
       "norm_label": "checkoversizedh1()"
     },
     {
@@ -5208,7 +5208,7 @@
       "source_location": "L2249",
       "_origin": "ast",
       "id": "rules_checks_checkelementoversizedh1",
-      "community": 90,
+      "community": 1,
       "norm_label": "checkelementoversizedh1()"
     },
     {
@@ -5218,7 +5218,7 @@
       "source_location": "L2256",
       "_origin": "ast",
       "id": "rules_checks_checkelementoversizedh1dom",
-      "community": 90,
+      "community": 1,
       "norm_label": "checkelementoversizedh1dom()"
     },
     {
@@ -5228,7 +5228,7 @@
       "source_location": "L2271",
       "_origin": "ast",
       "id": "rules_checks_shadowlayeralpha",
-      "community": 127,
+      "community": 1,
       "norm_label": "shadowlayeralpha()"
     },
     {
@@ -5238,7 +5238,7 @@
       "source_location": "L2280",
       "_origin": "ast",
       "id": "rules_checks_shadowmaxblurpx",
-      "community": 127,
+      "community": 1,
       "norm_label": "shadowmaxblurpx()"
     },
     {
@@ -5248,7 +5248,7 @@
       "source_location": "L2297",
       "_origin": "ast",
       "id": "rules_checks_csscoloralpha",
-      "community": 82,
+      "community": 1,
       "norm_label": "csscoloralpha()"
     },
     {
@@ -5258,7 +5258,7 @@
       "source_location": "L2303",
       "_origin": "ast",
       "id": "rules_checks_checkgptthinborderwideshadow",
-      "community": 127,
+      "community": 1,
       "norm_label": "checkgptthinborderwideshadow()"
     },
     {
@@ -5268,7 +5268,7 @@
       "source_location": "L2315",
       "_origin": "ast",
       "id": "rules_checks_borderwidthsfromstyle",
-      "community": 127,
+      "community": 1,
       "norm_label": "borderwidthsfromstyle()"
     },
     {
@@ -5278,7 +5278,7 @@
       "source_location": "L2324",
       "_origin": "ast",
       "id": "rules_checks_bordercolorsfromstyle",
-      "community": 127,
+      "community": 1,
       "norm_label": "bordercolorsfromstyle()"
     },
     {
@@ -5288,7 +5288,7 @@
       "source_location": "L2333",
       "_origin": "ast",
       "id": "rules_checks_checkelementgptbordershadow",
-      "community": 127,
+      "community": 1,
       "norm_label": "checkelementgptbordershadow()"
     },
     {
@@ -5298,7 +5298,7 @@
       "source_location": "L2337",
       "_origin": "ast",
       "id": "rules_checks_checkelementgptbordershadowdom",
-      "community": 127,
+      "community": 1,
       "norm_label": "checkelementgptbordershadowdom()"
     },
     {
@@ -5508,7 +5508,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "shared_color",
-      "community": 1,
+      "community": 74,
       "norm_label": "color.mjs"
     },
     {
@@ -5518,7 +5518,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "shared_color_isneutralcolor",
-      "community": 1,
+      "community": 86,
       "norm_label": "isneutralcolor()"
     },
     {
@@ -5528,7 +5528,7 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "shared_color_parsergb",
-      "community": 1,
+      "community": 74,
       "norm_label": "parsergb()"
     },
     {
@@ -5538,7 +5538,7 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "shared_color_relativeluminance",
-      "community": 1,
+      "community": 74,
       "norm_label": "relativeluminance()"
     },
     {
@@ -5548,7 +5548,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "shared_color_contrastratio",
-      "community": 1,
+      "community": 74,
       "norm_label": "contrastratio()"
     },
     {
@@ -5558,7 +5558,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "shared_color_parsegradientcolors",
-      "community": 1,
+      "community": 74,
       "norm_label": "parsegradientcolors()"
     },
     {
@@ -5568,7 +5568,7 @@
       "source_location": "L92",
       "_origin": "ast",
       "id": "shared_color_haschroma",
-      "community": 1,
+      "community": 74,
       "norm_label": "haschroma()"
     },
     {
@@ -5578,7 +5578,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "shared_color_gethue",
-      "community": 1,
+      "community": 74,
       "norm_label": "gethue()"
     },
     {
@@ -5588,7 +5588,7 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "shared_color_colortohex",
-      "community": 1,
+      "community": 74,
       "norm_label": "colortohex()"
     },
     {
@@ -5678,7 +5678,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "shared_constants_isbrandfontonowndomain",
-      "community": 1,
+      "community": 90,
       "norm_label": "isbrandfontonowndomain()"
     },
     {
@@ -7568,7 +7568,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "lib_impeccable_paths_readliveserverinfo",
-      "community": 100,
+      "community": 69,
       "norm_label": "readliveserverinfo()"
     },
     {
@@ -7578,7 +7578,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "lib_impeccable_paths_isliveserverpidreachable",
-      "community": 100,
+      "community": 69,
       "norm_label": "isliveserverpidreachable()"
     },
     {
@@ -7608,7 +7608,7 @@
       "source_location": "L104",
       "_origin": "ast",
       "id": "lib_impeccable_paths_getlivesessionsdir",
-      "community": 69,
+      "community": 61,
       "norm_label": "getlivesessionsdir()"
     },
     {
@@ -8138,7 +8138,7 @@
       "source_location": "L289",
       "_origin": "ast",
       "id": "scripts_live_browser_shouldshowhighlighttagtooltip",
-      "community": 0,
+      "community": 2,
       "norm_label": "shouldshowhighlighttagtooltip()"
     },
     {
@@ -8148,7 +8148,7 @@
       "source_location": "L294",
       "_origin": "ast",
       "id": "scripts_live_browser_hidehighlighttagtooltip",
-      "community": 0,
+      "community": 2,
       "norm_label": "hidehighlighttagtooltip()"
     },
     {
@@ -8158,7 +8158,7 @@
       "source_location": "L300",
       "_origin": "ast",
       "id": "scripts_live_browser_showhighlight",
-      "community": 0,
+      "community": 2,
       "norm_label": "showhighlight()"
     },
     {
@@ -10448,7 +10448,7 @@
       "source_location": "L4859",
       "_origin": "ast",
       "id": "scripts_live_browser_buildpickedanchorsnapshot",
-      "community": 0,
+      "community": 2,
       "norm_label": "buildpickedanchorsnapshot()"
     },
     {
@@ -10868,7 +10868,7 @@
       "source_location": "L6079",
       "_origin": "ast",
       "id": "scripts_live_browser_checkpointpayload",
-      "community": 2,
+      "community": 20,
       "norm_label": "checkpointpayload()"
     },
     {
@@ -10878,7 +10878,7 @@
       "source_location": "L6098",
       "_origin": "ast",
       "id": "scripts_live_browser_sendcheckpoint",
-      "community": 2,
+      "community": 20,
       "norm_label": "sendcheckpoint()"
     },
     {
@@ -10998,7 +10998,7 @@
       "source_location": "L6579",
       "_origin": "ast",
       "id": "scripts_live_browser_loadmodernscreenshot",
-      "community": 0,
+      "community": 31,
       "norm_label": "loadmodernscreenshot()"
     },
     {
@@ -11018,7 +11018,7 @@
       "source_location": "L6614",
       "_origin": "ast",
       "id": "scripts_live_browser_inlinefonturls",
-      "community": 0,
+      "community": 31,
       "norm_label": "inlinefonturls()"
     },
     {
@@ -11028,7 +11028,7 @@
       "source_location": "L6637",
       "_origin": "ast",
       "id": "scripts_live_browser_collectfontcsstext",
-      "community": 0,
+      "community": 31,
       "norm_label": "collectfontcsstext()"
     },
     {
@@ -11038,7 +11038,7 @@
       "source_location": "L6665",
       "_origin": "ast",
       "id": "scripts_live_browser_istransparentcolor",
-      "community": 0,
+      "community": 31,
       "norm_label": "istransparentcolor()"
     },
     {
@@ -11048,7 +11048,7 @@
       "source_location": "L6681",
       "_origin": "ast",
       "id": "scripts_live_browser_resolvecanvasbackground",
-      "community": 0,
+      "community": 31,
       "norm_label": "resolvecanvasbackground()"
     },
     {
@@ -11058,7 +11058,7 @@
       "source_location": "L6702",
       "_origin": "ast",
       "id": "scripts_live_browser_capturechromenodes",
-      "community": 0,
+      "community": 31,
       "norm_label": "capturechromenodes()"
     },
     {
@@ -11068,7 +11068,7 @@
       "source_location": "L6726",
       "_origin": "ast",
       "id": "scripts_live_browser_hidecapturechromeforshaderproxy",
-      "community": 0,
+      "community": 31,
       "norm_label": "hidecapturechromeforshaderproxy()"
     },
     {
@@ -11078,7 +11078,7 @@
       "source_location": "L6745",
       "_origin": "ast",
       "id": "scripts_live_browser_shoulduseancestorcropshaderproxy",
-      "community": 0,
+      "community": 31,
       "norm_label": "shoulduseancestorcropshaderproxy()"
     },
     {
@@ -11088,7 +11088,7 @@
       "source_location": "L6755",
       "_origin": "ast",
       "id": "scripts_live_browser_paintsshaderproxysurface",
-      "community": 0,
+      "community": 31,
       "norm_label": "paintsshaderproxysurface()"
     },
     {
@@ -11098,7 +11098,7 @@
       "source_location": "L6762",
       "_origin": "ast",
       "id": "scripts_live_browser_findshaderproxycaptureroot",
-      "community": 0,
+      "community": 31,
       "norm_label": "findshaderproxycaptureroot()"
     },
     {
@@ -11108,7 +11108,7 @@
       "source_location": "L6785",
       "_origin": "ast",
       "id": "scripts_live_browser_captureelementfromrenderedancestor",
-      "community": 0,
+      "community": 31,
       "norm_label": "captureelementfromrenderedancestor()"
     },
     {
@@ -11118,7 +11118,7 @@
       "source_location": "L6809",
       "_origin": "ast",
       "id": "scripts_live_browser_captureelementtoblob",
-      "community": 0,
+      "community": 31,
       "norm_label": "captureelementtoblob()"
     },
     {
@@ -11128,7 +11128,7 @@
       "source_location": "L6879",
       "_origin": "ast",
       "id": "scripts_live_browser_captureandemit",
-      "community": 0,
+      "community": 31,
       "norm_label": "captureandemit()"
     },
     {
@@ -11138,7 +11138,7 @@
       "source_location": "L7013",
       "_origin": "ast",
       "id": "scripts_live_browser_csscolortorgb01",
-      "community": 0,
+      "community": 31,
       "norm_label": "csscolortorgb01()"
     },
     {
@@ -11148,7 +11148,7 @@
       "source_location": "L7027",
       "_origin": "ast",
       "id": "scripts_live_browser_resolvepaperrgb",
-      "community": 0,
+      "community": 31,
       "norm_label": "resolvepaperrgb()"
     },
     {
@@ -11158,7 +11158,7 @@
       "source_location": "L7044",
       "_origin": "ast",
       "id": "scripts_live_browser_paintsbackdrop",
-      "community": 0,
+      "community": 31,
       "norm_label": "paintsbackdrop()"
     },
     {
@@ -11168,7 +11168,7 @@
       "source_location": "L7059",
       "_origin": "ast",
       "id": "scripts_live_browser_findbackdropancestor",
-      "community": 0,
+      "community": 31,
       "norm_label": "findbackdropancestor()"
     },
     {
@@ -11178,7 +11178,7 @@
       "source_location": "L7070",
       "_origin": "ast",
       "id": "scripts_live_browser_averagergb01",
-      "community": 0,
+      "community": 31,
       "norm_label": "averagergb01()"
     },
     {
@@ -11188,7 +11188,7 @@
       "source_location": "L7081",
       "_origin": "ast",
       "id": "scripts_live_browser_dominantrgb01",
-      "community": 0,
+      "community": 31,
       "norm_label": "dominantrgb01()"
     },
     {
@@ -11198,7 +11198,7 @@
       "source_location": "L7107",
       "_origin": "ast",
       "id": "scripts_live_browser_samplesurroundingrgb",
-      "community": 0,
+      "community": 31,
       "norm_label": "samplesurroundingrgb()"
     },
     {
@@ -11208,7 +11208,7 @@
       "source_location": "L7125",
       "_origin": "ast",
       "id": "scripts_live_browser_compileshader",
-      "community": 0,
+      "community": 31,
       "norm_label": "compileshader()"
     },
     {
@@ -11228,7 +11228,7 @@
       "source_location": "L7148",
       "_origin": "ast",
       "id": "scripts_live_browser_hideshaderoverlay",
-      "community": 0,
+      "community": 31,
       "norm_label": "hideshaderoverlay()"
     },
     {
@@ -11238,7 +11238,7 @@
       "source_location": "L7158",
       "_origin": "ast",
       "id": "scripts_live_browser_showshaderbitmapfallback",
-      "community": 0,
+      "community": 31,
       "norm_label": "showshaderbitmapfallback()"
     },
     {
@@ -11248,7 +11248,7 @@
       "source_location": "L7177",
       "_origin": "ast",
       "id": "scripts_live_browser_showshaderoverlay",
-      "community": 0,
+      "community": 31,
       "norm_label": "showshaderoverlay()"
     },
     {
@@ -11268,7 +11268,7 @@
       "source_location": "L7341",
       "_origin": "ast",
       "id": "scripts_live_browser_maybecompleteacceptedsession",
-      "community": 218,
+      "community": 0,
       "norm_label": "maybecompleteacceptedsession()"
     },
     {
@@ -11278,7 +11278,7 @@
       "source_location": "L7360",
       "_origin": "ast",
       "id": "scripts_live_browser_scheduleacceptcleanup",
-      "community": 218,
+      "community": 0,
       "norm_label": "scheduleacceptcleanup()"
     },
     {
@@ -11308,7 +11308,7 @@
       "source_location": "L7395",
       "_origin": "ast",
       "id": "scripts_live_browser_accepteddomalreadyclean",
-      "community": 218,
+      "community": 0,
       "norm_label": "accepteddomalreadyclean()"
     },
     {
@@ -11318,7 +11318,7 @@
       "source_location": "L7402",
       "_origin": "ast",
       "id": "scripts_live_browser_ensureaccepteddomclean",
-      "community": 218,
+      "community": 0,
       "norm_label": "ensureaccepteddomclean()"
     },
     {
@@ -11328,7 +11328,7 @@
       "source_location": "L7428",
       "_origin": "ast",
       "id": "scripts_live_browser_findacceptedruntimewrappers",
-      "community": 218,
+      "community": 0,
       "norm_label": "findacceptedruntimewrappers()"
     },
     {
@@ -11338,7 +11338,7 @@
       "source_location": "L7436",
       "_origin": "ast",
       "id": "scripts_live_browser_restoreaccepteddomfromsnapshot",
-      "community": 218,
+      "community": 0,
       "norm_label": "restoreaccepteddomfromsnapshot()"
     },
     {
@@ -11348,7 +11348,7 @@
       "source_location": "L7458",
       "_origin": "ast",
       "id": "scripts_live_browser_reloadaftermissingaccepteddom",
-      "community": 218,
+      "community": 0,
       "norm_label": "reloadaftermissingaccepteddom()"
     },
     {
@@ -11528,7 +11528,7 @@
       "source_location": "L7684",
       "_origin": "ast",
       "id": "scripts_live_browser_marksessionhandled",
-      "community": 218,
+      "community": 0,
       "norm_label": "marksessionhandled()"
     },
     {
@@ -11698,7 +11698,7 @@
       "source_location": "L8161",
       "_origin": "ast",
       "id": "scripts_live_browser_pagehashosttextselection",
-      "community": 0,
+      "community": 2,
       "norm_label": "pagehashosttextselection()"
     },
     {
@@ -11928,7 +11928,7 @@
       "source_location": "L8546",
       "_origin": "ast",
       "id": "scripts_live_browser_steerspeechrecognitionctor",
-      "community": 20,
+      "community": 113,
       "norm_label": "steerspeechrecognitionctor()"
     },
     {
@@ -11938,7 +11938,7 @@
       "source_location": "L8550",
       "_origin": "ast",
       "id": "scripts_live_browser_isembeddedpreviewbrowser",
-      "community": 20,
+      "community": 113,
       "norm_label": "isembeddedpreviewbrowser()"
     },
     {
@@ -11948,7 +11948,7 @@
       "source_location": "L8559",
       "_origin": "ast",
       "id": "scripts_live_browser_steervoiceunavailablemessage",
-      "community": 20,
+      "community": 113,
       "norm_label": "steervoiceunavailablemessage()"
     },
     {
@@ -11958,7 +11958,7 @@
       "source_location": "L8563",
       "_origin": "ast",
       "id": "scripts_live_browser_steervoiceerrormessage",
-      "community": 20,
+      "community": 113,
       "norm_label": "steervoiceerrormessage()"
     },
     {
@@ -11968,7 +11968,7 @@
       "source_location": "L8585",
       "_origin": "ast",
       "id": "scripts_live_browser_syncvoiceui",
-      "community": 20,
+      "community": 113,
       "norm_label": "syncvoiceui()"
     },
     {
@@ -11978,7 +11978,7 @@
       "source_location": "L8610",
       "_origin": "ast",
       "id": "scripts_live_browser_releasevoiceengine",
-      "community": 20,
+      "community": 113,
       "norm_label": "releasevoiceengine()"
     },
     {
@@ -11988,7 +11988,7 @@
       "source_location": "L8625",
       "_origin": "ast",
       "id": "scripts_live_browser_stopvoice",
-      "community": 20,
+      "community": 113,
       "norm_label": "stopvoice()"
     },
     {
@@ -11998,7 +11998,7 @@
       "source_location": "L8632",
       "_origin": "ast",
       "id": "scripts_live_browser_finishvoicesession",
-      "community": 20,
+      "community": 113,
       "norm_label": "finishvoicesession()"
     },
     {
@@ -12008,7 +12008,7 @@
       "source_location": "L8646",
       "_origin": "ast",
       "id": "scripts_live_browser_startvoice",
-      "community": 20,
+      "community": 113,
       "norm_label": "startvoice()"
     },
     {
@@ -12018,7 +12018,7 @@
       "source_location": "L8720",
       "_origin": "ast",
       "id": "scripts_live_browser_steervoicecontext",
-      "community": 20,
+      "community": 113,
       "norm_label": "steervoicecontext()"
     },
     {
@@ -12028,7 +12028,7 @@
       "source_location": "L8731",
       "_origin": "ast",
       "id": "scripts_live_browser_configurevoicecontext",
-      "community": 20,
+      "community": 113,
       "norm_label": "configurevoicecontext()"
     },
     {
@@ -12038,7 +12038,7 @@
       "source_location": "L8743",
       "_origin": "ast",
       "id": "scripts_live_browser_togglesteervoice",
-      "community": 20,
+      "community": 113,
       "norm_label": "togglesteervoice()"
     },
     {
@@ -12048,7 +12048,7 @@
       "source_location": "L8752",
       "_origin": "ast",
       "id": "scripts_live_browser_toggleconfigurevoice",
-      "community": 20,
+      "community": 113,
       "norm_label": "toggleconfigurevoice()"
     },
     {
@@ -12148,7 +12148,7 @@
       "source_location": "L9063",
       "_origin": "ast",
       "id": "scripts_live_browser_hideagentpolltooltip",
-      "community": 48,
+      "community": 0,
       "norm_label": "hideagentpolltooltip()"
     },
     {
@@ -12208,7 +12208,7 @@
       "source_location": "L9573",
       "_origin": "ast",
       "id": "scripts_live_browser_requestdetectscan",
-      "community": 0,
+      "community": 2,
       "norm_label": "requestdetectscan()"
     },
     {
@@ -12218,7 +12218,7 @@
       "source_location": "L9584",
       "_origin": "ast",
       "id": "scripts_live_browser_toggledetect",
-      "community": 0,
+      "community": 2,
       "norm_label": "toggledetect()"
     },
     {
@@ -12248,7 +12248,7 @@
       "source_location": "L9656",
       "_origin": "ast",
       "id": "scripts_live_browser_loaddetectscript",
-      "community": 0,
+      "community": 2,
       "norm_label": "loaddetectscript()"
     },
     {
@@ -12258,7 +12258,7 @@
       "source_location": "L9665",
       "_origin": "ast",
       "id": "scripts_live_browser_ondetectmessage",
-      "community": 0,
+      "community": 2,
       "norm_label": "ondetectmessage()"
     },
     {
@@ -12268,7 +12268,7 @@
       "source_location": "L9689",
       "_origin": "ast",
       "id": "scripts_live_browser_teardown",
-      "community": 2,
+      "community": 0,
       "norm_label": "teardown()"
     },
     {
@@ -13208,7 +13208,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "scripts_live_complete",
-      "community": 100,
+      "community": 61,
       "norm_label": "live-complete.mjs"
     },
     {
@@ -13218,7 +13218,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "scripts_live_complete_parseargs",
-      "community": 100,
+      "community": 61,
       "norm_label": "parseargs()"
     },
     {
@@ -13228,7 +13228,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "scripts_live_complete_completecli",
-      "community": 100,
+      "community": 61,
       "norm_label": "completecli()"
     },
     {
@@ -13238,7 +13238,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "scripts_live_complete_readserverinfo",
-      "community": 100,
+      "community": 61,
       "norm_label": "readserverinfo()"
     },
     {
@@ -13248,7 +13248,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "scripts_live_complete_completethroughserver",
-      "community": 100,
+      "community": 61,
       "norm_label": "completethroughserver()"
     },
     {
@@ -13698,7 +13698,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "scripts_live_inject_injectcli",
-      "community": 57,
+      "community": 72,
       "norm_label": "injectcli()"
     },
     {
@@ -13768,7 +13768,7 @@
       "source_location": "L329",
       "_origin": "ast",
       "id": "scripts_live_inject_validateconfig",
-      "community": 57,
+      "community": 72,
       "norm_label": "validateconfig()"
     },
     {
@@ -14888,7 +14888,7 @@
       "source_location": "L973",
       "_origin": "ast",
       "id": "scripts_live_server_applylegacydeferredacceptsonstartup",
-      "community": 13,
+      "community": 14,
       "norm_label": "applylegacydeferredacceptsonstartup()"
     },
     {
@@ -15448,7 +15448,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "live_event_validation",
-      "community": 51,
+      "community": 96,
       "norm_label": "event-validation.mjs"
     },
     {
@@ -15458,7 +15458,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "live_event_validation_insert_positions",
-      "community": 51,
+      "community": 96,
       "norm_label": "insert_positions"
     },
     {
@@ -15468,7 +15468,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "live_event_validation_forbidden_manual_edit_text_chars",
-      "community": 51,
+      "community": 96,
       "norm_label": "forbidden_manual_edit_text_chars"
     },
     {
@@ -15478,7 +15478,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "live_event_validation_isvalidid",
-      "community": 51,
+      "community": 96,
       "norm_label": "isvalidid()"
     },
     {
@@ -15488,7 +15488,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "live_event_validation_isvalidvariantid",
-      "community": 51,
+      "community": 96,
       "norm_label": "isvalidvariantid()"
     },
     {
@@ -15498,7 +15498,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "live_event_validation_validatemanualedittext",
-      "community": 51,
+      "community": 96,
       "norm_label": "validatemanualedittext()"
     },
     {
@@ -15508,7 +15508,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "live_event_validation_validateannotationfields",
-      "community": 51,
+      "community": 96,
       "norm_label": "validateannotationfields()"
     },
     {
@@ -15518,7 +15518,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "live_event_validation_validateinsertgenerate",
-      "community": 51,
+      "community": 96,
       "norm_label": "validateinsertgenerate()"
     },
     {
@@ -15528,7 +15528,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "live_event_validation_validatereplacegenerate",
-      "community": 51,
+      "community": 96,
       "norm_label": "validatereplacegenerate()"
     },
     {
@@ -15538,7 +15538,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "live_event_validation_validatemanualeditevent",
-      "community": 51,
+      "community": 96,
       "norm_label": "validatemanualeditevent()"
     },
     {
@@ -15548,7 +15548,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "live_event_validation_validateevent",
-      "community": 51,
+      "community": 96,
       "norm_label": "validateevent()"
     },
     {
@@ -16408,7 +16408,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "live_session_store_createlivesessionstore",
-      "community": 100,
+      "community": 61,
       "norm_label": "createlivesessionstore()"
     },
     {
@@ -16668,7 +16668,7 @@
       "source_location": "L186",
       "_origin": "ast",
       "id": "live_svelte_component_scaffoldsveltecomponentinsertsession",
-      "community": 21,
+      "community": 14,
       "norm_label": "scaffoldsveltecomponentinsertsession()"
     },
     {
@@ -17238,7 +17238,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "live_vocabulary",
-      "community": 51,
+      "community": 96,
       "norm_label": "vocabulary.mjs"
     },
     {
@@ -17248,7 +17248,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "live_vocabulary_live_commands",
-      "community": 51,
+      "community": 96,
       "norm_label": "live_commands"
     },
     {
@@ -17258,7 +17258,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "live_vocabulary_visual_actions",
-      "community": 51,
+      "community": 96,
       "norm_label": "visual_actions"
     },
     {
@@ -18028,7 +18028,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "anka_ankaapp",
-      "community": 63,
+      "community": 80,
       "norm_label": "ankaapp.swift"
     },
     {
@@ -18168,7 +18168,7 @@
       "source_location": "L151",
       "_origin": "ast",
       "id": "anka_ankaapp_swift_view",
-      "community": 63,
+      "community": 80,
       "norm_label": "view"
     },
     {
@@ -18178,7 +18178,7 @@
       "source_location": "L192",
       "_origin": "ast",
       "id": "anka_ankaapp_dataloaderrorview",
-      "community": 63,
+      "community": 80,
       "norm_label": "dataloaderrorview"
     },
     {
@@ -18188,7 +18188,7 @@
       "source_location": "L193",
       "_origin": "ast",
       "id": "anka_ankaapp_swift_void",
-      "community": 63,
+      "community": 80,
       "norm_label": "void"
     },
     {
@@ -18358,7 +18358,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "appintents_addtransactionintent_addtransactionintent_perform",
-      "community": 79,
+      "community": 92,
       "norm_label": ".perform()"
     },
     {
@@ -18368,7 +18368,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "anka_appintents_addtransactionintent_swift_intentresult",
-      "community": 79,
+      "community": 92,
       "norm_label": "intentresult"
     },
     {
@@ -18378,7 +18378,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "anka_appintents_addtransactionintent_swift_providesdialog",
-      "community": 79,
+      "community": 92,
       "norm_label": "providesdialog"
     },
     {
@@ -18398,7 +18398,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "appintents_ankaintentsupport_ankamodelcontainer",
-      "community": 92,
+      "community": 218,
       "norm_label": "ankamodelcontainer"
     },
     {
@@ -18408,7 +18408,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "appintents_ankaintentsupport_ankamodelcontainer_makeconfiguration",
-      "community": 92,
+      "community": 218,
       "norm_label": ".makeconfiguration()"
     },
     {
@@ -18418,7 +18418,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "modelconfiguration",
-      "community": 67,
+      "community": 126,
       "norm_label": "modelconfiguration"
     },
     {
@@ -18428,7 +18428,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "appintents_ankaintentsupport_ankamodelcontainer_makecontainer",
-      "community": 92,
+      "community": 218,
       "norm_label": ".makecontainer()"
     },
     {
@@ -18438,7 +18438,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "anka_appintents_ankaintentsupport_swift_modelcontainer",
-      "community": 92,
+      "community": 218,
       "norm_label": "modelcontainer"
     },
     {
@@ -18448,7 +18448,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "appintents_ankaintentsupport_ankamodelcontainer_makecontext",
-      "community": 92,
+      "community": 218,
       "norm_label": ".makecontext()"
     },
     {
@@ -18458,7 +18458,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "anka_appintents_ankaintentsupport_swift_modelcontext",
-      "community": 92,
+      "community": 218,
       "norm_label": "modelcontext"
     },
     {
@@ -18598,7 +18598,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "identifiable",
-      "community": 70,
+      "community": 82,
       "norm_label": "identifiable"
     },
     {
@@ -18768,7 +18768,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "appintents_quickaddtransactionintent_quickaddtransactionintent_perform",
-      "community": 101,
+      "community": 92,
       "norm_label": ".perform()"
     },
     {
@@ -18778,7 +18778,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "anka_appintents_quickaddtransactionintent_swift_intentresult",
-      "community": 101,
+      "community": 92,
       "norm_label": "intentresult"
     },
     {
@@ -18788,7 +18788,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "anka_appintents_quickaddtransactionintent_swift_providesdialog",
-      "community": 101,
+      "community": 92,
       "norm_label": "providesdialog"
     },
     {
@@ -18798,7 +18798,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_amountlabel",
-      "community": 209,
+      "community": 80,
       "norm_label": "amountlabel.swift"
     },
     {
@@ -18808,7 +18808,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "components_amountlabel_amountlabel",
-      "community": 209,
+      "community": 80,
       "norm_label": "amountlabel"
     },
     {
@@ -18818,7 +18818,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "anka_components_amountlabel_swift_double",
-      "community": 209,
+      "community": 80,
       "norm_label": "double"
     },
     {
@@ -18828,7 +18828,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "anka_components_amountlabel_swift_transactiontype",
-      "community": 209,
+      "community": 80,
       "norm_label": "transactiontype"
     },
     {
@@ -19138,7 +19138,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_daterangepicker",
-      "community": 31,
+      "community": 80,
       "norm_label": "daterangepicker.swift"
     },
     {
@@ -19148,7 +19148,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "components_daterangepicker_daterangepicker",
-      "community": 31,
+      "community": 80,
       "norm_label": "daterangepicker"
     },
     {
@@ -19158,7 +19158,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "anka_components_daterangepicker_swift_date",
-      "community": 31,
+      "community": 80,
       "norm_label": "date"
     },
     {
@@ -19168,7 +19168,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "anka_components_daterangepicker_swift_string",
-      "community": 31,
+      "community": 80,
       "norm_label": "string"
     },
     {
@@ -19178,7 +19178,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "components_daterangepicker_daterangepicker_changemonth",
-      "community": 31,
+      "community": 80,
       "norm_label": ".changemonth()"
     },
     {
@@ -19188,7 +19188,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "anka_components_daterangepicker_swift_int",
-      "community": 31,
+      "community": 80,
       "norm_label": "int"
     },
     {
@@ -19198,7 +19198,7 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "components_daterangepicker_monthgrid",
-      "community": 31,
+      "community": 80,
       "norm_label": "monthgrid"
     },
     {
@@ -19208,7 +19208,7 @@
       "source_location": "L118",
       "_origin": "ast",
       "id": "calendar",
-      "community": 31,
+      "community": 80,
       "norm_label": "calendar"
     },
     {
@@ -19218,7 +19218,7 @@
       "source_location": "L165",
       "_origin": "ast",
       "id": "components_daterangepicker_daycell",
-      "community": 31,
+      "community": 80,
       "norm_label": "daycell"
     },
     {
@@ -19228,7 +19228,7 @@
       "source_location": "L171",
       "_origin": "ast",
       "id": "anka_components_daterangepicker_swift_bool",
-      "community": 31,
+      "community": 80,
       "norm_label": "bool"
     },
     {
@@ -19238,7 +19238,7 @@
       "source_location": "L241",
       "_origin": "ast",
       "id": "components_daterangepicker_daycell_handletap",
-      "community": 31,
+      "community": 80,
       "norm_label": ".handletap()"
     },
     {
@@ -19378,7 +19378,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_transactionrow",
-      "community": 209,
+      "community": 80,
       "norm_label": "transactionrow.swift"
     },
     {
@@ -19388,7 +19388,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "components_transactionrow_transactionrow",
-      "community": 209,
+      "community": 80,
       "norm_label": "transactionrow"
     },
     {
@@ -19398,7 +19398,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "anka_components_transactionrow_swift_transaction",
-      "community": 209,
+      "community": 80,
       "norm_label": "transaction"
     },
     {
@@ -19408,7 +19408,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "anka_components_transactionrow_swift_namespace",
-      "community": 209,
+      "community": 80,
       "norm_label": "namespace"
     },
     {
@@ -19418,7 +19418,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "anka_components_transactionrow_swift_void",
-      "community": 209,
+      "community": 80,
       "norm_label": "void"
     },
     {
@@ -19508,7 +19508,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "designsystem_currencyinfo",
-      "community": 70,
+      "community": 82,
       "norm_label": "currencyinfo.swift"
     },
     {
@@ -19518,7 +19518,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "designsystem_currencyinfo_currencyinfo",
-      "community": 70,
+      "community": 82,
       "norm_label": "currencyinfo"
     },
     {
@@ -19528,7 +19528,7 @@
       "source_location": "",
       "_origin": "ast",
       "id": "equatable",
-      "community": 70,
+      "community": 82,
       "norm_label": "equatable"
     },
     {
@@ -19538,7 +19538,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "anka_designsystem_currencyinfo_swift_string",
-      "community": 70,
+      "community": 82,
       "norm_label": "string"
     },
     {
@@ -19548,7 +19548,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "anka_designsystem_currencyinfo_swift_int",
-      "community": 70,
+      "community": 82,
       "norm_label": "int"
     },
     {
@@ -19558,7 +19558,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "anka_designsystem_currencyinfo_swift_bool",
-      "community": 70,
+      "community": 82,
       "norm_label": "bool"
     },
     {
@@ -19568,7 +19568,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "designsystem_currencyinfo_currencyinfo_info",
-      "community": 70,
+      "community": 82,
       "norm_label": ".info()"
     },
     {
@@ -19578,7 +19578,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "designsystem_currencyinfo_currencyconverter",
-      "community": 70,
+      "community": 82,
       "norm_label": "currencyconverter"
     },
     {
@@ -19588,7 +19588,7 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "designsystem_currencyinfo_currencyconverter_convert",
-      "community": 70,
+      "community": 82,
       "norm_label": ".convert()"
     },
     {
@@ -19598,7 +19598,7 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "anka_designsystem_currencyinfo_swift_double",
-      "community": 70,
+      "community": 82,
       "norm_label": "double"
     },
     {
@@ -19628,7 +19628,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "designsystem_dscolor",
-      "community": 31,
+      "community": 80,
       "norm_label": "dscolor.swift"
     },
     {
@@ -19638,7 +19638,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "designsystem_dscolor_dscolor",
-      "community": 31,
+      "community": 80,
       "norm_label": "dscolor"
     },
     {
@@ -19965,17 +19965,27 @@
       "label": "String",
       "file_type": "code",
       "source_file": "Anka/DesignSystem/NumberFormatter+Amount.swift",
-      "source_location": "L14",
+      "source_location": "L13",
       "_origin": "ast",
       "id": "anka_designsystem_numberformatter_amount_swift_string",
       "community": 97,
       "norm_label": "string"
     },
     {
+      "label": "Bool",
+      "file_type": "code",
+      "source_file": "Anka/DesignSystem/NumberFormatter+Amount.swift",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "anka_designsystem_numberformatter_amount_swift_bool",
+      "community": 97,
+      "norm_label": "bool"
+    },
+    {
       "label": ".amount()",
       "file_type": "code",
       "source_file": "Anka/DesignSystem/NumberFormatter+Amount.swift",
-      "source_location": "L23",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "designsystem_numberformatter_amount_numberformatter_amount",
       "community": 97,
@@ -19985,7 +19995,7 @@
       "label": "Int",
       "file_type": "code",
       "source_file": "Anka/DesignSystem/NumberFormatter+Amount.swift",
-      "source_location": "L23",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "anka_designsystem_numberformatter_amount_swift_int",
       "community": 97,
@@ -19995,7 +20005,7 @@
       "label": "Double",
       "file_type": "code",
       "source_file": "Anka/DesignSystem/NumberFormatter+Amount.swift",
-      "source_location": "L37",
+      "source_location": "L44",
       "_origin": "ast",
       "id": "designsystem_numberformatter_amount_double",
       "community": 97,
@@ -20005,7 +20015,7 @@
       "label": "Int",
       "file_type": "code",
       "source_file": "Anka/DesignSystem/NumberFormatter+Amount.swift",
-      "source_location": "L61",
+      "source_location": "L69",
       "_origin": "ast",
       "id": "designsystem_numberformatter_amount_int",
       "community": 97,
@@ -20162,13 +20172,63 @@
       "norm_label": ".init()"
     },
     {
+      "label": "DailySpendPoint.swift",
+      "file_type": "code",
+      "source_file": "Anka/Models/DailySpendPoint.swift",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "models_dailyspendpoint",
+      "community": 82,
+      "norm_label": "dailyspendpoint.swift"
+    },
+    {
+      "label": "DailySpendPoint",
+      "file_type": "code",
+      "source_file": "Anka/Models/DailySpendPoint.swift",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "models_dailyspendpoint_dailyspendpoint",
+      "community": 82,
+      "norm_label": "dailyspendpoint"
+    },
+    {
+      "label": "Sendable",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "sendable",
+      "community": 238,
+      "norm_label": "sendable"
+    },
+    {
+      "label": "Date",
+      "file_type": "code",
+      "source_file": "Anka/Models/DailySpendPoint.swift",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "anka_models_dailyspendpoint_swift_date",
+      "community": 82,
+      "norm_label": "date"
+    },
+    {
+      "label": "Double",
+      "file_type": "code",
+      "source_file": "Anka/Models/DailySpendPoint.swift",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "anka_models_dailyspendpoint_swift_double",
+      "community": 82,
+      "norm_label": "double"
+    },
+    {
       "label": "SampleData.swift",
       "file_type": "code",
       "source_file": "Anka/Models/SampleData.swift",
       "source_location": "L1",
       "_origin": "ast",
       "id": "models_sampledata",
-      "community": 67,
+      "community": 126,
       "norm_label": "sampledata.swift"
     },
     {
@@ -20178,7 +20238,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "models_sampledata_sampledata",
-      "community": 67,
+      "community": 126,
       "norm_label": "sampledata"
     },
     {
@@ -20188,7 +20248,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "models_sampledata_sampledata_createdefaultcategories",
-      "community": 67,
+      "community": 126,
       "norm_label": ".createdefaultcategories()"
     },
     {
@@ -20198,7 +20258,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "anka_models_sampledata_swift_category",
-      "community": 67,
+      "community": 126,
       "norm_label": "category"
     },
     {
@@ -20208,7 +20268,7 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "models_sampledata_sampledata_container",
-      "community": 67,
+      "community": 126,
       "norm_label": ".container()"
     },
     {
@@ -20218,7 +20278,7 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "anka_models_sampledata_swift_modelcontainer",
-      "community": 67,
+      "community": 126,
       "norm_label": "modelcontainer"
     },
     {
@@ -20340,16 +20400,6 @@
       "id": "models_transactionsnapshot_transactionsnapshot",
       "community": 93,
       "norm_label": "transactionsnapshot"
-    },
-    {
-      "label": "Sendable",
-      "file_type": "code",
-      "source_file": "",
-      "source_location": "",
-      "_origin": "ast",
-      "id": "sendable",
-      "community": 93,
-      "norm_label": "sendable"
     },
     {
       "label": "UUID",
@@ -21168,7 +21218,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "services_autobackupservice_backupfile",
-      "community": 110,
+      "community": 226,
       "norm_label": "backupfile"
     },
     {
@@ -21178,7 +21228,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "anka_services_autobackupservice_swift_string",
-      "community": 110,
+      "community": 226,
       "norm_label": "string"
     },
     {
@@ -21188,7 +21238,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "anka_services_autobackupservice_swift_url",
-      "community": 110,
+      "community": 226,
       "norm_label": "url"
     },
     {
@@ -21198,7 +21248,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "anka_services_autobackupservice_swift_date",
-      "community": 110,
+      "community": 226,
       "norm_label": "date"
     },
     {
@@ -21208,7 +21258,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "int64",
-      "community": 110,
+      "community": 226,
       "norm_label": "int64"
     },
     {
@@ -21218,7 +21268,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "services_autobackupservice_backupfile_init",
-      "community": 110,
+      "community": 226,
       "norm_label": ".init()"
     },
     {
@@ -21308,7 +21358,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "services_autobackupservice_autobackupservice_listbackups",
-      "community": 110,
+      "community": 226,
       "norm_label": ".listbackups()"
     },
     {
@@ -21318,7 +21368,7 @@
       "source_location": "L190",
       "_origin": "ast",
       "id": "services_autobackupservice_autobackupservice_transactioncount",
-      "community": 110,
+      "community": 226,
       "norm_label": ".transactioncount()"
     },
     {
@@ -21328,7 +21378,7 @@
       "source_location": "L190",
       "_origin": "ast",
       "id": "anka_services_autobackupservice_swift_int",
-      "community": 110,
+      "community": 226,
       "norm_label": "int"
     },
     {
@@ -21578,7 +21628,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "services_backupservice_restorephase",
-      "community": 93,
+      "community": 238,
       "norm_label": "restorephase"
     },
     {
@@ -21588,7 +21638,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "services_backupservice_restorephase_reading",
-      "community": 93,
+      "community": 238,
       "norm_label": "reading"
     },
     {
@@ -21598,7 +21648,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "services_backupservice_restorephase_processing",
-      "community": 93,
+      "community": 238,
       "norm_label": "processing"
     },
     {
@@ -21608,7 +21658,7 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "services_backupservice_restorephase_saving",
-      "community": 93,
+      "community": 238,
       "norm_label": "saving"
     },
     {
@@ -21688,7 +21738,7 @@
       "source_location": "L264",
       "_origin": "ast",
       "id": "jsondecoder",
-      "community": 53,
+      "community": 89,
       "norm_label": "jsondecoder"
     },
     {
@@ -22048,7 +22098,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_categorymltrainer",
-      "community": 53,
+      "community": 89,
       "norm_label": "categorymltrainer.swift"
     },
     {
@@ -22058,7 +22108,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "services_categorymltrainer_trainabletransaction",
-      "community": 53,
+      "community": 89,
       "norm_label": "trainabletransaction"
     },
     {
@@ -22068,7 +22118,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "anka_services_categorymltrainer_swift_string",
-      "community": 53,
+      "community": 89,
       "norm_label": "string"
     },
     {
@@ -22078,7 +22128,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "anka_services_categorymltrainer_swift_double",
-      "community": 53,
+      "community": 89,
       "norm_label": "double"
     },
     {
@@ -22088,7 +22138,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "services_categorymltrainer_trainabletransaction_init",
-      "community": 53,
+      "community": 89,
       "norm_label": ".init()"
     },
     {
@@ -22098,7 +22148,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "services_categorymltrainer_categorymltrainer",
-      "community": 53,
+      "community": 89,
       "norm_label": "categorymltrainer"
     },
     {
@@ -22108,7 +22158,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "services_categorymltrainer_categorymltrainer_trainifneeded",
-      "community": 53,
+      "community": 89,
       "norm_label": ".trainifneeded()"
     },
     {
@@ -22118,7 +22168,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "services_categorymltrainer_categorymltrainer_train",
-      "community": 53,
+      "community": 89,
       "norm_label": ".train()"
     },
     {
@@ -22128,7 +22178,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "anka_services_categorymltrainer_swift_userdefaults",
-      "community": 53,
+      "community": 89,
       "norm_label": "userdefaults"
     },
     {
@@ -22138,7 +22188,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "anka_services_categorymltrainer_swift_int",
-      "community": 53,
+      "community": 89,
       "norm_label": "int"
     },
     {
@@ -22148,7 +22198,7 @@
       "source_location": "L122",
       "_origin": "ast",
       "id": "services_categorymltrainer_categorymltrainer_loadcorrections",
-      "community": 53,
+      "community": 89,
       "norm_label": ".loadcorrections()"
     },
     {
@@ -22158,7 +22208,7 @@
       "source_location": "L122",
       "_origin": "ast",
       "id": "correctionentry",
-      "community": 53,
+      "community": 89,
       "norm_label": "correctionentry"
     },
     {
@@ -22168,7 +22218,7 @@
       "source_location": "L134",
       "_origin": "ast",
       "id": "services_categorymltrainer_categorymltrainer_prunecorrections",
-      "community": 53,
+      "community": 89,
       "norm_label": ".prunecorrections()"
     },
     {
@@ -22288,7 +22338,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "nlmodel",
-      "community": 53,
+      "community": 233,
       "norm_label": "nlmodel"
     },
     {
@@ -22298,7 +22348,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "services_categorypredictor_categorypredictor_init",
-      "community": 53,
+      "community": 233,
       "norm_label": ".init()"
     },
     {
@@ -22338,7 +22388,7 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "services_categorypredictor_categorypredictor_trainifready",
-      "community": 53,
+      "community": 233,
       "norm_label": ".trainifready()"
     },
     {
@@ -22348,7 +22398,7 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "anka_services_categorypredictor_swift_trainabletransaction",
-      "community": 53,
+      "community": 233,
       "norm_label": "trainabletransaction"
     },
     {
@@ -22358,7 +22408,7 @@
       "source_location": "L144",
       "_origin": "ast",
       "id": "services_categorypredictor_categorypredictor_loadstartermodel",
-      "community": 53,
+      "community": 233,
       "norm_label": ".loadstartermodel()"
     },
     {
@@ -22368,7 +22418,7 @@
       "source_location": "L158",
       "_origin": "ast",
       "id": "services_categorypredictor_categorypredictor_loadusermodel",
-      "community": 53,
+      "community": 233,
       "norm_label": ".loadusermodel()"
     },
     {
@@ -22398,7 +22448,7 @@
       "source_location": "L180",
       "_origin": "ast",
       "id": "services_categorypredictor_categorypredictor_usermodelurl",
-      "community": 53,
+      "community": 233,
       "norm_label": ".usermodelurl()"
     },
     {
@@ -22408,7 +22458,7 @@
       "source_location": "L180",
       "_origin": "ast",
       "id": "anka_services_categorypredictor_swift_url",
-      "community": 53,
+      "community": 233,
       "norm_label": "url"
     },
     {
@@ -22628,7 +22678,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_inlinetransactionparser",
-      "community": 70,
+      "community": 127,
       "norm_label": "inlinetransactionparser.swift"
     },
     {
@@ -22638,7 +22688,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "services_inlinetransactionparser_parsedinlinetransaction",
-      "community": 70,
+      "community": 127,
       "norm_label": "parsedinlinetransaction"
     },
     {
@@ -22648,7 +22698,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "anka_services_inlinetransactionparser_swift_double",
-      "community": 70,
+      "community": 127,
       "norm_label": "double"
     },
     {
@@ -22658,7 +22708,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "anka_services_inlinetransactionparser_swift_category",
-      "community": 70,
+      "community": 127,
       "norm_label": "category"
     },
     {
@@ -22668,7 +22718,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "anka_services_inlinetransactionparser_swift_string",
-      "community": 70,
+      "community": 127,
       "norm_label": "string"
     },
     {
@@ -22678,7 +22728,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "anka_services_inlinetransactionparser_swift_date",
-      "community": 70,
+      "community": 127,
       "norm_label": "date"
     },
     {
@@ -22688,7 +22738,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "services_inlinetransactionparser_inlinetransactionparser",
-      "community": 70,
+      "community": 127,
       "norm_label": "inlinetransactionparser"
     },
     {
@@ -22698,7 +22748,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "anka_services_inlinetransactionparser_swift_int",
-      "community": 70,
+      "community": 127,
       "norm_label": "int"
     },
     {
@@ -22708,7 +22758,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "services_inlinetransactionparser_inlinetransactionparser_parse",
-      "community": 70,
+      "community": 127,
       "norm_label": ".parse()"
     },
     {
@@ -22718,7 +22768,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "anka_services_inlinetransactionparser_swift_categorypredictor",
-      "community": 70,
+      "community": 127,
       "norm_label": "categorypredictor"
     },
     {
@@ -22728,7 +22778,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "services_inlinetransactionparser_inlinetransactionparser_extractdate",
-      "community": 70,
+      "community": 127,
       "norm_label": ".extractdate()"
     },
     {
@@ -22738,7 +22788,7 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "services_inlinetransactionparser_inlinetransactionparser_cleaned",
-      "community": 70,
+      "community": 127,
       "norm_label": ".cleaned()"
     },
     {
@@ -22828,7 +22878,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_keywordmatcher",
-      "community": 53,
+      "community": 234,
       "norm_label": "keywordmatcher.swift"
     },
     {
@@ -22838,7 +22888,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "services_keywordmatcher_keywordmatcher",
-      "community": 53,
+      "community": 234,
       "norm_label": "keywordmatcher"
     },
     {
@@ -22848,7 +22898,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "anka_services_keywordmatcher_swift_string",
-      "community": 53,
+      "community": 234,
       "norm_label": "string"
     },
     {
@@ -22858,7 +22908,7 @@
       "source_location": "L318",
       "_origin": "ast",
       "id": "services_keywordmatcher_keywordmatcher_match",
-      "community": 53,
+      "community": 234,
       "norm_label": ".match()"
     },
     {
@@ -22868,7 +22918,7 @@
       "source_location": "L318",
       "_origin": "ast",
       "id": "anka_services_keywordmatcher_swift_double",
-      "community": 53,
+      "community": 234,
       "norm_label": "double"
     },
     {
@@ -22878,7 +22928,7 @@
       "source_location": "L380",
       "_origin": "ast",
       "id": "anka_services_keywordmatcher_swift_set",
-      "community": 53,
+      "community": 234,
       "norm_label": "set"
     },
     {
@@ -22888,7 +22938,7 @@
       "source_location": "L391",
       "_origin": "ast",
       "id": "services_keywordmatcher_keywordmatcher_levenshtein",
-      "community": 53,
+      "community": 234,
       "norm_label": ".levenshtein()"
     },
     {
@@ -22898,7 +22948,7 @@
       "source_location": "L391",
       "_origin": "ast",
       "id": "anka_services_keywordmatcher_swift_int",
-      "community": 53,
+      "community": 234,
       "norm_label": "int"
     },
     {
@@ -22908,7 +22958,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_mlfeaturizer",
-      "community": 53,
+      "community": 236,
       "norm_label": "mlfeaturizer.swift"
     },
     {
@@ -22918,7 +22968,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "services_mlfeaturizer_mlfeaturizer",
-      "community": 53,
+      "community": 236,
       "norm_label": "mlfeaturizer"
     },
     {
@@ -22928,7 +22978,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "services_mlfeaturizer_mlfeaturizer_amountbucket",
-      "community": 53,
+      "community": 236,
       "norm_label": ".amountbucket()"
     },
     {
@@ -22938,7 +22988,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "anka_services_mlfeaturizer_swift_double",
-      "community": 53,
+      "community": 236,
       "norm_label": "double"
     },
     {
@@ -22948,7 +22998,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "anka_services_mlfeaturizer_swift_string",
-      "community": 53,
+      "community": 236,
       "norm_label": "string"
     },
     {
@@ -22958,7 +23008,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "services_mlfeaturizer_mlfeaturizer_input",
-      "community": 53,
+      "community": 236,
       "norm_label": ".input()"
     },
     {
@@ -22968,7 +23018,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "services_mlfeaturizer_mlstorage",
-      "community": 53,
+      "community": 236,
       "norm_label": "mlstorage"
     },
     {
@@ -23228,7 +23278,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_widgetsharedtypes",
-      "community": 65,
+      "community": 235,
       "norm_label": "widgetsharedtypes.swift"
     },
     {
@@ -23238,7 +23288,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "services_widgetsharedtypes_widgetkeys",
-      "community": 65,
+      "community": 235,
       "norm_label": "widgetkeys"
     },
     {
@@ -23248,7 +23298,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "services_widgetsharedtypes_ankadeeplink",
-      "community": 65,
+      "community": 235,
       "norm_label": "ankadeeplink"
     },
     {
@@ -23258,7 +23308,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "services_widgetsharedtypes_widgettransaction",
-      "community": 65,
+      "community": 235,
       "norm_label": "widgettransaction"
     },
     {
@@ -23268,7 +23318,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "anka_services_widgetsharedtypes_swift_string",
-      "community": 65,
+      "community": 235,
       "norm_label": "string"
     },
     {
@@ -23278,7 +23328,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "anka_services_widgetsharedtypes_swift_double",
-      "community": 65,
+      "community": 235,
       "norm_label": "double"
     },
     {
@@ -23288,7 +23338,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "anka_services_widgetsharedtypes_swift_bool",
-      "community": 65,
+      "community": 235,
       "norm_label": "bool"
     },
     {
@@ -23298,7 +23348,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "services_widgetsharedtypes_widgettransaction_init",
-      "community": 65,
+      "community": 235,
       "norm_label": ".init()"
     },
     {
@@ -23308,7 +23358,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "addtransaction_addtransactionview",
-      "community": 197,
+      "community": 201,
       "norm_label": "addtransactionview.swift"
     },
     {
@@ -23538,7 +23588,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "addtransaction_addtransactionview_focusfield",
-      "community": 197,
+      "community": 201,
       "norm_label": "focusfield"
     },
     {
@@ -23548,7 +23598,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "addtransaction_addtransactionview_focusfield_description",
-      "community": 197,
+      "community": 201,
       "norm_label": "description"
     },
     {
@@ -23558,14 +23608,14 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "addtransaction_addtransactionview_focusfield_amount",
-      "community": 197,
+      "community": 201,
       "norm_label": "amount"
     },
     {
       "label": ".chipLabel()",
       "file_type": "code",
       "source_file": "Anka/Views/AddTransaction/AddTransactionView.swift",
-      "source_location": "L300",
+      "source_location": "L301",
       "_origin": "ast",
       "id": "addtransaction_addtransactionview_addtransactionview_chiplabel",
       "community": 201,
@@ -23575,7 +23625,7 @@
       "label": ".handleDescriptionChange()",
       "file_type": "code",
       "source_file": "Anka/Views/AddTransaction/AddTransactionView.swift",
-      "source_location": "L348",
+      "source_location": "L349",
       "_origin": "ast",
       "id": "addtransaction_addtransactionview_addtransactionview_handledescriptionchange",
       "community": 201,
@@ -23585,7 +23635,7 @@
       "label": ".performSave()",
       "file_type": "code",
       "source_file": "Anka/Views/AddTransaction/AddTransactionView.swift",
-      "source_location": "L529",
+      "source_location": "L530",
       "_origin": "ast",
       "id": "addtransaction_addtransactionview_addtransactionview_performsave",
       "community": 201,
@@ -23595,7 +23645,7 @@
       "label": ".closeDatePicker()",
       "file_type": "code",
       "source_file": "Anka/Views/AddTransaction/AddTransactionView.swift",
-      "source_location": "L734",
+      "source_location": "L735",
       "_origin": "ast",
       "id": "addtransaction_addtransactionview_addtransactionview_closedatepicker",
       "community": 201,
@@ -23605,7 +23655,7 @@
       "label": ".triggerShake()",
       "file_type": "code",
       "source_file": "Anka/Views/AddTransaction/AddTransactionView.swift",
-      "source_location": "L746",
+      "source_location": "L747",
       "_origin": "ast",
       "id": "addtransaction_addtransactionview_addtransactionview_triggershake",
       "community": 201,
@@ -23668,7 +23718,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "anka_views_addtransaction_addtransactionviewmodel_swift_string",
-      "community": 3,
+      "community": 98,
       "norm_label": "string"
     },
     {
@@ -23688,7 +23738,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "anka_views_addtransaction_addtransactionviewmodel_swift_double",
-      "community": 3,
+      "community": 98,
       "norm_label": "double"
     },
     {
@@ -23698,7 +23748,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "anka_views_addtransaction_addtransactionviewmodel_swift_task",
-      "community": 3,
+      "community": 98,
       "norm_label": "task"
     },
     {
@@ -23768,7 +23818,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "addtransaction_addtransactionviewmodel_addtransactionviewmodel_parseamount",
-      "community": 3,
+      "community": 98,
       "norm_label": ".parseamount()"
     },
     {
@@ -23778,7 +23828,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "locale",
-      "community": 110,
+      "community": 98,
       "norm_label": "locale"
     },
     {
@@ -23838,7 +23888,7 @@
       "source_location": "L189",
       "_origin": "ast",
       "id": "addtransaction_addtransactionviewmodel_addtransactionviewmodel_removetag",
-      "community": 3,
+      "community": 98,
       "norm_label": ".removetag()"
     },
     {
@@ -23878,7 +23928,7 @@
       "source_location": "L254",
       "_origin": "ast",
       "id": "addtransaction_addtransactionviewmodel_addtransactionviewmodel_applyparseddescription",
-      "community": 3,
+      "community": 98,
       "norm_label": ".applyparseddescription()"
     },
     {
@@ -23888,7 +23938,7 @@
       "source_location": "L254",
       "_origin": "ast",
       "id": "anka_views_addtransaction_addtransactionviewmodel_swift_categorypredictor",
-      "community": 3,
+      "community": 98,
       "norm_label": "categorypredictor"
     },
     {
@@ -23898,7 +23948,7 @@
       "source_location": "L288",
       "_origin": "ast",
       "id": "addtransaction_addtransactionviewmodel_addtransactionviewmodel_amounttext",
-      "community": 3,
+      "community": 98,
       "norm_label": ".amounttext()"
     },
     {
@@ -23908,7 +23958,7 @@
       "source_location": "L298",
       "_origin": "ast",
       "id": "addtransaction_addtransactionviewmodel_addtransactionviewmodel_triggermlprediction",
-      "community": 3,
+      "community": 98,
       "norm_label": ".triggermlprediction()"
     },
     {
@@ -23918,7 +23968,7 @@
       "source_location": "L312",
       "_origin": "ast",
       "id": "addtransaction_addtransactionviewmodel_addtransactionviewmodel_cancelmlprediction",
-      "community": 3,
+      "community": 98,
       "norm_label": ".cancelmlprediction()"
     },
     {
@@ -23928,7 +23978,7 @@
       "source_location": "L317",
       "_origin": "ast",
       "id": "addtransaction_addtransactionviewmodel_addtransactionviewmodel_applymlprediction",
-      "community": 3,
+      "community": 98,
       "norm_label": ".applymlprediction()"
     },
     {
@@ -23938,7 +23988,7 @@
       "source_location": "L317",
       "_origin": "ast",
       "id": "prediction",
-      "community": 3,
+      "community": 98,
       "norm_label": "prediction"
     },
     {
@@ -24198,7 +24248,7 @@
       "source_location": "L288",
       "_origin": "ast",
       "id": "addtransaction_inlinetransactionentryview_inlinecomposermodifier_dismiss",
-      "community": 5,
+      "community": 34,
       "norm_label": ".dismiss()"
     },
     {
@@ -24628,7 +24678,7 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "applock_pinsetupsheet_pinsetupsheet_advance",
-      "community": 5,
+      "community": 34,
       "norm_label": ".advance()"
     },
     {
@@ -25138,7 +25188,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "onboarding_onboardingpaywallview_plan",
-      "community": 54,
+      "community": 112,
       "norm_label": "plan"
     },
     {
@@ -25148,7 +25198,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "onboarding_onboardingpaywallview_plan_monthly",
-      "community": 54,
+      "community": 112,
       "norm_label": "monthly"
     },
     {
@@ -25158,7 +25208,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "onboarding_onboardingpaywallview_plan_yearly",
-      "community": 54,
+      "community": 112,
       "norm_label": "yearly"
     },
     {
@@ -25168,7 +25218,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "onboarding_onboardingpaywallview_plan_yearlyinstallment",
-      "community": 54,
+      "community": 112,
       "norm_label": "yearlyinstallment"
     },
     {
@@ -25428,7 +25478,7 @@
       "source_location": "L215",
       "_origin": "ast",
       "id": "settings_addeditcategorysheet_addeditcategorysheet_save",
-      "community": 5,
+      "community": 34,
       "norm_label": ".save()"
     },
     {
@@ -25438,7 +25488,7 @@
       "source_location": "L249",
       "_origin": "ast",
       "id": "settings_addeditcategorysheet_addeditcategorysheet_deleteediting",
-      "community": 5,
+      "community": 34,
       "norm_label": ".deleteediting()"
     },
     {
@@ -25448,7 +25498,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "settings_appearancesettingsview",
-      "community": 204,
+      "community": 34,
       "norm_label": "appearancesettingsview.swift"
     },
     {
@@ -25458,7 +25508,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "settings_appearancesettingsview_appearancesettingsview",
-      "community": 204,
+      "community": 34,
       "norm_label": "appearancesettingsview"
     },
     {
@@ -25468,7 +25518,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "settings_appearancesettingsview_appearancesettingsview_moderow",
-      "community": 204,
+      "community": 34,
       "norm_label": ".moderow()"
     },
     {
@@ -25478,7 +25528,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "appearancemanager",
-      "community": 204,
+      "community": 34,
       "norm_label": "appearancemanager"
     },
     {
@@ -25488,7 +25538,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "anka_views_settings_appearancesettingsview_swift_binding",
-      "community": 204,
+      "community": 34,
       "norm_label": "binding"
     },
     {
@@ -25498,7 +25548,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "settings_appearancesettingsview_appearancesettingsview_variantrow",
-      "community": 204,
+      "community": 34,
       "norm_label": ".variantrow()"
     },
     {
@@ -25508,7 +25558,7 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "settings_appearancesettingsview_appearancesettingsview_swatch",
-      "community": 204,
+      "community": 34,
       "norm_label": ".swatch()"
     },
     {
@@ -25708,7 +25758,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "settings_categorymanagementview",
-      "community": 34,
+      "community": 204,
       "norm_label": "categorymanagementview.swift"
     },
     {
@@ -25718,7 +25768,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "settings_categorymanagementview_categorymanagementview",
-      "community": 34,
+      "community": 204,
       "norm_label": "categorymanagementview"
     },
     {
@@ -25728,7 +25778,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "anka_views_settings_categorymanagementview_swift_settingsviewmodel",
-      "community": 34,
+      "community": 204,
       "norm_label": "settingsviewmodel"
     },
     {
@@ -25738,7 +25788,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "anka_views_settings_categorymanagementview_swift_category",
-      "community": 34,
+      "community": 204,
       "norm_label": "category"
     },
     {
@@ -25748,7 +25798,7 @@
       "source_location": "L102",
       "_origin": "ast",
       "id": "anka_views_settings_categorymanagementview_swift_string",
-      "community": 34,
+      "community": 204,
       "norm_label": "string"
     },
     {
@@ -25758,7 +25808,7 @@
       "source_location": "L118",
       "_origin": "ast",
       "id": "settings_categorymanagementview_categorymanagementview_categoryrow",
-      "community": 34,
+      "community": 204,
       "norm_label": ".categoryrow()"
     },
     {
@@ -25768,7 +25818,7 @@
       "source_location": "L147",
       "_origin": "ast",
       "id": "settings_categorymanagementview_categorymanagementview_requestdelete",
-      "community": 34,
+      "community": 204,
       "norm_label": ".requestdelete()"
     },
     {
@@ -25778,7 +25828,7 @@
       "source_location": "L147",
       "_origin": "ast",
       "id": "indexset",
-      "community": 34,
+      "community": 204,
       "norm_label": "indexset"
     },
     {
@@ -25788,7 +25838,7 @@
       "source_location": "L152",
       "_origin": "ast",
       "id": "settings_categorymanagementview_categorymanagementview_delete",
-      "community": 34,
+      "community": 204,
       "norm_label": ".delete()"
     },
     {
@@ -25798,7 +25848,7 @@
       "source_location": "L161",
       "_origin": "ast",
       "id": "settings_categorymanagementview_categorymanagementview_move",
-      "community": 34,
+      "community": 204,
       "norm_label": ".move()"
     },
     {
@@ -25808,7 +25858,7 @@
       "source_location": "L161",
       "_origin": "ast",
       "id": "anka_views_settings_categorymanagementview_swift_int",
-      "community": 34,
+      "community": 204,
       "norm_label": "int"
     },
     {
@@ -25978,7 +26028,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "settings_exportsheet",
-      "community": 74,
+      "community": 35,
       "norm_label": "exportsheet.swift"
     },
     {
@@ -25988,7 +26038,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "settings_exportsheet_exportsheet",
-      "community": 74,
+      "community": 35,
       "norm_label": "exportsheet"
     },
     {
@@ -25998,7 +26048,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "anka_views_settings_exportsheet_swift_transaction",
-      "community": 74,
+      "community": 35,
       "norm_label": "transaction"
     },
     {
@@ -26008,7 +26058,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "settings_exportsheet_exportperiod",
-      "community": 74,
+      "community": 35,
       "norm_label": "exportperiod"
     },
     {
@@ -26018,7 +26068,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "settings_exportsheet_exportperiod_alltime",
-      "community": 74,
+      "community": 35,
       "norm_label": "alltime"
     },
     {
@@ -26028,7 +26078,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "settings_exportsheet_exportperiod_thismonth",
-      "community": 74,
+      "community": 35,
       "norm_label": "thismonth"
     },
     {
@@ -26038,7 +26088,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "settings_exportsheet_exportperiod_lastmonth",
-      "community": 74,
+      "community": 35,
       "norm_label": "lastmonth"
     },
     {
@@ -26048,7 +26098,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "settings_exportsheet_exportperiod_thisyear",
-      "community": 74,
+      "community": 35,
       "norm_label": "thisyear"
     },
     {
@@ -26058,7 +26108,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "settings_exportsheet_exportperiod_custom",
-      "community": 74,
+      "community": 35,
       "norm_label": "custom"
     },
     {
@@ -26068,7 +26118,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "anka_views_settings_exportsheet_swift_date",
-      "community": 74,
+      "community": 35,
       "norm_label": "date"
     },
     {
@@ -26078,7 +26128,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "anka_views_settings_exportsheet_swift_url",
-      "community": 74,
+      "community": 35,
       "norm_label": "url"
     },
     {
@@ -26088,7 +26138,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "anka_views_settings_exportsheet_swift_dateformatter",
-      "community": 74,
+      "community": 35,
       "norm_label": "dateformatter"
     },
     {
@@ -26098,7 +26148,7 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "settings_exportsheet_exportsheet_recomputefiltered",
-      "community": 74,
+      "community": 35,
       "norm_label": ".recomputefiltered()"
     },
     {
@@ -26108,7 +26158,7 @@
       "source_location": "L113",
       "_origin": "ast",
       "id": "settings_exportsheet_exportsheet_regenerateexportfile",
-      "community": 74,
+      "community": 35,
       "norm_label": ".regenerateexportfile()"
     },
     {
@@ -26118,7 +26168,7 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "settings_exportsheet_exportsheet_filter",
-      "community": 74,
+      "community": 35,
       "norm_label": ".filter()"
     },
     {
@@ -26128,7 +26178,7 @@
       "source_location": "L152",
       "_origin": "ast",
       "id": "settings_exportsheet_exportsheet_filename",
-      "community": 74,
+      "community": 35,
       "norm_label": ".filename()"
     },
     {
@@ -26298,7 +26348,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "settings_settingsview",
-      "community": 204,
+      "community": 34,
       "norm_label": "settingsview.swift"
     },
     {
@@ -26308,7 +26358,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "settings_settingsview_settingsview",
-      "community": 204,
+      "community": 34,
       "norm_label": "settingsview"
     },
     {
@@ -26318,28 +26368,48 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "anka_views_settings_settingsview_swift_category",
-      "community": 204,
+      "community": 34,
       "norm_label": "category"
     },
     {
       "label": ".engageLock()",
       "file_type": "code",
       "source_file": "Anka/Views/Settings/SettingsView.swift",
-      "source_location": "L365",
+      "source_location": "L271",
       "_origin": "ast",
       "id": "settings_settingsview_settingsview_engagelock",
-      "community": 5,
+      "community": 34,
       "norm_label": ".engagelock()"
     },
     {
       "label": "String",
       "file_type": "code",
       "source_file": "Anka/Views/Settings/SettingsView.swift",
-      "source_location": "L373",
+      "source_location": "L277",
       "_origin": "ast",
       "id": "anka_views_settings_settingsview_swift_string",
-      "community": 204,
+      "community": 34,
       "norm_label": "string"
+    },
+    {
+      "label": "View",
+      "file_type": "code",
+      "source_file": "Anka/Views/Settings/SettingsView.swift",
+      "source_location": "L311",
+      "_origin": "ast",
+      "id": "settings_settingsview_view",
+      "community": 34,
+      "norm_label": "view"
+    },
+    {
+      "label": ".labelIconTinted()",
+      "file_type": "code",
+      "source_file": "Anka/Views/Settings/SettingsView.swift",
+      "source_location": "L312",
+      "_origin": "ast",
+      "id": "settings_settingsview_view_labelicontinted",
+      "community": 34,
+      "norm_label": ".labelicontinted()"
     },
     {
       "label": "SettingsViewModel.swift",
@@ -26622,70 +26692,10 @@
       "norm_label": "bool"
     },
     {
-      "label": ".deltaPill()",
-      "file_type": "code",
-      "source_file": "Anka/Views/Stats/StatsView.swift",
-      "source_location": "L161",
-      "_origin": "ast",
-      "id": "stats_statsview_statsview_deltapill",
-      "community": 45,
-      "norm_label": ".deltapill()"
-    },
-    {
-      "label": "Double",
-      "file_type": "code",
-      "source_file": "Anka/Views/Stats/StatsView.swift",
-      "source_location": "L161",
-      "_origin": "ast",
-      "id": "anka_views_stats_statsview_swift_double",
-      "community": 45,
-      "norm_label": "double"
-    },
-    {
-      "label": ".summaryChip()",
-      "file_type": "code",
-      "source_file": "Anka/Views/Stats/StatsView.swift",
-      "source_location": "L177",
-      "_origin": "ast",
-      "id": "stats_statsview_statsview_summarychip",
-      "community": 45,
-      "norm_label": ".summarychip()"
-    },
-    {
-      "label": "Color",
-      "file_type": "code",
-      "source_file": "Anka/Views/Stats/StatsView.swift",
-      "source_location": "L177",
-      "_origin": "ast",
-      "id": "anka_views_stats_statsview_swift_color",
-      "community": 45,
-      "norm_label": "color"
-    },
-    {
-      "label": ".rp()",
-      "file_type": "code",
-      "source_file": "Anka/Views/Stats/StatsView.swift",
-      "source_location": "L195",
-      "_origin": "ast",
-      "id": "stats_statsview_statsview_rp",
-      "community": 45,
-      "norm_label": ".rp()"
-    },
-    {
-      "label": ".signedAmount()",
-      "file_type": "code",
-      "source_file": "Anka/Views/Stats/StatsView.swift",
-      "source_location": "L198",
-      "_origin": "ast",
-      "id": "stats_statsview_statsview_signedamount",
-      "community": 45,
-      "norm_label": ".signedamount()"
-    },
-    {
       "label": "StatsPreviewHost",
       "file_type": "code",
       "source_file": "Anka/Views/Stats/StatsView.swift",
-      "source_location": "L315",
+      "source_location": "L279",
       "_origin": "ast",
       "id": "stats_statsview_statspreviewhost",
       "community": 45,
@@ -26762,10 +26772,20 @@
       "norm_label": "date"
     },
     {
-      "label": "CategorySpendData",
+      "label": "BalanceMode",
       "file_type": "code",
       "source_file": "Anka/Views/Stats/StatsViewModel.swift",
       "source_location": "L32",
+      "_origin": "ast",
+      "id": "balancemode",
+      "community": 36,
+      "norm_label": "balancemode"
+    },
+    {
+      "label": "CategorySpendData",
+      "file_type": "code",
+      "source_file": "Anka/Views/Stats/StatsViewModel.swift",
+      "source_location": "L36",
       "_origin": "ast",
       "id": "anka_views_stats_statsviewmodel_swift_categoryspenddata",
       "community": 36,
@@ -26775,7 +26795,7 @@
       "label": "Double",
       "file_type": "code",
       "source_file": "Anka/Views/Stats/StatsViewModel.swift",
-      "source_location": "L33",
+      "source_location": "L39",
       "_origin": "ast",
       "id": "anka_views_stats_statsviewmodel_swift_double",
       "community": 36,
@@ -26785,7 +26805,7 @@
       "label": "WeeklySpendData",
       "file_type": "code",
       "source_file": "Anka/Views/Stats/StatsViewModel.swift",
-      "source_location": "L36",
+      "source_location": "L40",
       "_origin": "ast",
       "id": "anka_views_stats_statsviewmodel_swift_weeklyspenddata",
       "community": 36,
@@ -26795,7 +26815,7 @@
       "label": "Bool",
       "file_type": "code",
       "source_file": "Anka/Views/Stats/StatsViewModel.swift",
-      "source_location": "L38",
+      "source_location": "L42",
       "_origin": "ast",
       "id": "anka_views_stats_statsviewmodel_swift_bool",
       "community": 36,
@@ -26805,7 +26825,7 @@
       "label": "String",
       "file_type": "code",
       "source_file": "Anka/Views/Stats/StatsViewModel.swift",
-      "source_location": "L64",
+      "source_location": "L46",
       "_origin": "ast",
       "id": "anka_views_stats_statsviewmodel_swift_string",
       "community": 36,
@@ -26815,7 +26835,7 @@
       "label": ".navigateMonth()",
       "file_type": "code",
       "source_file": "Anka/Views/Stats/StatsViewModel.swift",
-      "source_location": "L83",
+      "source_location": "L61",
       "_origin": "ast",
       "id": "stats_statsviewmodel_statsviewmodel_navigatemonth",
       "community": 36,
@@ -26825,7 +26845,7 @@
       "label": ".resetToCurrentMonth()",
       "file_type": "code",
       "source_file": "Anka/Views/Stats/StatsViewModel.swift",
-      "source_location": "L90",
+      "source_location": "L68",
       "_origin": "ast",
       "id": "stats_statsviewmodel_statsviewmodel_resettocurrentmonth",
       "community": 36,
@@ -26835,7 +26855,7 @@
       "label": ".refresh()",
       "file_type": "code",
       "source_file": "Anka/Views/Stats/StatsViewModel.swift",
-      "source_location": "L102",
+      "source_location": "L80",
       "_origin": "ast",
       "id": "stats_statsviewmodel_statsviewmodel_refresh",
       "community": 36,
@@ -26848,7 +26868,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "stats_weeklytrendchartview",
-      "community": 45,
+      "community": 36,
       "norm_label": "weeklytrendchartview.swift"
     },
     {
@@ -26858,7 +26878,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "stats_weeklytrendchartview_weeklytrendchartview",
-      "community": 45,
+      "community": 36,
       "norm_label": "weeklytrendchartview"
     },
     {
@@ -26868,7 +26888,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "anka_views_stats_weeklytrendchartview_swift_weeklyspenddata",
-      "community": 45,
+      "community": 36,
       "norm_label": "weeklyspenddata"
     },
     {
@@ -26878,7 +26898,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "anka_views_stats_weeklytrendchartview_swift_double",
-      "community": 45,
+      "community": 36,
       "norm_label": "double"
     },
     {
@@ -26888,7 +26908,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "anka_views_stats_weeklytrendchartview_swift_string",
-      "community": 45,
+      "community": 36,
       "norm_label": "string"
     },
     {
@@ -26968,7 +26988,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "shared_autobackupmodifier",
-      "community": 89,
+      "community": 33,
       "norm_label": "autobackupmodifier.swift"
     },
     {
@@ -26978,7 +26998,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "shared_autobackupmodifier_autobackupmodifier",
-      "community": 89,
+      "community": 33,
       "norm_label": "autobackupmodifier"
     },
     {
@@ -26988,7 +27008,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "anka_views_today_shared_autobackupmodifier_swift_transaction",
-      "community": 89,
+      "community": 33,
       "norm_label": "transaction"
     },
     {
@@ -26998,7 +27018,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "anka_views_today_shared_autobackupmodifier_swift_category",
-      "community": 89,
+      "community": 33,
       "norm_label": "category"
     },
     {
@@ -27008,7 +27028,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "shared_autobackupmodifier_autobackupmodifier_body",
-      "community": 89,
+      "community": 33,
       "norm_label": ".body()"
     },
     {
@@ -27018,7 +27038,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "anka_views_today_shared_autobackupmodifier_swift_content",
-      "community": 89,
+      "community": 33,
       "norm_label": "content"
     },
     {
@@ -27028,7 +27048,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "anka_views_today_shared_autobackupmodifier_swift_view",
-      "community": 89,
+      "community": 33,
       "norm_label": "view"
     },
     {
@@ -27038,7 +27058,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "shared_autobackupmodifier_view",
-      "community": 89,
+      "community": 33,
       "norm_label": "view"
     },
     {
@@ -27048,7 +27068,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "shared_autobackupmodifier_view_autobackup",
-      "community": 89,
+      "community": 33,
       "norm_label": ".autobackup()"
     },
     {
@@ -27478,7 +27498,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "shared_transactionemptystateview",
-      "community": 143,
+      "community": 83,
       "norm_label": "transactionemptystateview.swift"
     },
     {
@@ -27488,7 +27508,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "shared_transactionemptystateview_transactionemptystateview",
-      "community": 143,
+      "community": 83,
       "norm_label": "transactionemptystateview"
     },
     {
@@ -27498,7 +27518,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "anka_views_today_shared_transactionemptystateview_swift_bool",
-      "community": 143,
+      "community": 83,
       "norm_label": "bool"
     },
     {
@@ -27508,7 +27528,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "anka_views_today_shared_transactionemptystateview_swift_void",
-      "community": 143,
+      "community": 83,
       "norm_label": "void"
     },
     {
@@ -27518,7 +27538,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "anka_views_today_shared_transactionemptystateview_swift_string",
-      "community": 143,
+      "community": 83,
       "norm_label": "string"
     },
     {
@@ -27528,7 +27548,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "shared_transactionemptystateview_transactionemptystateview_pillbutton",
-      "community": 143,
+      "community": 83,
       "norm_label": ".pillbutton()"
     },
     {
@@ -27668,7 +27688,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "anka_views_today_todayviewmodel_swift_dateinterval",
-      "community": 54,
+      "community": 58,
       "norm_label": "dateinterval"
     },
     {
@@ -27782,10 +27802,30 @@
       "norm_label": "transactiontype"
     },
     {
+      "label": "DailySpendPoint",
+      "file_type": "code",
+      "source_file": "Anka/Views/Today/TodayViewModel.swift",
+      "source_location": "L161",
+      "_origin": "ast",
+      "id": "anka_views_today_todayviewmodel_swift_dailyspendpoint",
+      "community": 58,
+      "norm_label": "dailyspendpoint"
+    },
+    {
+      "label": "Double",
+      "file_type": "code",
+      "source_file": "Anka/Views/Today/TodayViewModel.swift",
+      "source_location": "L165",
+      "_origin": "ast",
+      "id": "anka_views_today_todayviewmodel_swift_double",
+      "community": 58,
+      "norm_label": "double"
+    },
+    {
       "label": "Bool",
       "file_type": "code",
       "source_file": "Anka/Views/Today/TodayViewModel.swift",
-      "source_location": "L181",
+      "source_location": "L189",
       "_origin": "ast",
       "id": "anka_views_today_todayviewmodel_swift_bool",
       "community": 58,
@@ -27795,7 +27835,7 @@
       "label": ".clearSearch()",
       "file_type": "code",
       "source_file": "Anka/Views/Today/TodayViewModel.swift",
-      "source_location": "L185",
+      "source_location": "L193",
       "_origin": "ast",
       "id": "today_todayviewmodel_todayviewmodel_clearsearch",
       "community": 58,
@@ -27805,7 +27845,7 @@
       "label": ".navigateMonth()",
       "file_type": "code",
       "source_file": "Anka/Views/Today/TodayViewModel.swift",
-      "source_location": "L242",
+      "source_location": "L250",
       "_origin": "ast",
       "id": "today_todayviewmodel_todayviewmodel_navigatemonth",
       "community": 58,
@@ -27815,7 +27855,7 @@
       "label": ".jumpToMonth()",
       "file_type": "code",
       "source_file": "Anka/Views/Today/TodayViewModel.swift",
-      "source_location": "L254",
+      "source_location": "L262",
       "_origin": "ast",
       "id": "today_todayviewmodel_todayviewmodel_jumptomonth",
       "community": 58,
@@ -27825,7 +27865,7 @@
       "label": ".resetToCurrentMonth()",
       "file_type": "code",
       "source_file": "Anka/Views/Today/TodayViewModel.swift",
-      "source_location": "L263",
+      "source_location": "L271",
       "_origin": "ast",
       "id": "today_todayviewmodel_todayviewmodel_resettocurrentmonth",
       "community": 58,
@@ -27835,37 +27875,27 @@
       "label": ".recentMonths()",
       "file_type": "code",
       "source_file": "Anka/Views/Today/TodayViewModel.swift",
-      "source_location": "L277",
+      "source_location": "L285",
       "_origin": "ast",
       "id": "today_todayviewmodel_todayviewmodel_recentmonths",
       "community": 58,
       "norm_label": ".recentmonths()"
     },
     {
-      "label": "Double",
-      "file_type": "code",
-      "source_file": "Anka/Views/Today/TodayViewModel.swift",
-      "source_location": "L282",
-      "_origin": "ast",
-      "id": "anka_views_today_todayviewmodel_swift_double",
-      "community": 58,
-      "norm_label": "double"
-    },
-    {
       "label": ".refreshDashboard()",
       "file_type": "code",
       "source_file": "Anka/Views/Today/TodayViewModel.swift",
-      "source_location": "L342",
+      "source_location": "L350",
       "_origin": "ast",
       "id": "today_todayviewmodel_todayviewmodel_refreshdashboard",
-      "community": 31,
+      "community": 58,
       "norm_label": ".refreshdashboard()"
     },
     {
       "label": ".clearCategoryFilter()",
       "file_type": "code",
       "source_file": "Anka/Views/Today/TodayViewModel.swift",
-      "source_location": "L417",
+      "source_location": "L481",
       "_origin": "ast",
       "id": "today_todayviewmodel_todayviewmodel_clearcategoryfilter",
       "community": 58,
@@ -27875,7 +27905,7 @@
       "label": ".requestDelete()",
       "file_type": "code",
       "source_file": "Anka/Views/Today/TodayViewModel.swift",
-      "source_location": "L423",
+      "source_location": "L487",
       "_origin": "ast",
       "id": "today_todayviewmodel_todayviewmodel_requestdelete",
       "community": 58,
@@ -27885,7 +27915,7 @@
       "label": ".confirmDelete()",
       "file_type": "code",
       "source_file": "Anka/Views/Today/TodayViewModel.swift",
-      "source_location": "L427",
+      "source_location": "L491",
       "_origin": "ast",
       "id": "today_todayviewmodel_todayviewmodel_confirmdelete",
       "community": 58,
@@ -27895,7 +27925,7 @@
       "label": "ModelContext",
       "file_type": "code",
       "source_file": "Anka/Views/Today/TodayViewModel.swift",
-      "source_location": "L427",
+      "source_location": "L491",
       "_origin": "ast",
       "id": "anka_views_today_todayviewmodel_swift_modelcontext",
       "community": 58,
@@ -27905,7 +27935,7 @@
       "label": "DateFormatter",
       "file_type": "code",
       "source_file": "Anka/Views/Today/TodayViewModel.swift",
-      "source_location": "L441",
+      "source_location": "L505",
       "_origin": "ast",
       "id": "anka_views_today_todayviewmodel_swift_dateformatter",
       "community": 58,
@@ -27915,7 +27945,7 @@
       "label": ".shortDateLabel()",
       "file_type": "code",
       "source_file": "Anka/Views/Today/TodayViewModel.swift",
-      "source_location": "L447",
+      "source_location": "L511",
       "_origin": "ast",
       "id": "today_todayviewmodel_todayviewmodel_shortdatelabel",
       "community": 58,
@@ -27925,11 +27955,201 @@
       "label": ".dailyTotal()",
       "file_type": "code",
       "source_file": "Anka/Views/Today/TodayViewModel.swift",
-      "source_location": "L458",
+      "source_location": "L522",
       "_origin": "ast",
       "id": "today_todayviewmodel_todayviewmodel_dailytotal",
       "community": 58,
       "norm_label": ".dailytotal()"
+    },
+    {
+      "label": "MainPageV2LineChart.swift",
+      "file_type": "code",
+      "source_file": "Anka/Views/TodayV2/MainPageV2LineChart.swift",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "todayv2_mainpagev2linechart",
+      "community": 237,
+      "norm_label": "mainpagev2linechart.swift"
+    },
+    {
+      "label": "MainPageV2LineChart",
+      "file_type": "code",
+      "source_file": "Anka/Views/TodayV2/MainPageV2LineChart.swift",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "todayv2_mainpagev2linechart_mainpagev2linechart",
+      "community": 237,
+      "norm_label": "mainpagev2linechart"
+    },
+    {
+      "label": "DailySpendPoint",
+      "file_type": "code",
+      "source_file": "Anka/Views/TodayV2/MainPageV2LineChart.swift",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "anka_views_todayv2_mainpagev2linechart_swift_dailyspendpoint",
+      "community": 237,
+      "norm_label": "dailyspendpoint"
+    },
+    {
+      "label": "Date",
+      "file_type": "code",
+      "source_file": "Anka/Views/TodayV2/MainPageV2LineChart.swift",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "anka_views_todayv2_mainpagev2linechart_swift_date",
+      "community": 237,
+      "norm_label": "date"
+    },
+    {
+      "label": "DateFormatter",
+      "file_type": "code",
+      "source_file": "Anka/Views/TodayV2/MainPageV2LineChart.swift",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "anka_views_todayv2_mainpagev2linechart_swift_dateformatter",
+      "community": 237,
+      "norm_label": "dateformatter"
+    },
+    {
+      "label": "MainPageV2View.swift",
+      "file_type": "code",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "todayv2_mainpagev2view",
+      "community": 209,
+      "norm_label": "mainpagev2view.swift"
+    },
+    {
+      "label": "MainPageV2View",
+      "file_type": "code",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L12",
+      "_origin": "ast",
+      "id": "todayv2_mainpagev2view_mainpagev2view",
+      "community": 209,
+      "norm_label": "mainpagev2view"
+    },
+    {
+      "label": "Transaction",
+      "file_type": "code",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L15",
+      "_origin": "ast",
+      "id": "anka_views_todayv2_mainpagev2view_swift_transaction",
+      "community": 209,
+      "norm_label": "transaction"
+    },
+    {
+      "label": "Category",
+      "file_type": "code",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L16",
+      "_origin": "ast",
+      "id": "anka_views_todayv2_mainpagev2view_swift_category",
+      "community": 209,
+      "norm_label": "category"
+    },
+    {
+      "label": "ChartMode",
+      "file_type": "code",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "chartmode",
+      "community": 209,
+      "norm_label": "chartmode"
+    },
+    {
+      "label": ".feedVM()",
+      "file_type": "code",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L46",
+      "_origin": "ast",
+      "id": "todayv2_mainpagev2view_mainpagev2view_feedvm",
+      "community": 209,
+      "norm_label": ".feedvm()"
+    },
+    {
+      "label": "DailySpendPoint",
+      "file_type": "code",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L212",
+      "_origin": "ast",
+      "id": "anka_views_todayv2_mainpagev2view_swift_dailyspendpoint",
+      "community": 209,
+      "norm_label": "dailyspendpoint"
+    },
+    {
+      "label": "ChartMode",
+      "file_type": "code",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L317",
+      "_origin": "ast",
+      "id": "todayv2_mainpagev2view_chartmode",
+      "community": 54,
+      "norm_label": "chartmode"
+    },
+    {
+      "label": "daily",
+      "file_type": "code",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L318",
+      "_origin": "ast",
+      "id": "todayv2_mainpagev2view_chartmode_daily",
+      "community": 54,
+      "norm_label": "daily"
+    },
+    {
+      "label": "cumulative",
+      "file_type": "code",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L319",
+      "_origin": "ast",
+      "id": "todayv2_mainpagev2view_chartmode_cumulative",
+      "community": 54,
+      "norm_label": "cumulative"
+    },
+    {
+      "label": "HeroOffsetKey",
+      "file_type": "code",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L331",
+      "_origin": "ast",
+      "id": "todayv2_mainpagev2view_herooffsetkey",
+      "community": 209,
+      "norm_label": "herooffsetkey"
+    },
+    {
+      "label": "PreferenceKey",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "preferencekey",
+      "community": 209,
+      "norm_label": "preferencekey"
+    },
+    {
+      "label": "CGFloat",
+      "file_type": "code",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L332",
+      "_origin": "ast",
+      "id": "anka_views_todayv2_mainpagev2view_swift_cgfloat",
+      "community": 209,
+      "norm_label": "cgfloat"
+    },
+    {
+      "label": ".reduce()",
+      "file_type": "code",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L333",
+      "_origin": "ast",
+      "id": "todayv2_mainpagev2view_herooffsetkey_reduce",
+      "community": 209,
+      "norm_label": ".reduce()"
     },
     {
       "label": "AmountParsingTests.swift",
@@ -28338,7 +28558,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ankatests_categorymigrationtests",
-      "community": 67,
+      "community": 152,
       "norm_label": "categorymigrationtests.swift"
     },
     {
@@ -28348,7 +28568,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "ankatests_categorymigrationtests_categorymigrationtests",
-      "community": 67,
+      "community": 152,
       "norm_label": "categorymigrationtests"
     },
     {
@@ -28358,7 +28578,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "ankatests_categorymigrationtests_categorymigrationtests_makecontext",
-      "community": 67,
+      "community": 152,
       "norm_label": ".makecontext()"
     },
     {
@@ -28368,7 +28588,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "ankatests_categorymigrationtests_swift_modelcontext",
-      "community": 67,
+      "community": 152,
       "norm_label": "modelcontext"
     },
     {
@@ -28378,7 +28598,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "ankatests_categorymigrationtests_categorymigrationtests_makedefaults",
-      "community": 67,
+      "community": 152,
       "norm_label": ".makedefaults()"
     },
     {
@@ -28388,7 +28608,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "ankatests_categorymigrationtests_swift_userdefaults",
-      "community": 67,
+      "community": 152,
       "norm_label": "userdefaults"
     },
     {
@@ -28398,7 +28618,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "ankatests_categorymigrationtests_categorymigrationtests_fetchcats",
-      "community": 67,
+      "community": 152,
       "norm_label": ".fetchcats()"
     },
     {
@@ -28408,7 +28628,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "ankatests_categorymigrationtests_swift_anka",
-      "community": 67,
+      "community": 152,
       "norm_label": "anka"
     },
     {
@@ -28418,7 +28638,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "ankatests_categorymigrationtests_categorymigrationtests_freshinstallseedsdefaulttaxonomy",
-      "community": 67,
+      "community": 152,
       "norm_label": ".freshinstallseedsdefaulttaxonomy()"
     },
     {
@@ -28428,7 +28648,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "ankatests_categorymigrationtests_categorymigrationtests_oldtaxonomyismigratedandtransactionspreserved",
-      "community": 67,
+      "community": 152,
       "norm_label": ".oldtaxonomyismigratedandtransactionspreserved()"
     },
     {
@@ -28438,7 +28658,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "ankatests_categorymigrationtests_categorymigrationtests_migrationdoesnotruntwice",
-      "community": 67,
+      "community": 152,
       "norm_label": ".migrationdoesnotruntwice()"
     },
     {
@@ -28448,7 +28668,7 @@
       "source_location": "L93",
       "_origin": "ast",
       "id": "ankatests_categorymigrationtests_categorymigrationtests_curatedinstallwithoutoldnamesisleftalone",
-      "community": 67,
+      "community": 152,
       "norm_label": ".curatedinstallwithoutoldnamesisleftalone()"
     },
     {
@@ -28508,7 +28728,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ankatests_inlinetransactionparsertests",
-      "community": 67,
+      "community": 88,
       "norm_label": "inlinetransactionparsertests.swift"
     },
     {
@@ -28518,7 +28738,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "ankatests_inlinetransactionparsertests_inlinetransactionparsertests",
-      "community": 67,
+      "community": 88,
       "norm_label": "inlinetransactionparsertests"
     },
     {
@@ -28528,7 +28748,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "ankatests_inlinetransactionparsertests_inlinetransactionparsertests_defaultcategories",
-      "community": 67,
+      "community": 88,
       "norm_label": ".defaultcategories()"
     },
     {
@@ -28538,7 +28758,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "ankatests_inlinetransactionparsertests_swift_anka",
-      "community": 67,
+      "community": 88,
       "norm_label": "anka"
     },
     {
@@ -28548,7 +28768,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "ankatests_inlinetransactionparsertests_inlinetransactionparsertests_todaystart",
-      "community": 67,
+      "community": 88,
       "norm_label": ".todaystart()"
     },
     {
@@ -28558,7 +28778,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "ankatests_inlinetransactionparsertests_swift_date",
-      "community": 67,
+      "community": 88,
       "norm_label": "date"
     },
     {
@@ -28568,7 +28788,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "ankatests_inlinetransactionparsertests_inlinetransactionparsertests_parsesamountcategorynotetoday",
-      "community": 67,
+      "community": 88,
       "norm_label": ".parsesamountcategorynotetoday()"
     },
     {
@@ -28578,7 +28798,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "ankatests_inlinetransactionparsertests_inlinetransactionparsertests_parsesamountandyesterday",
-      "community": 67,
+      "community": 88,
       "norm_label": ".parsesamountandyesterday()"
     },
     {
@@ -28588,7 +28808,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "ankatests_inlinetransactionparsertests_inlinetransactionparsertests_amountwithnocategoryhashalfconfidence",
-      "community": 67,
+      "community": 88,
       "norm_label": ".amountwithnocategoryhashalfconfidence()"
     },
     {
@@ -28598,7 +28818,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "ankatests_inlinetransactionparsertests_inlinetransactionparsertests_noamountreturnsnil",
-      "community": 67,
+      "community": 88,
       "norm_label": ".noamountreturnsnil()"
     },
     {
@@ -28608,7 +28828,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "ankatests_inlinetransactionparsertests_inlinetransactionparsertests_extractsyesterday",
-      "community": 67,
+      "community": 88,
       "norm_label": ".extractsyesterday()"
     },
     {
@@ -28618,7 +28838,7 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "ankatests_inlinetransactionparsertests_inlinetransactionparsertests_extractstomorrow",
-      "community": 67,
+      "community": 88,
       "norm_label": ".extractstomorrow()"
     },
     {
@@ -28628,7 +28848,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "ankatests_inlinetransactionparsertests_inlinetransactionparsertests_extractsndaysago",
-      "community": 67,
+      "community": 88,
       "norm_label": ".extractsndaysago()"
     },
     {
@@ -28638,7 +28858,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "ankatests_inlinetransactionparsertests_inlinetransactionparsertests_extractsndaysfromnow",
-      "community": 67,
+      "community": 88,
       "norm_label": ".extractsndaysfromnow()"
     },
     {
@@ -28648,7 +28868,7 @@
       "source_location": "L93",
       "_origin": "ast",
       "id": "ankatests_inlinetransactionparsertests_inlinetransactionparsertests_nodatedefaultstotoday",
-      "community": 67,
+      "community": 88,
       "norm_label": ".nodatedefaultstotoday()"
     },
     {
@@ -28802,30 +29022,20 @@
       "norm_label": ".navigatemonthandresettocurrentmonth()"
     },
     {
-      "label": ".refreshComputesCategorySpendIncomeAndDelta()",
+      "label": ".refreshComputesCategorySpendByMode()",
       "file_type": "code",
       "source_file": "AnkaTests/StatsViewModelTests.swift",
       "source_location": "L31",
       "_origin": "ast",
-      "id": "ankatests_statsviewmodeltests_statsviewmodeltests_refreshcomputescategoryspendincomeanddelta",
+      "id": "ankatests_statsviewmodeltests_statsviewmodeltests_refreshcomputescategoryspendbymode",
       "community": 36,
-      "norm_label": ".refreshcomputescategoryspendincomeanddelta()"
-    },
-    {
-      "label": ".expenseDeltaPercentIsNilWithoutPreviousMonthBaseline()",
-      "file_type": "code",
-      "source_file": "AnkaTests/StatsViewModelTests.swift",
-      "source_location": "L64",
-      "_origin": "ast",
-      "id": "ankatests_statsviewmodeltests_statsviewmodeltests_expensedeltapercentisnilwithoutpreviousmonthbaseline",
-      "community": 36,
-      "norm_label": ".expensedeltapercentisnilwithoutpreviousmonthbaseline()"
+      "norm_label": ".refreshcomputescategoryspendbymode()"
     },
     {
       "label": ".boundaryTransactionAtStartOfNextMonthIsExcludedFromCurrentMonth()",
       "file_type": "code",
       "source_file": "AnkaTests/StatsViewModelTests.swift",
-      "source_location": "L78",
+      "source_location": "L63",
       "_origin": "ast",
       "id": "ankatests_statsviewmodeltests_statsviewmodeltests_boundarytransactionatstartofnextmonthisexcludedfromcurrentmonth",
       "community": 36,
@@ -28835,7 +29045,7 @@
       "label": ".weeklySpendCoversEveryWeekInTheMonthIncludingZeroSpend()",
       "file_type": "code",
       "source_file": "AnkaTests/StatsViewModelTests.swift",
-      "source_location": "L96",
+      "source_location": "L81",
       "_origin": "ast",
       "id": "ankatests_statsviewmodeltests_statsviewmodeltests_weeklyspendcoverseveryweekinthemonthincludingzerospend",
       "community": 36,
@@ -29408,7 +29618,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ankauitests_inlinecomposeruitests",
-      "community": 98,
+      "community": 83,
       "norm_label": "inlinecomposeruitests.swift"
     },
     {
@@ -29418,7 +29628,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "ankauitests_inlinecomposeruitests_inlinecomposeruitests",
-      "community": 98,
+      "community": 83,
       "norm_label": "inlinecomposeruitests"
     },
     {
@@ -29428,7 +29638,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "ankauitests_inlinecomposeruitests_inlinecomposeruitests_setupwitherror",
-      "community": 98,
+      "community": 83,
       "norm_label": ".setupwitherror()"
     },
     {
@@ -29438,7 +29648,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "ankauitests_inlinecomposeruitests_inlinecomposeruitests_launchapp",
-      "community": 98,
+      "community": 83,
       "norm_label": ".launchapp()"
     },
     {
@@ -29448,7 +29658,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "ankauitests_inlinecomposeruitests_swift_xcuiapplication",
-      "community": 98,
+      "community": 83,
       "norm_label": "xcuiapplication"
     },
     {
@@ -29458,7 +29668,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "ankauitests_inlinecomposeruitests_inlinecomposeruitests_testbottombarreappearsafterdismissingcomposerbytappingoutside",
-      "community": 98,
+      "community": 83,
       "norm_label": ".testbottombarreappearsafterdismissingcomposerbytappingoutside()"
     },
     {
@@ -29468,7 +29678,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "ankauitests_inlinecomposeruitests_inlinecomposeruitests_testbottombarreappearsaftersendingfromcomposer",
-      "community": 98,
+      "community": 83,
       "norm_label": ".testbottombarreappearsaftersendingfromcomposer()"
     },
     {
@@ -29478,7 +29688,7 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "ankauitests_inlinecomposeruitests_inlinecomposeruitests_waitfornonexistence",
-      "community": 98,
+      "community": 83,
       "norm_label": ".waitfornonexistence()"
     },
     {
@@ -29488,7 +29698,7 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "xcuielement",
-      "community": 98,
+      "community": 83,
       "norm_label": "xcuielement"
     },
     {
@@ -29498,7 +29708,7 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "ankauitests_inlinecomposeruitests_swift_timeinterval",
-      "community": 98,
+      "community": 83,
       "norm_label": "timeinterval"
     },
     {
@@ -29508,7 +29718,7 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "ankauitests_inlinecomposeruitests_swift_bool",
-      "community": 98,
+      "community": 83,
       "norm_label": "bool"
     },
     {
@@ -29518,7 +29728,7 @@
       "source_location": "L119",
       "_origin": "ast",
       "id": "ankauitests_inlinecomposeruitests_inlinecomposeruitests_waitforcondition",
-      "community": 98,
+      "community": 83,
       "norm_label": ".waitforcondition()"
     },
     {
@@ -40720,7 +40930,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 101,
+      "community": 218,
       "norm_label": "ankaapp.makecontainer",
       "id": "ankaapp_makecontainer"
     },
@@ -40733,7 +40943,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 101,
+      "community": 218,
       "norm_label": "ankaapp.seedormigratecategories",
       "id": "ankaapp_seedormigratecategories"
     },
@@ -40746,7 +40956,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 92,
+      "community": 218,
       "norm_label": "categorypredictor (instance at app root)",
       "id": "ankaapp_categorypredictor"
     },
@@ -40811,7 +41021,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 101,
+      "community": 218,
       "norm_label": "postsavesideeffects",
       "id": "ankaintentsupport_postsavesideeffects"
     },
@@ -40850,7 +41060,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 209,
+      "community": 80,
       "norm_label": "color(hex:) initializer",
       "id": "color_hex_color_hex_init"
     },
@@ -40863,7 +41073,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 209,
+      "community": 80,
       "norm_label": "uicolor(hex:) initializer",
       "id": "color_hex_uicolor_hex_init"
     },
@@ -40889,7 +41099,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 209,
+      "community": 80,
       "norm_label": "dsfont tokens (font extension)",
       "id": "dsfont_dsfont_tokens"
     },
@@ -40967,7 +41177,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 89,
+      "community": 33,
       "norm_label": "autobackupservice (referenced)",
       "id": "shared_autobackupservice_autobackupservice"
     },
@@ -41032,7 +41242,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 204,
+      "community": 34,
       "norm_label": "pinsetupsheet (referenced)",
       "id": "shared_pinsetupsheet_pinsetupsheet"
     },
@@ -41045,7 +41255,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 204,
+      "community": 34,
       "norm_label": "applockmanager (referenced)",
       "id": "shared_applockmanager_applockmanager"
     },
@@ -41058,7 +41268,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 204,
+      "community": 34,
       "norm_label": "appearancemanager (referenced)",
       "id": "shared_appearancemanager_appearancemanager"
     },
@@ -89669,9 +89879,9 @@
       "source_location": "L15",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "settings_currencysettingsview_currencysettingsview",
-      "target": "view",
-      "confidence_score": 1.0
+      "target": "view"
     },
     {
       "relation": "references",
@@ -89680,9 +89890,9 @@
       "source_location": "L32",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "settings_currencysettingsview_currencysettingsview_currencyrow",
-      "target": "view",
-      "confidence_score": 1.0
+      "target": "view"
     },
     {
       "relation": "references",
@@ -89919,33 +90129,11 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Anka/Views/Stats/StatsView.swift",
-      "source_location": "L161",
-      "weight": 1.0,
-      "context": "return_type",
-      "confidence_score": 1.0,
-      "source": "stats_statsview_statsview_deltapill",
-      "target": "view"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "Anka/Views/Stats/StatsView.swift",
       "source_location": "L116",
       "weight": 1.0,
       "context": "return_type",
       "confidence_score": 1.0,
       "source": "stats_statsview_statsview_stepperbutton",
-      "target": "view"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "Anka/Views/Stats/StatsView.swift",
-      "source_location": "L177",
-      "weight": 1.0,
-      "context": "return_type",
-      "confidence_score": 1.0,
-      "source": "stats_statsview_statsview_summarychip",
       "target": "view"
     },
     {
@@ -90002,6 +90190,28 @@
       "confidence_score": 1.0,
       "source": "today_todayview_todayview",
       "target": "view"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/TodayV2/MainPageV2LineChart.swift",
+      "source_location": "L50",
+      "weight": 1.0,
+      "context": "field",
+      "source": "todayv2_mainpagev2linechart_mainpagev2linechart",
+      "target": "view",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L272",
+      "weight": 1.0,
+      "context": "field",
+      "source": "todayv2_mainpagev2view_mainpagev2view",
+      "target": "view",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -90787,7 +90997,17 @@
       "source_file": "Anka/DesignSystem/CurrencyInfo.swift",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "designsystem_currencyinfo_currencyinfo",
+      "target": "identifiable"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Models/DailySpendPoint.swift",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "models_dailyspendpoint_dailyspendpoint",
       "target": "identifiable",
       "confidence_score": 1.0
     },
@@ -92156,9 +92376,9 @@
       "source_file": "Anka/DesignSystem/CurrencyInfo.swift",
       "source_location": "L50",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "designsystem_currencyinfo",
-      "target": "designsystem_currencyinfo_currencyconverter",
-      "confidence_score": 1.0
+      "target": "designsystem_currencyinfo_currencyconverter"
     },
     {
       "relation": "contains",
@@ -92166,9 +92386,9 @@
       "source_file": "Anka/DesignSystem/CurrencyInfo.swift",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "designsystem_currencyinfo",
-      "target": "designsystem_currencyinfo_currencyinfo",
-      "confidence_score": 1.0
+      "target": "designsystem_currencyinfo_currencyinfo"
     },
     {
       "relation": "references",
@@ -92177,9 +92397,9 @@
       "source_location": "L12",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "designsystem_currencyinfo_currencyinfo",
-      "target": "anka_designsystem_currencyinfo_swift_bool",
-      "confidence_score": 1.0
+      "target": "anka_designsystem_currencyinfo_swift_bool"
     },
     {
       "relation": "references",
@@ -92188,9 +92408,9 @@
       "source_location": "L10",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "designsystem_currencyinfo_currencyinfo",
-      "target": "anka_designsystem_currencyinfo_swift_int",
-      "confidence_score": 1.0
+      "target": "anka_designsystem_currencyinfo_swift_int"
     },
     {
       "relation": "references",
@@ -92199,9 +92419,9 @@
       "source_location": "L14",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "designsystem_currencyinfo_currencyinfo",
-      "target": "anka_designsystem_currencyinfo_swift_string",
-      "confidence_score": 1.0
+      "target": "anka_designsystem_currencyinfo_swift_string"
     },
     {
       "relation": "references",
@@ -92210,9 +92430,9 @@
       "source_location": "L41",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "designsystem_currencyinfo_currencyinfo_info",
-      "target": "designsystem_currencyinfo_currencyinfo",
-      "confidence_score": 1.0
+      "target": "designsystem_currencyinfo_currencyinfo"
     },
     {
       "relation": "implements",
@@ -92220,7 +92440,17 @@
       "source_file": "Anka/DesignSystem/CurrencyInfo.swift",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "designsystem_currencyinfo_currencyinfo",
+      "target": "equatable"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Models/DailySpendPoint.swift",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "models_dailyspendpoint_dailyspendpoint",
       "target": "equatable",
       "confidence_score": 1.0
     },
@@ -92251,9 +92481,9 @@
       "source_location": "L54",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "designsystem_currencyinfo_currencyconverter_convert",
-      "target": "anka_designsystem_currencyinfo_swift_string",
-      "confidence_score": 1.0
+      "target": "anka_designsystem_currencyinfo_swift_string"
     },
     {
       "relation": "references",
@@ -92262,9 +92492,9 @@
       "source_location": "L41",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "designsystem_currencyinfo_currencyinfo_info",
-      "target": "anka_designsystem_currencyinfo_swift_string",
-      "confidence_score": 1.0
+      "target": "anka_designsystem_currencyinfo_swift_string"
     },
     {
       "relation": "method",
@@ -92272,9 +92502,9 @@
       "source_file": "Anka/DesignSystem/CurrencyInfo.swift",
       "source_location": "L54",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "designsystem_currencyinfo_currencyconverter",
-      "target": "designsystem_currencyinfo_currencyconverter_convert",
-      "confidence_score": 1.0
+      "target": "designsystem_currencyinfo_currencyconverter_convert"
     },
     {
       "relation": "references",
@@ -92283,9 +92513,9 @@
       "source_location": "L54",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "designsystem_currencyinfo_currencyconverter_convert",
-      "target": "anka_designsystem_currencyinfo_swift_double",
-      "confidence_score": 1.0
+      "target": "anka_designsystem_currencyinfo_swift_double"
     },
     {
       "relation": "contains",
@@ -92764,12 +92994,23 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Anka/DesignSystem/NumberFormatter+Amount.swift",
-      "source_location": "L14",
+      "source_location": "L21",
       "weight": 1.0,
       "context": "field",
       "source": "designsystem_numberformatter_amount_appcurrency",
-      "target": "anka_designsystem_numberformatter_amount_swift_string",
+      "target": "anka_designsystem_numberformatter_amount_swift_bool",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/DesignSystem/NumberFormatter+Amount.swift",
+      "source_location": "L14",
+      "weight": 1.0,
+      "context": "field",
+      "confidence_score": 1.0,
+      "source": "designsystem_numberformatter_amount_appcurrency",
+      "target": "anka_designsystem_numberformatter_amount_swift_string"
     },
     {
       "relation": "references",
@@ -92830,9 +93071,9 @@
       "source_location": "L23",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "designsystem_numberformatter_amount_numberformatter_amount",
-      "target": "anka_designsystem_numberformatter_amount_swift_int",
-      "confidence_score": 1.0
+      "target": "anka_designsystem_numberformatter_amount_swift_int"
     },
     {
       "relation": "method",
@@ -92841,9 +93082,9 @@
       "source_file": "Anka/DesignSystem/NumberFormatter+Amount.swift",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "numberformatter",
-      "target": "designsystem_numberformatter_amount_numberformatter_amount",
-      "confidence_score": 1.0
+      "target": "designsystem_numberformatter_amount_numberformatter_amount"
     },
     {
       "relation": "contains",
@@ -93101,6 +93342,118 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "Anka/Models/DailySpendPoint.swift",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "models_dailyspendpoint",
+      "target": "models_dailyspendpoint_dailyspendpoint",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Models/DailySpendPoint.swift",
+      "source_location": "L9",
+      "weight": 1.0,
+      "context": "field",
+      "source": "models_dailyspendpoint_dailyspendpoint",
+      "target": "anka_models_dailyspendpoint_swift_date",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Models/DailySpendPoint.swift",
+      "source_location": "L8",
+      "weight": 1.0,
+      "context": "field",
+      "source": "models_dailyspendpoint_dailyspendpoint",
+      "target": "anka_models_dailyspendpoint_swift_double",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Models/DailySpendPoint.swift",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "models_dailyspendpoint_dailyspendpoint",
+      "target": "sendable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Models/TransactionSnapshot.swift",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "models_transactionsnapshot_transactionsnapshot",
+      "target": "sendable"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Models/WeeklySpendData.swift",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "models_weeklyspenddata_weeklyspenddata",
+      "target": "sendable"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Services/AutoBackupService.swift",
+      "source_location": "L21",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_autobackupservice_backupfile",
+      "target": "sendable"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Services/BackupService.swift",
+      "source_location": "L97",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_backupservice_restorephase",
+      "target": "sendable"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Services/CategoryMLTrainer.swift",
+      "source_location": "L11",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_categorymltrainer_trainabletransaction",
+      "target": "sendable"
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Services/TransactionParser.swift",
+      "source_location": "L28",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_transactionparser_transactionparser",
+      "target": "sendable"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Services/WidgetSharedTypes.swift",
+      "source_location": "L29",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_widgetsharedtypes_widgettransaction",
+      "target": "sendable"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "Anka/Models/SampleData.swift",
       "source_location": "L4",
       "weight": 1.0,
@@ -93263,9 +93616,9 @@
       "source_file": "Anka/Models/Transaction.swift",
       "source_location": "L42",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_transaction_transaction",
-      "target": "models_transaction_transaction_convertedamount",
-      "confidence_score": 1.0
+      "target": "models_transaction_transaction_convertedamount"
     },
     {
       "relation": "method",
@@ -93355,9 +93708,9 @@
       "source_location": "L42",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "models_transaction_transaction_convertedamount",
-      "target": "anka_models_transaction_swift_double",
-      "confidence_score": 1.0
+      "target": "anka_models_transaction_swift_double"
     },
     {
       "relation": "references",
@@ -93399,9 +93752,9 @@
       "source_location": "L42",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "models_transaction_transaction_convertedamount",
-      "target": "anka_models_transaction_swift_string",
-      "confidence_score": 1.0
+      "target": "anka_models_transaction_swift_string"
     },
     {
       "relation": "references",
@@ -93464,9 +93817,9 @@
       "source_location": "L13",
       "weight": 1.0,
       "context": "field",
+      "confidence_score": 1.0,
       "source": "models_transactionsnapshot_transactionsnapshot",
-      "target": "anka_models_transactionsnapshot_swift_string",
-      "confidence_score": 1.0
+      "target": "anka_models_transactionsnapshot_swift_string"
     },
     {
       "relation": "references",
@@ -93496,9 +93849,9 @@
       "source_file": "Anka/Models/TransactionSnapshot.swift",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "models_transactionsnapshot_transactionsnapshot",
-      "target": "models_transactionsnapshot_transactionsnapshot_convertedamount",
-      "confidence_score": 1.0
+      "target": "models_transactionsnapshot_transactionsnapshot_convertedamount"
     },
     {
       "relation": "method",
@@ -93521,85 +93874,15 @@
       "target": "models_transactiontype_transactiontype"
     },
     {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "source_file": "Anka/Models/TransactionSnapshot.swift",
-      "source_location": "L8",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "models_transactionsnapshot_transactionsnapshot",
-      "target": "sendable"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "source_file": "Anka/Models/WeeklySpendData.swift",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "models_weeklyspenddata_weeklyspenddata",
-      "target": "sendable"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "source_file": "Anka/Services/AutoBackupService.swift",
-      "source_location": "L21",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_autobackupservice_backupfile",
-      "target": "sendable"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "source_file": "Anka/Services/BackupService.swift",
-      "source_location": "L97",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_backupservice_restorephase",
-      "target": "sendable"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "source_file": "Anka/Services/CategoryMLTrainer.swift",
-      "source_location": "L11",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_categorymltrainer_trainabletransaction",
-      "target": "sendable"
-    },
-    {
-      "relation": "inherits",
-      "confidence": "EXTRACTED",
-      "source_file": "Anka/Services/TransactionParser.swift",
-      "source_location": "L28",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_transactionparser_transactionparser",
-      "target": "sendable"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "source_file": "Anka/Services/WidgetSharedTypes.swift",
-      "source_location": "L29",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_widgetsharedtypes_widgettransaction",
-      "target": "sendable"
-    },
-    {
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Anka/Models/TransactionSnapshot.swift",
       "source_location": "L26",
       "weight": 1.0,
       "context": "return_type",
+      "confidence_score": 1.0,
       "source": "models_transactionsnapshot_transactionsnapshot_convertedamount",
-      "target": "anka_models_transactionsnapshot_swift_double",
-      "confidence_score": 1.0
+      "target": "anka_models_transactionsnapshot_swift_double"
     },
     {
       "relation": "references",
@@ -93608,9 +93891,9 @@
       "source_location": "L26",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "models_transactionsnapshot_transactionsnapshot_convertedamount",
-      "target": "anka_models_transactionsnapshot_swift_string",
-      "confidence_score": 1.0
+      "target": "anka_models_transactionsnapshot_swift_string"
     },
     {
       "relation": "references",
@@ -93846,6 +94129,17 @@
       "target": "string"
     },
     {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L321",
+      "weight": 1.0,
+      "context": "field",
+      "source": "todayv2_mainpagev2view_chartmode",
+      "target": "string",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "implements",
       "confidence": "EXTRACTED",
       "source_file": "Anka/Services/AppearanceManager.swift",
@@ -93994,6 +94288,16 @@
       "confidence_score": 1.0,
       "source": "today_todayviewmodel_periodfilter",
       "target": "caseiterable"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L317",
+      "weight": 1.0,
+      "source": "todayv2_mainpagev2view_chartmode",
+      "target": "caseiterable",
+      "confidence_score": 1.0
     },
     {
       "relation": "implements",
@@ -103496,9 +103800,9 @@
       "source_file": "Anka/Views/Settings/CurrencySettingsView.swift",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "settings_currencysettingsview",
-      "target": "settings_currencysettingsview_currencysettingsview",
-      "confidence_score": 1.0
+      "target": "settings_currencysettingsview_currencysettingsview"
     },
     {
       "relation": "method",
@@ -103506,9 +103810,9 @@
       "source_file": "Anka/Views/Settings/CurrencySettingsView.swift",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "settings_currencysettingsview_currencysettingsview",
-      "target": "settings_currencysettingsview_currencysettingsview_currencyrow",
-      "confidence_score": 1.0
+      "target": "settings_currencysettingsview_currencysettingsview_currencyrow"
     },
     {
       "relation": "references",
@@ -103517,9 +103821,9 @@
       "source_location": "L32",
       "weight": 1.0,
       "context": "parameter_type",
+      "confidence_score": 1.0,
       "source": "settings_currencysettingsview_currencysettingsview_currencyrow",
-      "target": "currencyinfo",
-      "confidence_score": 1.0
+      "target": "currencyinfo"
     },
     {
       "relation": "contains",
@@ -104186,6 +104490,16 @@
       "target": "settings_settingsview_settingsview"
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/Settings/SettingsView.swift",
+      "source_location": "L311",
+      "weight": 1.0,
+      "source": "settings_settingsview",
+      "target": "settings_settingsview_view",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Anka/Views/Settings/SettingsView.swift",
@@ -104287,6 +104601,17 @@
       "weight": 1.0,
       "source": "shared_todaysheets_todaysheetsmodifier_body",
       "target": "settings_settingsview_settingsview"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/Settings/SettingsView.swift",
+      "source_location": "L312",
+      "weight": 1.0,
+      "context": "return_type",
+      "source": "settings_settingsview_view_labelicontinted",
+      "target": "settings_settingsview_view",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -104609,16 +104934,6 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Anka/Views/Stats/StatsView.swift",
-      "source_location": "L161",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "stats_statsview_statsview",
-      "target": "stats_statsview_statsview_deltapill"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "Anka/Views/Stats/StatsView.swift",
       "source_location": "L78",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -104629,41 +104944,11 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "Anka/Views/Stats/StatsView.swift",
-      "source_location": "L195",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "stats_statsview_statsview",
-      "target": "stats_statsview_statsview_rp"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "Anka/Views/Stats/StatsView.swift",
-      "source_location": "L198",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "stats_statsview_statsview",
-      "target": "stats_statsview_statsview_signedamount"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "Anka/Views/Stats/StatsView.swift",
       "source_location": "L116",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "stats_statsview_statsview",
       "target": "stats_statsview_statsview_stepperbutton"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "Anka/Views/Stats/StatsView.swift",
-      "source_location": "L177",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "stats_statsview_statsview",
-      "target": "stats_statsview_statsview_summarychip"
     },
     {
       "relation": "shares_data_with",
@@ -104711,44 +104996,11 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Anka/Views/Stats/StatsView.swift",
-      "source_location": "L195",
-      "weight": 1.0,
-      "context": "return_type",
-      "confidence_score": 1.0,
-      "source": "stats_statsview_statsview_rp",
-      "target": "anka_views_stats_statsview_swift_string"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "Anka/Views/Stats/StatsView.swift",
-      "source_location": "L198",
-      "weight": 1.0,
-      "context": "return_type",
-      "confidence_score": 1.0,
-      "source": "stats_statsview_statsview_signedamount",
-      "target": "anka_views_stats_statsview_swift_string"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "Anka/Views/Stats/StatsView.swift",
       "source_location": "L116",
       "weight": 1.0,
       "context": "parameter_type",
       "confidence_score": 1.0,
       "source": "stats_statsview_statsview_stepperbutton",
-      "target": "anka_views_stats_statsview_swift_string"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "Anka/Views/Stats/StatsView.swift",
-      "source_location": "L177",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "confidence_score": 1.0,
-      "source": "stats_statsview_statsview_summarychip",
       "target": "anka_views_stats_statsview_swift_string"
     },
     {
@@ -104772,61 +105024,6 @@
       "confidence_score": 1.0,
       "source": "stats_statsview_statsview_stepperbutton",
       "target": "anka_views_stats_statsview_swift_int"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Anka/Views/Stats/StatsView.swift",
-      "source_location": "L168",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "stats_statsview_statsview_deltapill",
-      "target": "anka_views_stats_statsview_swift_int"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "Anka/Views/Stats/StatsView.swift",
-      "source_location": "L161",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "confidence_score": 1.0,
-      "source": "stats_statsview_statsview_deltapill",
-      "target": "anka_views_stats_statsview_swift_double"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "Anka/Views/Stats/StatsView.swift",
-      "source_location": "L195",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "confidence_score": 1.0,
-      "source": "stats_statsview_statsview_rp",
-      "target": "anka_views_stats_statsview_swift_double"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "Anka/Views/Stats/StatsView.swift",
-      "source_location": "L198",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "confidence_score": 1.0,
-      "source": "stats_statsview_statsview_signedamount",
-      "target": "anka_views_stats_statsview_swift_double"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "Anka/Views/Stats/StatsView.swift",
-      "source_location": "L177",
-      "weight": 1.0,
-      "context": "parameter_type",
-      "confidence_score": 1.0,
-      "source": "stats_statsview_statsview_summarychip",
-      "target": "anka_views_stats_statsview_swift_color"
     },
     {
       "relation": "contains",
@@ -104855,17 +105052,6 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "AnkaTests/StatsViewModelTests.swift",
-      "source_location": "L71",
-      "weight": 1.0,
-      "source": "ankatests_statsviewmodeltests_statsviewmodeltests_expensedeltapercentisnilwithoutpreviousmonthbaseline",
-      "target": "stats_statsviewmodel_statsviewmodel"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "AnkaTests/StatsViewModelTests.swift",
       "source_location": "L19",
       "weight": 1.0,
       "source": "ankatests_statsviewmodeltests_statsviewmodeltests_navigatemonthandresettocurrentmonth",
@@ -104877,9 +105063,9 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "AnkaTests/StatsViewModelTests.swift",
-      "source_location": "L49",
+      "source_location": "L46",
       "weight": 1.0,
-      "source": "ankatests_statsviewmodeltests_statsviewmodeltests_refreshcomputescategoryspendincomeanddelta",
+      "source": "ankatests_statsviewmodeltests_statsviewmodeltests_refreshcomputescategoryspendbymode",
       "target": "stats_statsviewmodel_statsviewmodel"
     },
     {
@@ -105001,6 +105187,17 @@
       "weight": 1.0,
       "source": "stats_statsviewmodel_statsviewmodel",
       "target": "anka_views_stats_weeklytrendchartview_swift_weeklyspenddata"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/Stats/StatsViewModel.swift",
+      "source_location": "L32",
+      "weight": 1.0,
+      "context": "field",
+      "source": "stats_statsviewmodel_statsviewmodel",
+      "target": "balancemode",
+      "confidence_score": 1.0
     },
     {
       "relation": "shares_data_with",
@@ -106431,6 +106628,17 @@
       "target": "anka_views_today_todayviewmodel_swift_dateinterval"
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/Today/TodayViewModel.swift",
+      "source_location": "L368",
+      "weight": 1.0,
+      "source": "today_todayviewmodel_todayviewmodel_refreshdashboard",
+      "target": "anka_views_today_todayviewmodel_swift_dateinterval",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "case_of",
       "confidence": "EXTRACTED",
       "source_file": "Anka/Views/Today/TodayViewModel.swift",
@@ -106532,6 +106740,17 @@
       "confidence_score": 1.0,
       "source": "today_todayviewmodel_todayviewmodel",
       "target": "anka_views_today_todayviewmodel_swift_category"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/Today/TodayViewModel.swift",
+      "source_location": "L161",
+      "weight": 1.0,
+      "context": "field",
+      "source": "today_todayviewmodel_todayviewmodel",
+      "target": "anka_views_today_todayviewmodel_swift_dailyspendpoint",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -106823,11 +107042,11 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Anka/Views/Today/TodayViewModel.swift",
-      "source_location": "L264",
+      "source_location": "L428",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "today_todayviewmodel_todayviewmodel_resettocurrentmonth",
-      "target": "today_todayviewmodel_todayviewmodel_jumptomonth"
+      "source": "today_todayviewmodel_todayviewmodel_refreshdashboard",
+      "target": "anka_views_today_todayviewmodel_swift_dailyspendpoint",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -106841,6 +107060,17 @@
       "target": "anka_views_today_todayviewmodel_swift_double"
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/Today/TodayViewModel.swift",
+      "source_location": "L264",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "today_todayviewmodel_todayviewmodel_resettocurrentmonth",
+      "target": "today_todayviewmodel_todayviewmodel_jumptomonth"
+    },
+    {
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "Anka/Views/Today/TodayViewModel.swift",
@@ -106850,6 +107080,195 @@
       "confidence_score": 1.0,
       "source": "today_todayviewmodel_todayviewmodel_confirmdelete",
       "target": "anka_views_today_todayviewmodel_swift_modelcontext"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/TodayV2/MainPageV2LineChart.swift",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "todayv2_mainpagev2linechart",
+      "target": "todayv2_mainpagev2linechart_mainpagev2linechart",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/TodayV2/MainPageV2LineChart.swift",
+      "source_location": "L13",
+      "weight": 1.0,
+      "context": "field",
+      "source": "todayv2_mainpagev2linechart_mainpagev2linechart",
+      "target": "anka_views_todayv2_mainpagev2linechart_swift_dailyspendpoint",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/TodayV2/MainPageV2LineChart.swift",
+      "source_location": "L11",
+      "weight": 1.0,
+      "context": "field",
+      "source": "todayv2_mainpagev2linechart_mainpagev2linechart",
+      "target": "anka_views_todayv2_mainpagev2linechart_swift_date",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/TodayV2/MainPageV2LineChart.swift",
+      "source_location": "L18",
+      "weight": 1.0,
+      "context": "field",
+      "source": "todayv2_mainpagev2linechart_mainpagev2linechart",
+      "target": "anka_views_todayv2_mainpagev2linechart_swift_dateformatter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L317",
+      "weight": 1.0,
+      "source": "todayv2_mainpagev2view",
+      "target": "todayv2_mainpagev2view_chartmode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L331",
+      "weight": 1.0,
+      "source": "todayv2_mainpagev2view",
+      "target": "todayv2_mainpagev2view_herooffsetkey",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "todayv2_mainpagev2view",
+      "target": "todayv2_mainpagev2view_mainpagev2view",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L16",
+      "weight": 1.0,
+      "context": "field",
+      "source": "todayv2_mainpagev2view_mainpagev2view",
+      "target": "anka_views_todayv2_mainpagev2view_swift_category",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L212",
+      "weight": 1.0,
+      "context": "field",
+      "source": "todayv2_mainpagev2view_mainpagev2view",
+      "target": "anka_views_todayv2_mainpagev2view_swift_dailyspendpoint",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L15",
+      "weight": 1.0,
+      "context": "field",
+      "source": "todayv2_mainpagev2view_mainpagev2view",
+      "target": "anka_views_todayv2_mainpagev2view_swift_transaction",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L21",
+      "weight": 1.0,
+      "context": "field",
+      "source": "todayv2_mainpagev2view_mainpagev2view",
+      "target": "chartmode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L46",
+      "weight": 1.0,
+      "source": "todayv2_mainpagev2view_mainpagev2view",
+      "target": "todayv2_mainpagev2view_mainpagev2view_feedvm",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "case_of",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L319",
+      "weight": 1.0,
+      "source": "todayv2_mainpagev2view_chartmode",
+      "target": "todayv2_mainpagev2view_chartmode_cumulative",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "case_of",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L318",
+      "weight": 1.0,
+      "source": "todayv2_mainpagev2view_chartmode",
+      "target": "todayv2_mainpagev2view_chartmode_daily",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L332",
+      "weight": 1.0,
+      "context": "field",
+      "source": "todayv2_mainpagev2view_herooffsetkey",
+      "target": "anka_views_todayv2_mainpagev2view_swift_cgfloat",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L331",
+      "weight": 1.0,
+      "source": "todayv2_mainpagev2view_herooffsetkey",
+      "target": "preferencekey",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L333",
+      "weight": 1.0,
+      "source": "todayv2_mainpagev2view_herooffsetkey",
+      "target": "todayv2_mainpagev2view_herooffsetkey_reduce",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "Anka/Views/TodayV2/MainPageV2View.swift",
+      "source_location": "L333",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "source": "todayv2_mainpagev2view_herooffsetkey_reduce",
+      "target": "anka_views_todayv2_mainpagev2view_swift_cgfloat",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -107878,9 +108297,9 @@
       "source_file": "AnkaTests/CurrencyInfoTests.swift",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ankatests_currencyinfotests",
-      "target": "ankatests_currencyinfotests_currencyinfotests",
-      "confidence_score": 1.0
+      "target": "ankatests_currencyinfotests_currencyinfotests"
     },
     {
       "relation": "method",
@@ -107888,9 +108307,9 @@
       "source_file": "AnkaTests/CurrencyInfoTests.swift",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ankatests_currencyinfotests_currencyinfotests",
-      "target": "ankatests_currencyinfotests_currencyinfotests_converterisidentity",
-      "confidence_score": 1.0
+      "target": "ankatests_currencyinfotests_currencyinfotests_converterisidentity"
     },
     {
       "relation": "method",
@@ -107898,9 +108317,9 @@
       "source_file": "AnkaTests/CurrencyInfoTests.swift",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ankatests_currencyinfotests_currencyinfotests",
-      "target": "ankatests_currencyinfotests_currencyinfotests_infolookupfallsbackforunknowncode",
-      "confidence_score": 1.0
+      "target": "ankatests_currencyinfotests_currencyinfotests_infolookupfallsbackforunknowncode"
     },
     {
       "relation": "method",
@@ -107908,9 +108327,9 @@
       "source_file": "AnkaTests/CurrencyInfoTests.swift",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "ankatests_currencyinfotests_currencyinfotests",
-      "target": "ankatests_currencyinfotests_currencyinfotests_infolookupreturnscuratedentries",
-      "confidence_score": 1.0
+      "target": "ankatests_currencyinfotests_currencyinfotests_infolookupreturnscuratedentries"
     },
     {
       "relation": "contains",
@@ -108245,16 +108664,6 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "AnkaTests/StatsViewModelTests.swift",
-      "source_location": "L64",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ankatests_statsviewmodeltests_statsviewmodeltests",
-      "target": "ankatests_statsviewmodeltests_statsviewmodeltests_expensedeltapercentisnilwithoutpreviousmonthbaseline"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "AnkaTests/StatsViewModelTests.swift",
       "source_location": "L12",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -108277,9 +108686,9 @@
       "source_file": "AnkaTests/StatsViewModelTests.swift",
       "source_location": "L31",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "ankatests_statsviewmodeltests_statsviewmodeltests",
-      "target": "ankatests_statsviewmodeltests_statsviewmodeltests_refreshcomputescategoryspendincomeanddelta"
+      "target": "ankatests_statsviewmodeltests_statsviewmodeltests_refreshcomputescategoryspendbymode",
+      "confidence_score": 1.0
     },
     {
       "relation": "method",
@@ -108303,17 +108712,6 @@
       "target": "ankatests_statsviewmodeltests_statsviewmodeltests_makecontext"
     },
     {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "AnkaTests/StatsViewModelTests.swift",
-      "source_location": "L65",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ankatests_statsviewmodeltests_statsviewmodeltests_expensedeltapercentisnilwithoutpreviousmonthbaseline",
-      "target": "ankatests_statsviewmodeltests_statsviewmodeltests_makecontext"
-    },
-    {
       "relation": "references",
       "context": "return_type",
       "confidence": "EXTRACTED",
@@ -108331,9 +108729,9 @@
       "source_file": "AnkaTests/StatsViewModelTests.swift",
       "source_location": "L32",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "ankatests_statsviewmodeltests_statsviewmodeltests_refreshcomputescategoryspendincomeanddelta",
-      "target": "ankatests_statsviewmodeltests_statsviewmodeltests_makecontext"
+      "source": "ankatests_statsviewmodeltests_statsviewmodeltests_refreshcomputescategoryspendbymode",
+      "target": "ankatests_statsviewmodeltests_statsviewmodeltests_makecontext",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -121543,5 +121941,5 @@
       "source_file": "AUDIT.md"
     }
   ],
-  "built_at_commit": "b5c51286eadb5f44fae7173ddb621b6848cbddf8"
+  "built_at_commit": "3cf05f0cb34958ebfa318e14d360b17a9e12a504"
 }

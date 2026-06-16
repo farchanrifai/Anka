@@ -750,8 +750,8 @@
     "semantic_hash": ""
   },
   "Anka/Views/Today/TodayViewModel.swift": {
-    "mtime": 1781580150.6090016,
-    "ast_hash": "56ea254f0ef97b117dcf0b597ff44e89",
+    "mtime": 1781601992.2920573,
+    "ast_hash": "f0f0c3bc41f3e2f2dd7f66625e5899e2",
     "semantic_hash": ""
   },
   "AnkaTests/AmountParsingTests.swift": {
@@ -1075,8 +1075,8 @@
     "semantic_hash": ""
   },
   "Anka/Views/TodayV2/MainPageV2View.swift": {
-    "mtime": 1781579782.734182,
-    "ast_hash": "5bd6db5897d90e48dacc0bd7bca70bd0",
+    "mtime": 1781602011.7799544,
+    "ast_hash": "c2f1f06a37cce1ab448d5d1d9e613581",
     "semantic_hash": ""
   }
 }
