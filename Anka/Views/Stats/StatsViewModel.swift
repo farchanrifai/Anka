@@ -37,8 +37,6 @@ final class StatsViewModel {
     /// Sum of category-slice amounts (donut denominator). Expense total for
     /// expense/total modes; income total for income mode.
     private(set) var monthTotal: Double = 0
-    private(set) var weeklySpend: [WeeklySpendData] = []
-    private(set) var weeklyAverage: Double = 0
     var isLoading: Bool = false
 
     /// Encodes every dependency of the cached vars so `.task(id:)` reruns
@@ -113,40 +111,7 @@ final class StatsViewModel {
             }
             let sorted = totals.sorted { $0.value > $1.value }
 
-            // Weekly: expense or income amounts; total mode nets income − expense.
-            var weeklyAgg: [Date: Double] = [:]
-            switch capturedMode {
-            case .expense:
-                for snap in expenseSnaps {
-                    weeklyAgg[snap.date.startOfWeek, default: 0] += snap.convertedAmount(to: targetCurrency)
-                }
-            case .income:
-                for snap in incomeSnaps {
-                    weeklyAgg[snap.date.startOfWeek, default: 0] += snap.convertedAmount(to: targetCurrency)
-                }
-            case .total:
-                for snap in allPeriod {
-                    let amt = snap.type == .income
-                        ? snap.convertedAmount(to: targetCurrency)
-                        : -snap.convertedAmount(to: targetCurrency)
-                    weeklyAgg[snap.date.startOfWeek, default: 0] += amt
-                }
-            }
-
-            var weeklyRaw: [(weekStart: Date, weekEnd: Date, total: Double, weekNumber: Int)] = []
-            var weekStart = interval.start.startOfWeek
-            var weekNumber = 1
-            while weekStart < interval.end {
-                let weekEnd = Calendar.current.date(byAdding: .day, value: 7, to: weekStart) ?? weekStart
-                weeklyRaw.append((weekStart, weekEnd, weeklyAgg[weekStart] ?? 0, weekNumber))
-                weekStart = weekEnd
-                weekNumber += 1
-            }
-
-            let activeWeeks = weeklyRaw.filter { abs($0.total) > 0 }
-            let weeklyAvg = activeWeeks.isEmpty ? 0 : activeWeeks.reduce(0) { $0 + $1.total } / Double(activeWeeks.count)
-
-            return (sorted, donutTotal, weeklyRaw, weeklyAvg)
+            return (sorted, donutTotal)
         }.value
 
         guard !Task.isCancelled else { return }
@@ -162,15 +127,9 @@ final class StatsViewModel {
             )
         }
 
-        let newWeekly: [WeeklySpendData] = result.2.map {
-            WeeklySpendData(weekStart: $0.weekStart, weekEnd: $0.weekEnd, total: $0.total, weekNumber: $0.weekNumber)
-        }
-
         withAnimation(.dsSnappy) {
             monthTotal    = result.1
             categorySpend = newSpend
-            weeklySpend   = newWeekly
-            weeklyAverage = result.3
         }
     }
 }

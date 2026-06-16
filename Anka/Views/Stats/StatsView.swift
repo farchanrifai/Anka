@@ -42,7 +42,6 @@ struct StatsView: View {
             VStack(spacing: DSSpacing.xl) {
                 monthStepper
                 statsContent
-                weeklyTrendSection
             }
             // Extra top padding clears the sheet's grab handle so it doesn't
             // crowd the period label.

@@ -78,31 +78,4 @@ struct StatsViewModelTests {
         #expect(vm.monthTotal == 100)
     }
 
-    @Test func weeklySpendCoversEveryWeekInTheMonthIncludingZeroSpend() async throws {
-        let context = try makeContext()
-        let cat = Anka.Category(name: "Groceries", emoji: "🛒", colorHex: "FF6B6B", type: .expense, sortOrder: 0)
-        context.insert(cat)
-
-        let monthStart = Date().startOfMonth
-        // Spend only in the first week of the month.
-        context.insert(Transaction(amount: 100, type: .expense, date: monthStart, category: cat))
-        try context.save()
-
-        let vm = StatsViewModel()
-        vm.update(transactions: try context.fetch(FetchDescriptor<Transaction>()), categories: [cat])
-        await vm.refresh()
-
-        // Every week overlapping the month is represented, including zero-spend weeks.
-        #expect(!vm.weeklySpend.isEmpty)
-        #expect(vm.weeklySpend.contains { $0.total == 100 })
-        #expect(vm.weeklySpend.contains { $0.total == 0 } || vm.weeklySpend.count == 1)
-
-        // Weekly average only considers weeks that had spend.
-        let spentWeeks = vm.weeklySpend.filter { $0.total > 0 }
-        let expectedAvg = spentWeeks.reduce(0) { $0 + $1.total } / Double(spentWeeks.count)
-        #expect(vm.weeklyAverage == expectedAvg)
-
-        // Week numbers are sequential starting at 1.
-        #expect(vm.weeklySpend.first?.weekNumber == 1)
-    }
 }
