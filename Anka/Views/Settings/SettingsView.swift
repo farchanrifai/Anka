@@ -42,7 +42,7 @@ struct SettingsView: View {
                         Label("Show Decimals", systemImage: "textformat.123")
                     }
                     .tint(DSColor.accent)
-                    .onChange(of: showDecimals) { AppCurrency.showDecimals = $0 }
+                    .onChange(of: showDecimals) { _, new in AppCurrency.showDecimals = new }
                 }
                 .labelIconTinted()
                 .listRowBackground(appearance.bgCard(scheme))

@@ -11,14 +11,21 @@ struct HighlightsView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
+    @State private var topCategories: TopCategoryHighlightData?
     @State private var daily: DailyHighlightData?
     @State private var weekly: WeeklyHighlightData?
     @State private var monthly: MonthlyHighlightData?
+    @State private var showCategoryDetail = false
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: DSSpacing.lg) {
                 if let daily, let weekly, let monthly {
+                    if let topCategories {
+                        section("Category Breakdown") {
+                            TopCategoryCard(data: topCategories) { showCategoryDetail = true }
+                        }
+                    }
                     section("Daily Highlights") { DailyHighlightCard(data: daily) }
                     section("Weekly Highlights") { WeeklyHighlightCard(data: weekly) }
                     section("Monthly Highlights") { MonthlyHighlightCard(data: monthly) }
@@ -43,9 +50,13 @@ struct HighlightsView: View {
             }
         }
         .navigationTransition(.zoom(sourceID: "highlights", in: namespace))
+        .sheet(isPresented: $showCategoryDetail) {
+            NavigationStack { CategoryBreakdownDetailView() }
+        }
         .onAppear {
             guard daily == nil else { return }
             let engine = HighlightInsightEngine(modelContext: modelContext)
+            topCategories = engine.topCategoryHighlight()
             daily = engine.dailyHighlight()
             weekly = engine.weeklyHighlight()
             monthly = engine.monthlyHighlight()

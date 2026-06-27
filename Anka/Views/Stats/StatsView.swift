@@ -248,29 +248,6 @@ struct StatsView: View {
         }
     }
 
-    // MARK: - Weekly trend
-
-    // Shares `chartReady` so the trend fades in with the rest once the present
-    // transition has settled.
-    @ViewBuilder
-    private var weeklyTrendSection: some View {
-        if chartReady {
-            WeeklyTrendChartView(weeklyData: vm.weeklySpend, average: vm.weeklyAverage)
-                .transition(.opacity)
-        } else {
-            VStack(alignment: .leading, spacing: DSSpacing.md) {
-                Text("Weekly trend")
-                    .font(.dsSubheadSemi)
-                    .foregroundStyle(DSColor.textSecondary)
-                    .padding(.horizontal, DSSpacing.screenEdge)
-
-                RoundedRectangle(cornerRadius: DSRadius.medium)
-                    .fill(DSColor.bgSecondary)
-                    .frame(height: 180)
-                    .padding(.horizontal, DSSpacing.screenEdge)
-            }
-        }
-    }
 }
 
 /// Preview wrapper: owns the `@Query` (like TodayView does in the real app)

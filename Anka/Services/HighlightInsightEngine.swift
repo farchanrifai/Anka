@@ -22,6 +22,22 @@ struct MonthlyHighlightData {
     let descriptiveText: String
 }
 
+struct CategorySpendHighlight: Identifiable {
+    let id: UUID
+    let emoji: String
+    let name: String
+    let colorHex: String
+    let amount: Double
+}
+
+struct TopCategoryHighlightData {
+    /// Up to 3 categories, sorted by amount descending.
+    let categories: [CategorySpendHighlight]
+    /// Sum of all expense categories this month (for context).
+    let totalExpense: Double
+    let monthLabel: String
+}
+
 struct DailyHighlightData {
     let todayTotal: Double
     let averageTotal: Double
@@ -135,6 +151,33 @@ final class HighlightInsightEngine {
             descriptiveText: descriptiveText,
             hasEnoughDataForChart: todays.count >= 2 && !lookbackExpenses.isEmpty
         )
+    }
+
+    func topCategoryHighlight() -> TopCategoryHighlightData? {
+        let now = Date()
+        let monthStart = now.startOfMonth
+        let monthEnd = monthStart.startOfNextMonth
+        let monthExpenses = expenses.filter { $0.date >= monthStart && $0.date < monthEnd }
+        guard !monthExpenses.isEmpty else { return nil }
+
+        var totals: [UUID: (name: String, emoji: String, colorHex: String, amount: Double)] = [:]
+        for tx in monthExpenses {
+            guard let cat = tx.category else { continue }
+            let converted = tx.convertedAmount(to: AppCurrency.code)
+            if let prev = totals[cat.id] {
+                totals[cat.id] = (prev.name, prev.emoji, prev.colorHex, prev.amount + converted)
+            } else {
+                totals[cat.id] = (cat.name, cat.emoji, cat.colorHex, converted)
+            }
+        }
+        guard !totals.isEmpty else { return nil }
+
+        let sorted = totals.sorted { $0.value.amount > $1.value.amount }
+        let top3 = sorted.prefix(3).map { id, meta in
+            CategorySpendHighlight(id: id, emoji: meta.emoji, name: meta.name, colorHex: meta.colorHex, amount: meta.amount)
+        }
+        let total = sorted.reduce(0) { $0 + $1.value.amount }
+        return TopCategoryHighlightData(categories: top3, totalExpense: total, monthLabel: monthStart.monthName)
     }
 
     private func sum(from start: Date, to end: Date) -> Double {
