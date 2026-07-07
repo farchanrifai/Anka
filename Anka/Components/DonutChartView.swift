@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 import Charts
 
 // Ported from Spendy (DonutChartView.swift). The coral accent constant
@@ -30,7 +29,6 @@ struct DonutChartView: View {
 
     @State private var chartSize: CGSize = .zero
     @State private var dragIsSwipe = false
-    @State private var haptic = UIImpactFeedbackGenerator(style: .light)
 
     private let innerRatio: CGFloat = 0.78
 
@@ -121,6 +119,7 @@ struct DonutChartView: View {
             .padding(.horizontal, 60)
         }
         .animation(.dsEaseSlow, value: dataSignature)
+        .sensoryFeedback(.impact(weight: .light), trigger: selectedID)
         .onChange(of: totalSpent) { _, _ in
             selectedID = nil
         }
@@ -161,7 +160,6 @@ struct DonutChartView: View {
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.85)) {
                     selectedID = (selectedID == hit.id) ? nil : hit.id
                 }
-                haptic.impactOccurred()
             }
     }
 

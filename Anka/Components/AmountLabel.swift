@@ -21,7 +21,7 @@ struct AmountLabel: View {
             .padding(.horizontal, DSSpacing.md)
             .padding(.vertical, 6)
             .background(
-                isIncome ? DSColor.positive.opacity(0.12) : DSColor.bgSecondary,
+                isIncome ? DSColor.positive.opacity(DSOpacity.subtle) : DSColor.bgSecondary,
                 in: Capsule()
             )
     }

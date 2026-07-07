@@ -8,7 +8,6 @@ private enum SharedDateFormatter {
     static let monthName:      DateFormatter = { let f = DateFormatter(); f.dateFormat = "MMMM";               return f }()
     static let shortMonthName: DateFormatter = { let f = DateFormatter(); f.dateFormat = "MMM";                return f }()
     static let monthYear:      DateFormatter = { let f = DateFormatter(); f.dateFormat = "MMMM yyyy";          return f }()
-    static let weekLabel:      DateFormatter = { let f = DateFormatter(); f.dateFormat = "MMM d";              return f }()
 }
 
 extension Date {
@@ -54,20 +53,6 @@ extension Date {
         DateInterval(start: startOfMonth, end: startOfNextMonth)
     }
 
-    nonisolated var startOfWeek: Date {
-        let comps = Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)
-        return Calendar.current.date(from: comps) ?? self
-    }
-
-    var weekInterval: DateInterval {
-        let start = startOfWeek
-        let end = Calendar.current.date(byAdding: .day, value: 7, to: start) ?? start
-        return DateInterval(start: start, end: end)
-    }
-
-    /// "Jun 4" — shared formatter, used for weekly trend chart axis labels.
-    var weekLabel: String { SharedDateFormatter.weekLabel.string(from: self) }
-
     var relativeLabel: String {
         if Calendar.current.isDateInToday(self) { return "Today" }
         if Calendar.current.isDateInYesterday(self) { return "Yesterday" }
@@ -90,11 +75,6 @@ extension Date {
 
     /// "May 2026" — shared formatter so the year is never formatted with thousands separator
     var monthYearLabel: String   { SharedDateFormatter.monthYear.string(from: self) }
-}
-
-/// "Jun 4–10" — used by `WeeklySpendData` to label weekly trend chart bars.
-func formatWeekRange(start: Date, end: Date) -> String {
-    "\(start.weekLabel)–\(end.weekLabel)"
 }
 
 extension DateInterval {

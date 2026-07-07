@@ -36,6 +36,8 @@ struct DateRangePicker: View {
             Spacer()
         }
         .padding(.top, 24)
+        .sensoryFeedback(.impact(weight: .light), trigger: startDate)
+        .sensoryFeedback(.impact(weight: .light), trigger: endDate)
         .onAppear {
             if let start = startDate {
                 displayedMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: start)) ?? displayedMonth
@@ -226,7 +228,6 @@ private struct DayCell: View {
                     Circle()
                         .fill(DSColor.accent)
                         .frame(width: 40, height: 40)
-                        .shadow(color: DSColor.accent.opacity(0.3), radius: 4, y: 2)
                 } else if isToday && !isBetween {
                     // Today indicator when not selected
                     Circle()
@@ -240,10 +241,7 @@ private struct DayCell: View {
     
     private func handleTap() {
         let normalizedDate = calendar.startOfDay(for: date)
-        let impact = UIImpactFeedbackGenerator(style: .light)
-        impact.prepare()
-        impact.impactOccurred()
-        
+        // Haptic fires via .sensoryFeedback on startDate/endDate at the picker root.
         withAnimation(.dsEase) {
             if let start = startDate {
                 if endDate != nil {

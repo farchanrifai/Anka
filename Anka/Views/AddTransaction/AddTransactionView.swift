@@ -310,8 +310,8 @@ struct AddTransactionView: View {
         }
         .padding(.horizontal, 12)
         .frame(height: 32)
-        .overlay(RoundedRectangle(cornerRadius: 999).stroke(Color(.separator), lineWidth: 0.5))
-        .background(DSColor.bgCard, in: RoundedRectangle(cornerRadius: 999))
+        .overlay(RoundedRectangle(cornerRadius: DSRadius.full).stroke(Color(.separator), lineWidth: 0.5))
+        .background(DSColor.bgCard, in: RoundedRectangle(cornerRadius: DSRadius.full))
     }
 
     // MARK: - Text Fields
@@ -426,8 +426,8 @@ struct AddTransactionView: View {
                                 }
                                 .padding(.horizontal, 14)
                                 .frame(height: 40)
-                                .background(DSColor.bgCard, in: RoundedRectangle(cornerRadius: 999))
-                                .overlay(RoundedRectangle(cornerRadius: 999).stroke(Color(.separator), lineWidth: 0.5))
+                                .background(DSColor.bgCard, in: RoundedRectangle(cornerRadius: DSRadius.full))
+                                .overlay(RoundedRectangle(cornerRadius: DSRadius.full).stroke(Color(.separator), lineWidth: 0.5))
                             }
                             .buttonStyle(.pressable)
                         }

@@ -3,6 +3,9 @@ import Observation
 import CoreML
 import NaturalLanguage
 import SwiftData
+import os
+
+private let predictorLogger = Logger(subsystem: "com.nc.Anka", category: "CategoryPredictor")
 
 // MARK: - Prediction types
 
@@ -130,7 +133,7 @@ public final class CategoryPredictor {
                 try await CategoryMLTrainer.trainIfNeeded(transactions: transactions)
                 await MainActor.run { [weak self] in self?.loadUserModel() }
             } catch {
-                print("CategoryPredictor ML training failed: \(error.localizedDescription)")
+                predictorLogger.error("ML training failed: \(error.localizedDescription)")
             }
         }
     }
@@ -143,13 +146,13 @@ public final class CategoryPredictor {
     // Bundled asset — loads optionally, doesn't crash if missing.
     private static func loadStarterModel() -> NLModel? {
         guard let url = Bundle.main.url(forResource: "StarterCategoryClassifier", withExtension: "mlmodelc") else {
-            print("[CategoryPredictor] StarterCategoryClassifier.mlmodelc not found in app bundle")
+            predictorLogger.notice("StarterCategoryClassifier.mlmodelc not found in app bundle")
             return nil
         }
         do {
             return try NLModel(mlModel: MLModel(contentsOf: url))
         } catch {
-            print("[CategoryPredictor] StarterCategoryClassifier failed to load: \(error)")
+            predictorLogger.error("StarterCategoryClassifier failed to load: \(error)")
             return nil
         }
     }

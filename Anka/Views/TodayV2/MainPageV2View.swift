@@ -8,7 +8,8 @@ import SwiftData
 // the transaction list. Reuses `TodayViewModel` (own instance) so period
 // navigation, swipe gestures, sheets, and the bottom toolbar behave exactly
 // like V1 — AUDIT.md A1 (no second root view / no user-facing version
-// picker). Reached from Settings → Developer (DEBUG only).
+// picker). Reached via the runtime `useMainPageV2` toggle in
+// Settings → Developer (see AppRouter).
 struct MainPageV2View: View {
     @Environment(\.modelContext) private var modelContext
 
@@ -274,7 +275,7 @@ struct MainPageV2View: View {
 
                     // "+N" — same 30×30 rect, flat
                     if count > 2 {
-                        RoundedRectangle(cornerRadius: 9)
+                        RoundedRectangle(cornerRadius: DSRadius.small)
                             .fill(DSColor.bgSecondary)
                             .frame(width: 30, height: 30)
                             .overlay {
@@ -293,12 +294,18 @@ struct MainPageV2View: View {
     }
 
     private func categoryBadge(_ item: TodayViewModel.TopCategoryItem, rotation: Double, front: Bool) -> some View {
-        RoundedRectangle(cornerRadius: 9)
+        RoundedRectangle(cornerRadius: DSRadius.small)
             .fill(Color(hex: item.colorHex))
             .frame(width: 30, height: 30)
             .overlay { Text(item.emoji).font(.system(size: 15)) }
+            .overlay {
+                // Tonal separation between stacked badges (No-Shadow Rule).
+                if front {
+                    RoundedRectangle(cornerRadius: DSRadius.small)
+                        .stroke(DSColor.bgPrimary, lineWidth: 2)
+                }
+            }
             .rotationEffect(.degrees(rotation))
-            .shadow(color: .black.opacity(front ? 0.18 : 0.06), radius: 4, x: 0, y: 2)
     }
 
     // MARK: - View mode picker (icon-only)
