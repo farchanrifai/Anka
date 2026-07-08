@@ -1,76 +1,9 @@
 import SwiftUI
 import SwiftData
 
-// MARK: - Shake effect
-//
-// Declarative horizontal shake for invalid-save feedback. Incrementing the
-// trigger inside a single `withAnimation` drives `animatableData` from its
-// old value to the new one; the `sin` curve turns that into a damped left-
-// right wobble. Replaces a hand-timed sequence of four
-// `DispatchQueue.main.asyncAfter` callbacks, which was prone to timing drift.
-private struct ShakeEffect: GeometryEffect {
-    /// Peak horizontal travel in points.
-    var travel: CGFloat = 10
-    /// Number of left-right oscillations per trigger.
-    var shakes: CGFloat = 3
-    var animatableData: CGFloat
-
-    func effectValue(size: CGSize) -> ProjectionTransform {
-        let dx = travel * sin(animatableData * .pi * shakes)
-        return ProjectionTransform(CGAffineTransform(translationX: dx, y: 0))
-    }
-}
-
-// MARK: - Per-character slot animation (mirrors Spendy CategorySlotView's SlotChar)
-private struct SlotCharEffect: ViewModifier {
-    let revealed: Bool
-    let delay: Double
-    var slideAmount: CGFloat = 28
-
-    func body(content: Content) -> some View {
-        content
-            .offset(y: revealed ? 0 : slideAmount)
-            .opacity(revealed ? 1 : 0)
-            .animation(
-                .spring(response: 0.35, dampingFraction: 0.72).delay(delay),
-                value: revealed
-            )
-    }
-}
-
-// MARK: - Per-character fade-in label inside the sparkle pill
-private struct SparkleCategoryLabel: View {
-    let category: Category
-
-    @State private var revealed = false
-
-    private var charPairs: [(Int, String)] {
-        Array(category.name).enumerated().map { ($0.offset + 1, String($0.element)) }
-    }
-
-    var body: some View {
-        HStack(spacing: 0) {
-            Text(category.emoji)
-                .font(.dsSubhead)
-                .modifier(SlotCharEffect(revealed: revealed, delay: 0.02, slideAmount: 10))
-            Text(" ")
-                .font(.dsSubhead)
-            ForEach(charPairs, id: \.0) { idx, char in
-                Text(char)
-                    .font(.dsSubhead)
-                    .modifier(SlotCharEffect(
-                        revealed: revealed,
-                        delay: Double(idx) * 0.016 + 0.04,
-                        slideAmount: 10
-                    ))
-            }
-        }
-        .foregroundStyle(.white)
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) { revealed = true }
-        }
-    }
-}
+// ShakeEffect / SlotCharEffect / SparkleCategoryLabel live in
+// Components/Effects.swift; the bottom bar + sparkle pill in
+// MorphingBottomBar.swift.
 
 // MARK: - Main View
 
@@ -152,7 +85,15 @@ struct AddTransactionView: View {
         }
         .presentationDetents([.large])
         .presentationDragIndicator(.hidden)
-        .safeAreaInset(edge: .bottom) { morphingBottomBar }
+        .safeAreaInset(edge: .bottom) {
+            MorphingBottomBar(
+                vm: vm,
+                isTagInputActive: $isTagInputActive,
+                tagFieldInHierarchy: $tagFieldInHierarchy,
+                isTagFieldFocused: $isTagFieldFocused,
+                onSave: performSave
+            )
+        }
         .alert("Could Not Save", isPresented: Binding(
             get: { saveErrorMessage != nil },
             set: { if !$0 { saveErrorMessage = nil } }
@@ -163,7 +104,7 @@ struct AddTransactionView: View {
         }
         .sheet(isPresented: $showCategoryPicker) {
             CategoryPickerSheet(selectedCategory: vm.selectedCategory) { picked in
-                withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) {
+                withAnimation(.dsMorph) {
                     vm.selectedCategory = picked
                     vm.selectedType = picked.type
                     vm.isMLAssigned = false
@@ -196,7 +137,7 @@ struct AddTransactionView: View {
             // Collapse back to State A when keyboard dismissed with no pending
             // input and no selected tags.
             if !focused && vm.tagInput.isEmpty && vm.selectedTags.isEmpty {
-                withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                withAnimation(.dsSpringSoft) {
                     isTagInputActive = false
                 }
             }
@@ -308,7 +249,7 @@ struct AddTransactionView: View {
     /// bridge. Logic preserved verbatim from the SwiftUI version.
     private func handleDescriptionChange(_ newValue: String) {
         if newValue.isEmpty {
-            withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) {
+            withAnimation(.dsMorph) {
                 if vm.isMLAssigned { vm.selectedCategory = nil }
                 vm.isMLAssigned = false
             }
@@ -336,7 +277,7 @@ struct AddTransactionView: View {
                     .font(.dsTitle)
                     .foregroundStyle(.primary)
                     .contentTransition(.numericText())
-                    .animation(.spring(response: 0.25, dampingFraction: 0.8), value: vm.formattedAmountDisplay)
+                    .animation(.dsSnappyFast, value: vm.formattedAmountDisplay)
                     .allowsHitTesting(false)
             }
             TextField("", text: $vm.amountText)
@@ -360,14 +301,14 @@ struct AddTransactionView: View {
     // MARK: - Category Area
     private var categoryArea: some View {
         HStack(spacing: 8) {
-            sparkleButton
+            SparkleCategoryButton(vm: vm, showCategoryPicker: $showCategoryPicker)
 
             if vm.selectedCategory == nil {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
                         ForEach(vm.filteredCategories) { cat in
                             Button {
-                                withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) {
+                                withAnimation(.dsMorph) {
                                     vm.selectedCategory = cat
                                     vm.isMLAssigned = false
                                 }
@@ -408,75 +349,7 @@ struct AddTransactionView: View {
         }
         .frame(height: 44)
         .modifier(ShakeEffect(animatableData: CGFloat(shakeTrigger)))
-        .animation(.spring(response: 0.45, dampingFraction: 0.75), value: vm.selectedCategory?.id)
-    }
-
-    @ViewBuilder
-    private var sparkleButton: some View {
-        Button {
-            if vm.selectedCategory != nil {
-                // If we're discarding an ML-assigned category, that's a
-                // negative correction signal for training.
-                if vm.isMLAssigned, let predicted = vm.latestMLCategory {
-                    predictor.logCorrection(
-                        note: vm.descriptionText,
-                        amount: vm.parsedAmount,
-                        predicted: predicted.name,
-                        actual: nil
-                    )
-                }
-                withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) {
-                    vm.selectedCategory = nil
-                    vm.isMLAssigned = false
-                    vm.latestMLCategory = nil
-                }
-            } else {
-                showCategoryPicker = true
-            }
-        } label: {
-            HStack(spacing: 0) {
-                if vm.selectedCategory == nil || vm.isMLAssigned {
-                    Image(systemName: "sparkles")
-                        .font(.system(size: vm.selectedCategory != nil ? 13 : 17, weight: .medium, relativeTo: .body))
-                        .symbolRenderingMode(.hierarchical)
-                        .symbolEffect(
-                            .variableColor.iterative.reversing,
-                            options: .repeating.speed(0.4),
-                            // Suppress the continuous pulse under Reduce Motion (AC5).
-                            isActive: !reduceMotion && vm.sparkleActive && vm.selectedCategory == nil
-                        )
-                        .foregroundStyle(
-                            vm.selectedCategory != nil ? .white :
-                            vm.sparkleActive ? .white :
-                            DSColor.accent
-                        )
-                        .frame(width: vm.selectedCategory != nil ? 28 : 40, height: 40)
-                        .animation(.spring(response: 0.35, dampingFraction: 0.7), value: vm.selectedCategory != nil)
-                }
-                if let cat = vm.selectedCategory {
-                    SparkleCategoryLabel(category: cat)
-                        .id(cat.id)
-                        .padding(.leading, vm.isMLAssigned ? 0 : 14)
-                        .padding(.trailing, 14)
-                }
-            }
-            .frame(height: 40)
-            .background(
-                vm.sparkleActive || vm.selectedCategory != nil ? DSColor.accent : DSColor.bgCard,
-                in: Capsule()
-            )
-            .overlay(
-                Capsule().stroke(
-                    Color(.separator),
-                    lineWidth: vm.sparkleActive || vm.selectedCategory != nil ? 0 : 0.5
-                )
-            )
-        }
-        .buttonStyle(.pressable)
-        .allowsHitTesting(vm.sparkleActive || vm.selectedCategory != nil)
-        .animation(.spring(response: 0.45, dampingFraction: 0.75), value: vm.selectedCategory?.id)
-        .animation(.spring(response: 0.35, dampingFraction: 0.7), value: vm.sparkleActive)
-        .animation(.spring(response: 0.35, dampingFraction: 0.7), value: vm.isMLAssigned)
+        .animation(.dsMorph, value: vm.selectedCategory?.id)
     }
 
     // MARK: - Save (shared action)
@@ -506,181 +379,6 @@ struct AddTransactionView: View {
         } catch {
             saveErrorMessage = error.localizedDescription
         }
-    }
-
-    // MARK: - Morphing Bottom Bar
-    private var morphingBottomBar: some View {
-        HStack(spacing: 10) {
-            // Left: Tag Pill — grows to fill when active
-            tagInputPill
-                .frame(maxWidth: isTagInputActive ? .infinity : 50)
-                .background(DSColor.bgCard, in: Capsule())
-                .overlay(Capsule().stroke(Color(.separator), lineWidth: 0.5))
-                .clipped()
-
-            // Right: Save Button — shrinks to circle when tag editor is active
-            Button(action: performSave) {
-                HStack(spacing: isTagInputActive ? 0 : 6) {
-                    Image(systemName: "checkmark")
-                        .font(.system(size: isTagInputActive ? 17 : 15, weight: .semibold, relativeTo: .body))
-
-                    // Keep in hierarchy to avoid layout rebuild mid-spring;
-                    // collapse with opacity + zero-width instead of if/else removal.
-                    Text("Save")
-                        .font(.dsHeadline)
-                        .opacity(isTagInputActive ? 0 : 1)
-                        .frame(maxWidth: isTagInputActive ? 0 : nil, alignment: .leading)
-                        .clipped()
-                        .animation(.easeOut(duration: 0.18), value: isTagInputActive)
-                }
-                .foregroundStyle(DSColor.bgPrimary)
-                .frame(maxWidth: .infinity)
-                .frame(height: 50)
-                .clipped()
-            }
-            .opacity(vm.isValid ? 1.0 : 0.45)
-            .disabled(!vm.isValid)
-            .accessibilityLabel("Save transaction")
-            .frame(maxWidth: isTagInputActive ? 50 : .infinity)
-            .frame(height: 50)
-            .background(Color.primary, in: Capsule())
-        }
-        .frame(height: 50)
-        .padding(.horizontal, DSSpacing.screenEdge)
-        .padding(.bottom, 8)
-        .background(DSColor.bgGrouped)
-    }
-
-    // MARK: - Tag Input Pill
-    private var tagInputPill: some View {
-        ZStack(alignment: .leading) {
-
-            // ── Inactive state: "#" icon ────────────────────────────────────
-            Button {
-                tagFieldInHierarchy = true
-                withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
-                    isTagInputActive = true
-                }
-                DispatchQueue.main.async {
-                    isTagFieldFocused = true
-                }
-            } label: {
-                Text("#")
-                    .font(.system(size: 20, weight: .bold, relativeTo: .title3))
-                    .foregroundStyle(.primary)
-                    .frame(width: 50, height: 50)
-            }
-            .accessibilityLabel("Add tags")
-            .opacity(isTagInputActive ? 0 : 1)
-            .animation(.easeOut(duration: 0.15), value: isTagInputActive)
-            .allowsHitTesting(!isTagInputActive)
-
-            // ── Active state: close + tags + text field ─────────────────────
-            if tagFieldInHierarchy {
-                HStack(spacing: 0) {
-                    Button {
-                        isTagFieldFocused = false
-                        withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
-                            isTagInputActive = false
-                        }
-                    } label: {
-                        Image(systemName: "xmark")
-                            .font(.dsFootnoteBold)
-                            .foregroundStyle(.secondary)
-                            .frame(width: 26, height: 26)
-                            .background(DSColor.bgGrouped, in: Circle())
-                    }
-                    .padding(.leading, 8)
-                    .accessibilityLabel("Close tag editor")
-
-                    ScrollViewReader { proxy in
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 6) {
-                                ForEach(vm.selectedTags, id: \.self) { tag in
-                                    HStack(spacing: 3) {
-                                        Text("#\(tag)")
-                                            .font(.dsCaption)
-                                            .fontWeight(.medium)
-                                            .foregroundStyle(DSColor.accent)
-                                        Button {
-                                            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                                                vm.removeTag(tag)
-                                            }
-                                        } label: {
-                                            Image(systemName: "xmark")
-                                                .font(.dsBadge)
-                                                .fontWeight(.semibold)
-                                                .foregroundStyle(DSColor.accent.opacity(0.8))
-                                        }
-                                        .accessibilityLabel("Remove \(tag) tag")
-                                    }
-                                    .padding(.horizontal, 8)
-                                    .padding(.vertical, 4)
-                                    .background(DSColor.accent.opacity(DSOpacity.subtle), in: Capsule())
-                                    .transition(.scale(scale: 0.8).combined(with: .opacity))
-                                    .id(tag)
-                                }
-
-                                ZStack(alignment: .leading) {
-                                    HStack(spacing: 0) {
-                                        Text(vm.tagInput)
-                                            .font(.dsCaption)
-                                            .fontWeight(.medium)
-                                            .foregroundStyle(.clear)
-                                        Text(vm.shadowSuggestion)
-                                            .font(.dsCaption)
-                                            .fontWeight(.medium)
-                                            .foregroundStyle(.secondary.opacity(0.5))
-                                    }
-                                    .allowsHitTesting(false)
-
-                                    TextField("", text: $vm.tagInput,
-                                              prompt: Text(vm.selectedTags.isEmpty ? "Add tags…" : "More tags…")
-                                                  .foregroundStyle(.secondary))
-                                        .font(.dsCaption)
-                                        .fontWeight(.medium)
-                                        .foregroundStyle(.primary)
-                                        .autocorrectionDisabled()
-                                        .textInputAutocapitalization(.never)
-                                        .submitLabel(.done)
-                                        .focused($isTagFieldFocused)
-                                        .frame(minWidth: 90, alignment: .leading)
-                                        .onSubmit {
-                                            vm.commitTag(context: modelContext)
-                                            isTagFieldFocused = true
-                                        }
-                                        .onChange(of: vm.tagInput) { _, newValue in
-                                            if newValue.last == " " {
-                                                vm.tagInput = String(newValue.dropLast())
-                                                vm.commitTag(context: modelContext)
-                                            }
-                                        }
-                                }
-                                .id("textField")
-                            }
-                            .padding(.leading, 4)
-                            .padding(.trailing, 10)
-                            .frame(height: 50)
-                        }
-                        .onChange(of: vm.selectedTags.count) { _, _ in
-                            withAnimation(.easeOut(duration: 0.2)) {
-                                proxy.scrollTo("textField", anchor: .trailing)
-                            }
-                        }
-                    }
-                    .onTapGesture { isTagFieldFocused = true }
-                }
-                .opacity(isTagInputActive ? 1 : 0)
-                .animation(
-                    isTagInputActive
-                        ? .easeIn(duration: 0.18).delay(0.08)
-                        : .easeOut(duration: 0.12),
-                    value: isTagInputActive
-                )
-                .allowsHitTesting(isTagInputActive)
-            }
-        }
-        .frame(height: 50)
     }
 
     // MARK: - Animation helpers

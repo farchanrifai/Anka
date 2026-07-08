@@ -329,7 +329,7 @@ final class AddTransactionViewModel {
 
         guard let match, match.id != selectedCategory?.id else { return }
 
-        withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) {
+        withAnimation(.dsMorph) {
             if match.type != selectedType {
                 selectedType = match.type
             }

@@ -8,11 +8,17 @@ import SwiftUI
 // `.easeInOut(duration:)` literals that previously appeared verbatim across
 // the Today, Stats, and shared surfaces.
 //
-// Bespoke, staged animations (onboarding intro choreography, the
-// AddTransaction category-morph springs) intentionally keep their hand-tuned
-// values and are NOT replaced by these tokens.
+// Bespoke, staged animations (onboarding intro choreography, per-character
+// SlotCharEffect delays) intentionally keep their hand-tuned values. The
+// AddTransaction category-morph spring is tokenized as `dsMorph` below.
 
 extension Animation {
+
+    /// The AddTransaction category-morph spring — sparkle pill grow/shrink,
+    /// category select/deselect, chip row slide. Hand-tuned, now named so all
+    /// the morph surfaces share one curve.
+    /// (was `.spring(response: 0.45, dampingFraction: 0.75)` ×8)
+    static let dsMorph = Animation.spring(response: 0.45, dampingFraction: 0.75)
 
     /// Standard interactive spring — pill toggles, balance-mode switches,
     /// visibility toggles, filter chips. (was `.spring(response: 0.3, dampingFraction: 0.7)`)

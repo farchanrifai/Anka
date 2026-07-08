@@ -87,7 +87,7 @@ struct MainPageV2LineChart: View {
         .chartXAxis(.hidden)
         .chartYAxis(.hidden)
         .chartXSelection(value: $selectedDate)
-        .animation(.smooth(duration: 0.4), value: series)
+        .animation(.dsEaseSlow, value: series)
         .frame(height: 160)
     }
 }

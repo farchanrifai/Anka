@@ -99,7 +99,7 @@ struct DonutChartView: View {
                     .minimumScaleFactor(0.5)
                     .lineLimit(1)
                     .contentTransition(.numericText())
-                    .animation(.spring(response: 0.25, dampingFraction: 0.75), value: displayAmount)
+                    .animation(.dsEaseSlow, value: displayAmount)
 
                 if let selected = selectedCategory {
                     let pct = totalSpent > 0 ? selected.amount / totalSpent * 100 : 0
@@ -107,7 +107,7 @@ struct DonutChartView: View {
                         .font(.system(size: 12, weight: .regular, relativeTo: .caption))
                         .foregroundStyle(.secondary)
                         .contentTransition(.numericText())
-                        .animation(.spring(response: 0.25, dampingFraction: 0.75), value: pct)
+                        .animation(.dsEaseSlow, value: pct)
                 } else {
                     Button(action: onSetBudget) {
                         Text(budget > 0 ? "Budget: \(budget.idrFormatted)" : "Set Budget >")
@@ -157,7 +157,7 @@ struct DonutChartView: View {
                 let movedFar = abs(value.translation.width) > 10 || abs(value.translation.height) > 10
                 guard !movedFar else { return }
                 guard let hit = sector(at: value.startLocation) else { return }
-                withAnimation(.spring(response: 0.3, dampingFraction: 0.85)) {
+                withAnimation(.dsSpringSoft) {
                     selectedID = (selectedID == hit.id) ? nil : hit.id
                 }
             }

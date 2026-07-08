@@ -132,7 +132,7 @@ struct EditTransactionSheet: View {
                     .font(.dsTitle)
                     .foregroundStyle(DSColor.textPrimary)
                     .contentTransition(.numericText())
-                    .animation(.spring(response: 0.25, dampingFraction: 0.8), value: vm.formattedAmountDisplay)
+                    .animation(.dsSnappyFast, value: vm.formattedAmountDisplay)
                     .allowsHitTesting(false)
             }
             TextField("", text: $vm.amountText)
