@@ -214,9 +214,15 @@ final class AutoBackupService {
     // MARK: - Private Helpers
 
     private func pruneOldBackups(in dir: URL) {
+        Self.prune(directory: dir, keep: Self.maxBackups)
+    }
+
+    /// Deletes all but the `keep` newest `anka-backup-*.json` files in
+    /// `directory`. Static + nonisolated so the retention rule is unit-testable.
+    nonisolated static func prune(directory: URL, keep: Int) {
         let fm = FileManager.default
         guard let files = try? fm.contentsOfDirectory(
-            at: dir,
+            at: directory,
             includingPropertiesForKeys: [.creationDateKey],
             options: .skipsHiddenFiles
         ) else { return }
@@ -231,8 +237,8 @@ final class AutoBackupService {
             return d1 > d2
         }
 
-        if backups.count > Self.maxBackups {
-            backups.dropFirst(Self.maxBackups).forEach {
+        if backups.count > keep {
+            backups.dropFirst(keep).forEach {
                 try? fm.removeItem(at: $0)
             }
         }

@@ -242,7 +242,8 @@ final class AppLockManager {
 
     /// Escalating lockout schedule. No penalty for the first four misses, then
     /// increasing delays so a scripted 10k-combination sweep becomes infeasible.
-    private static func lockoutDelay(for attempts: Int) -> TimeInterval? {
+    /// Internal (not private) so the security math is unit-testable.
+    static func lockoutDelay(for attempts: Int) -> TimeInterval? {
         switch attempts {
         case ..<5:  return nil
         case 5:     return 30
@@ -260,7 +261,7 @@ final class AppLockManager {
     /// Builds a `"<saltHex>:<hashHex>"` credential for storage. A fresh 16-byte
     /// random salt per PIN means identical PINs hash differently and a stolen
     /// keychain item can't be reversed with a precomputed table.
-    private static func makeCredential(for pin: String) -> String {
+    static func makeCredential(for pin: String) -> String {
         var salt = Data(count: 16)
         _ = salt.withUnsafeMutableBytes { SecRandomCopyBytes(kSecRandomDefault, 16, $0.baseAddress!) }
         let hash = hashPIN(pin, salt: salt)
@@ -269,7 +270,7 @@ final class AppLockManager {
 
     /// Recomputes the hash with the credential's stored salt and constant-time
     /// compares it against the stored hash.
-    private static func verify(_ pin: String, against credential: String) -> Bool {
+    static func verify(_ pin: String, against credential: String) -> Bool {
         let parts = credential.split(separator: credentialDelimiter, maxSplits: 1)
         guard parts.count == 2,
               let salt = Data(hexString: String(parts[0])),
@@ -282,7 +283,7 @@ final class AppLockManager {
             zip(actual, expected).reduce(0) { $0 | ($1.0 ^ $1.1) } == 0
     }
 
-    private static func hashPIN(_ pin: String, salt: Data) -> Data {
+    static func hashPIN(_ pin: String, salt: Data) -> Data {
         var input = salt
         input.append(Data(pin.utf8))
         return Data(SHA256.hash(data: input))
