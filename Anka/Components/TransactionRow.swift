@@ -61,6 +61,9 @@ struct TransactionRow: View {
         // `.swipeActions` is List-only and is a no-op inside this
         // ScrollView/LazyVStack, so delete/edit live in a long-press
         // context menu instead. The tap-to-edit Button above is unchanged.
+        // Delete is also reachable via the edit sheet's trash button on any
+        // row tap, so discoverability doesn't hinge on the long-press. A
+        // custom swipe-to-delete would fight the horizontal month-swipe.
         .contextMenu {
             Button(action: onEdit) {
                 Label("Edit", systemImage: "pencil")

@@ -1,11 +1,10 @@
 import SwiftUI
 import SwiftData
 
-/// Compact V3-styled edit sheet — Liquid Glass field row + date chip + note
-/// field + delete/save, matching the inline composer's visual vocabulary.
-/// Used only for `TransactionEntryLayout.v3`; V1 keeps the full-form
-/// `AddTransactionView` edit sheet (with tags). No tag editing here — existing
-/// tags are preserved via `AddTransactionViewModel.loadExisting`/`save`.
+/// Compact glass edit sheet — Liquid Glass field row + date chip + note field
+/// + tag row + delete/save, matching the inline composer's visual vocabulary.
+/// The ONLY edit surface (regardless of the add-layout preference);
+/// `AddTransactionView` is add-only.
 struct EditTransactionSheet: View {
     let transaction: Transaction
 
@@ -44,6 +43,10 @@ struct EditTransactionSheet: View {
                 }
             }
 
+            GlassEffectContainer(spacing: DSSpacing.sm) {
+                tagRow
+            }
+
             Spacer()
 
             GlassEffectContainer(spacing: DSSpacing.sm) {
@@ -54,7 +57,7 @@ struct EditTransactionSheet: View {
             }
         }
         .padding(DSSpacing.screenEdge)
-        .presentationDetents([.height(320)])
+        .presentationDetents([.height(400)])
         .presentationDragIndicator(.visible)
         .onAppear {
             vm.update(categories: categories, allTransactions: allTransactions)
@@ -184,6 +187,53 @@ struct EditTransactionSheet: View {
             .frame(maxWidth: .infinity)
             .glassEffect(.regular, in: .capsule)
             .glassEffectID("note", in: glassNS)
+    }
+
+    // MARK: - Tag row
+
+    /// Removable tag chips + inline input with shadow autocomplete, in one
+    /// horizontally scrolling glass capsule. Return commits the tag.
+    private var tagRow: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: DSSpacing.xs) {
+                ForEach(vm.selectedTags, id: \.self) { tag in
+                    Button { vm.removeTag(tag) } label: {
+                        HStack(spacing: DSSpacing.xs) {
+                            Text("#\(tag)")
+                                .font(.dsFootnoteMedium)
+                            Image(systemName: "xmark")
+                                .font(.dsBadge)
+                                .foregroundStyle(DSColor.textMuted)
+                        }
+                        .foregroundStyle(DSColor.textPrimary)
+                        .padding(.horizontal, DSSpacing.md)
+                        .frame(height: 32)
+                        .glassEffect(.regular, in: .capsule)
+                    }
+                    .accessibilityLabel("Remove tag \(tag)")
+                }
+
+                HStack(spacing: 0) {
+                    TextField("Tags", text: $vm.tagInput)
+                        .font(.dsBody)
+                        .foregroundStyle(DSColor.textPrimary)
+                        .tint(DSColor.accent)
+                        .fixedSize()
+                        .frame(minWidth: 60, alignment: .leading)
+                        .onSubmit { vm.commitTag(context: modelContext) }
+                    // Shadow autocomplete: the muted remainder of the best
+                    // matching known tag; Return accepts it (commitTag).
+                    Text(vm.shadowSuggestion)
+                        .font(.dsBody)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+            .padding(.horizontal, DSSpacing.lg)
+        }
+        .frame(height: 44)
+        .frame(maxWidth: .infinity)
+        .glassEffect(.regular, in: .capsule)
+        .glassEffectID("tags", in: glassNS)
     }
 
     // MARK: - Delete + Save

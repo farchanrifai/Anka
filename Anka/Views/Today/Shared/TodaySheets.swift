@@ -12,10 +12,11 @@ struct TodaySheetsModifier: ViewModifier {
 
     @Environment(\.modelContext) private var modelContext
 
-    @AppStorage(TransactionEntryLayout.storageKey) private var layoutRaw = TransactionEntryLayout.v1.rawValue
-
     func body(content: Content) -> some View {
         content
+            // Stats opens as a zoom sheet from its toolbar button; Highlights is
+            // a NavigationLink push from the hero. Both are deliberate (DESIGN.md
+            // navigation): sheet = tool you dismiss, push = drill-in you back out of.
             .sheet(isPresented: $vm.showStats) {
                 // Stats inherits Today's month one-way: the selected month when
                 // Today is in single-month mode, else the real current month.
@@ -54,13 +55,12 @@ struct TodaySheetsModifier: ViewModifier {
                 get: { vm.editingTransaction != nil },
                 set: { if !$0 { vm.editingTransaction = nil } }
             )) {
+                // One edit experience regardless of the add-layout preference:
+                // the compact glass sheet (with tags). AddTransactionView is
+                // add-only.
                 if let tx = vm.editingTransaction {
-                    if layoutRaw == TransactionEntryLayout.v3.rawValue {
-                        EditTransactionSheet(transaction: tx)
-                    } else {
-                        AddTransactionView(defaultType: tx.type, existingTransaction: tx)
-                            .navigationTransition(.zoom(sourceID: tx.id, in: namespace))
-                    }
+                    EditTransactionSheet(transaction: tx)
+                        .navigationTransition(.zoom(sourceID: tx.id, in: namespace))
                 }
             }
             .alert("Delete Transaction?", isPresented: Binding(

@@ -76,17 +76,12 @@ private struct SparkleCategoryLabel: View {
 
 struct AddTransactionView: View {
     // MARK: - Init
+    // Add-only: editing goes through the compact EditTransactionSheet.
     let defaultType: TransactionType
-    let existingTransaction: Transaction?
 
-    init(defaultType: TransactionType = .expense,
-         existingTransaction: Transaction? = nil) {
+    init(defaultType: TransactionType = .expense) {
         self.defaultType = defaultType
-        self.existingTransaction = existingTransaction
-        _vm = State(wrappedValue: AddTransactionViewModel(
-            defaultType: defaultType,
-            existingTransaction: existingTransaction
-        ))
+        _vm = State(wrappedValue: AddTransactionViewModel(defaultType: defaultType))
     }
 
     // MARK: - Environment
@@ -111,7 +106,6 @@ struct AddTransactionView: View {
     /// Haptic triggers — incremented to fire `.sensoryFeedback`.
     @State private var saveSuccessCount = 0
     @State private var validationErrorCount = 0
-    @State private var showDeleteAlert = false
     @State private var saveErrorMessage: String? = nil
     @State private var isTagInputActive: Bool = false
     /// Deferred insertion: tag TextField only joins the hierarchy on first use,
@@ -159,23 +153,6 @@ struct AddTransactionView: View {
         .presentationDetents([.large])
         .presentationDragIndicator(.hidden)
         .safeAreaInset(edge: .bottom) { morphingBottomBar }
-        .alert("Delete Transaction?", isPresented: $showDeleteAlert) {
-            Button("Delete", role: .destructive) {
-                // Delete first, dismiss only on success. The old order (dismiss,
-                // then delete 0.3s later via asyncAfter) meant a thrown error set
-                // `saveErrorMessage` on an already-dismissed view, so the alert
-                // never showed (AUDIT.md X3 + AN3).
-                do {
-                    try vm.deleteTransaction(context: modelContext)
-                    dismiss()
-                } catch {
-                    saveErrorMessage = error.localizedDescription
-                }
-            }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("This action cannot be undone.")
-        }
         .alert("Could Not Save", isPresented: Binding(
             get: { saveErrorMessage != nil },
             set: { if !$0 { saveErrorMessage = nil } }
@@ -195,13 +172,6 @@ struct AddTransactionView: View {
         }
         .onAppear {
             vm.update(categories: categories, allTransactions: allTransactions)
-            if let tx = existingTransaction {
-                vm.loadExisting(tx)
-                if !vm.selectedTags.isEmpty {
-                    tagFieldInHierarchy = true
-                    isTagInputActive = true
-                }
-            }
             // Keep focusedField in sync with the actual UIKit first responder
             // so other state (e.g. `.animation(nil, value: focusedField)` and
             // ML-prediction guard `focusedField == .description`) works as
@@ -243,15 +213,6 @@ struct AddTransactionView: View {
     // MARK: - Top Bar
     private var topBar: some View {
         HStack {
-            if existingTransaction != nil {
-                Button { showDeleteAlert = true } label: {
-                    Image(systemName: "trash")
-                        .font(.dsFootnoteSemi)
-                        .frame(width: 44, height: 44)
-                }
-                .tint(.red)
-                .accessibilityLabel("Delete transaction")
-            }
             Spacer()
             Button { dismiss() } label: {
                 Image(systemName: "xmark")
@@ -346,12 +307,6 @@ struct AddTransactionView: View {
     /// compact and the closure can capture state cleanly across the UIKit
     /// bridge. Logic preserved verbatim from the SwiftUI version.
     private func handleDescriptionChange(_ newValue: String) {
-        // Only run ML when the user is actively typing.
-        // When editing an existing transaction, loadExisting() seeds
-        // descriptionText programmatically during onAppear with no focus —
-        // skip ML so we don't overwrite the saved category.
-        guard existingTransaction == nil || focusedField == .description else { return }
-
         if newValue.isEmpty {
             withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) {
                 if vm.isMLAssigned { vm.selectedCategory = nil }
