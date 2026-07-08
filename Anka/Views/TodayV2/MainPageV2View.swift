@@ -45,6 +45,8 @@ struct MainPageV2View: View {
                     ToolbarItem(placement: .principal) {
                         heroToolbarTitle
                             .opacity(heroCollapsed ? 1 : 0)
+                            .offset(y: heroCollapsed ? 0 : 8)
+                            .animation(.dsSnappy, value: heroCollapsed)
                     }
                 }
         }
@@ -53,27 +55,14 @@ struct MainPageV2View: View {
 
     // MARK: - Scroll content
 
+    /// Scroll distance after which the hero counts as off screen (≈ its own
+    /// height) and the toolbar bubble takes over.
+    private static let heroCollapseThreshold: CGFloat = 90
+
     private var scrollContent: some View {
         ScrollView {
-            // Eager VStack for the top section so the anchor GeometryReader is
-            // never recycled by lazy layout (LazyVStack recycles off-screen
-            // items → PreferenceKey resets to defaultValue → heroCollapsed
-            // toggles false while deep in the list).
             VStack(spacing: 0) {
                 heroSection
-
-                // Anchor: always rendered, tracks when hero has scrolled past
-                // the top of the scroll container.
-                Color.clear
-                    .frame(height: 1)
-                    .background {
-                        GeometryReader { geo in
-                            Color.clear.preference(
-                                key: HeroOffsetKey.self,
-                                value: geo.frame(in: .named("v2scroll")).minY
-                            )
-                        }
-                    }
 
                 chartSection
 
@@ -89,15 +78,14 @@ struct MainPageV2View: View {
                 Color.clear.frame(height: 24)
             }
         }
-        .coordinateSpace(name: "v2scroll")
-        .onPreferenceChange(HeroOffsetKey.self) { minY in
-            // The anchor sits just below the hero. When its top edge has
-            // scrolled above the nav bar (~0 in scroll-content coordinates),
-            // the hero is off screen → show the toolbar bubble.
-            let collapsed = minY < 0
-            if collapsed != heroCollapsed {
-                withAnimation(.dsSnappy) { heroCollapsed = collapsed }
-            }
+        // Replaces the old anchor-GeometryReader + PreferenceKey plumbing.
+        // `for: Bool.self` means this only re-enters SwiftUI when the flag
+        // actually flips, not on every scrolled point.
+        .onScrollGeometryChange(for: Bool.self) { geo in
+            geo.contentOffset.y + geo.contentInsets.top > Self.heroCollapseThreshold
+        } action: { _, collapsed in
+            guard collapsed != heroCollapsed else { return }
+            withAnimation(.dsSnappy) { heroCollapsed = collapsed }
         }
         .simultaneousGesture(monthSwipeGesture(vm: vm, isSwitching: $isSwitchingPeriod))
         .ignoresSafeArea(.keyboard, edges: .bottom)
@@ -125,6 +113,11 @@ struct MainPageV2View: View {
                 .foregroundStyle(DSColor.textSecondary)
             }
         }
+        // Reads as a morph into the toolbar bubble: shrink toward the top
+        // anchor + fade while the bubble fades/slides in, both on .dsSnappy.
+        // (Not matchedGeometryEffect — the toolbar hosts in a separate UIKit
+        // hierarchy, so geometry matching across that boundary is unreliable.)
+        .scaleEffect(heroCollapsed ? 0.4 : 1, anchor: .top)
         .opacity(heroCollapsed ? 0 : 1)
         .padding(.horizontal, DSSpacing.screenEdge)
         .padding(.top, 8)
@@ -286,15 +279,6 @@ enum ChartMode: String, CaseIterable {
         case .daily:      return "chart.bar.fill"
         case .cumulative: return "chart.line.uptrend.xyaxis"
         }
-    }
-}
-
-/// Tracks the anchor view's `minY` in the scroll coordinate space so the
-/// toolbar glass bubble can appear once the hero scrolls off screen.
-private struct HeroOffsetKey: PreferenceKey {
-    static var defaultValue: CGFloat = .infinity
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = min(value, nextValue())
     }
 }
 
