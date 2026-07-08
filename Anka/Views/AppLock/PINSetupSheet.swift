@@ -30,7 +30,7 @@ struct PINSetupSheet: View {
                     Spacer()
 
                     Image(systemName: "lock.shield.fill")
-                        .font(.system(size: 44))
+                        .font(.system(size: 44, relativeTo: .largeTitle))
                         .foregroundStyle(DSColor.accent)
 
                     VStack(spacing: DSSpacing.sm) {
@@ -48,7 +48,7 @@ struct PINSetupSheet: View {
                         .keyboardType(.numberPad)
                         .textContentType(.newPassword)
                         .multilineTextAlignment(.center)
-                        .font(.system(size: 32, weight: .bold, design: .monospaced))
+                        .font(.system(size: 32, weight: .bold, design: .monospaced, relativeTo: .title))
                         .frame(height: 56)
                         .padding(.horizontal, DSSpacing.lg)
                         .background(DSColor.bgCard)

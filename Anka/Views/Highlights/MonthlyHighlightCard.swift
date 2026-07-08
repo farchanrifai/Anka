@@ -25,8 +25,7 @@ struct MonthlyHighlightCard: View {
                           color: Color.gray.opacity(0.4), maxAmount: maxAmount)
         }
         .padding(DSSpacing.md)
-        .background(DSColor.bgCard)
-        .clipShape(RoundedRectangle(cornerRadius: DSRadius.large))
+        .dsCard()
     }
 
     private func comparisonRow(amount: Double, label: String, color: Color, maxAmount: Double) -> some View {

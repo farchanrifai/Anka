@@ -5,7 +5,8 @@ import NaturalLanguage
 import SwiftData
 import os
 
-private let predictorLogger = Logger(subsystem: "com.nc.Anka", category: "CategoryPredictor")
+// Logger is Sendable; safe to use from the detached training task.
+private nonisolated let predictorLogger = Logger(subsystem: "com.nc.Anka", category: "CategoryPredictor")
 
 // MARK: - Prediction types
 

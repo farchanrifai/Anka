@@ -61,8 +61,7 @@ struct CategoryBreakdownDetailView: View {
                     CategoryBarRows(categories: chartData)
                 }
                 .padding(DSSpacing.md)
-                .background(DSColor.bgCard)
-                .clipShape(RoundedRectangle(cornerRadius: DSRadius.large))
+                .dsCard()
                 .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 8, trailing: 16))
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)

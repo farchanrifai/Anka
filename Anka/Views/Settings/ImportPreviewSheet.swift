@@ -143,19 +143,19 @@ struct ImportPreviewSheet: View {
         HStack(spacing: 10) {
             if let cat = tx.matchedCategory {
                 Text(cat.emoji)
-                    .font(.system(size: 15))
+                    .font(.system(size: 15, relativeTo: .body))
                     .frame(width: 28, height: 28)
             } else {
                 Image(systemName: "questionmark")
-                    .font(.system(size: 12))
+                    .font(.system(size: 12, relativeTo: .caption))
                     .frame(width: 28, height: 28)
                     .foregroundStyle(.secondary)
             }
             Text(tx.note ?? tx.categoryName ?? "Uncategorized")
-                .font(.system(size: 14))
+                .font(.system(size: 14, relativeTo: .body))
             Spacer()
             Text(tx.amount.idrFormatted)
-                .font(.system(size: 14))
+                .font(.system(size: 14, relativeTo: .body))
                 .foregroundStyle(.secondary)
         }
         .padding(.vertical, 8)

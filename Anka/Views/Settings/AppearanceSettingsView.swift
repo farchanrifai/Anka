@@ -65,7 +65,7 @@ struct AppearanceSettingsView: View {
 
                 if binding.wrappedValue == mode {
                     Image(systemName: "checkmark")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.dsBodySemi)
                         .foregroundStyle(DSColor.accent)
                 }
             }
@@ -95,7 +95,7 @@ struct AppearanceSettingsView: View {
 
                 if binding.wrappedValue == variant {
                     Image(systemName: "checkmark")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.dsBodySemi)
                         .foregroundStyle(DSColor.accent)
                 }
             }

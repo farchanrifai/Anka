@@ -297,7 +297,7 @@ private struct BackupFileRow: View {
         HStack(alignment: .center, spacing: 12) {
             VStack(alignment: .leading, spacing: 3) {
                 Text(displayDate)
-                    .font(.system(size: 15, weight: .medium))
+                    .font(.system(size: 15, weight: .medium, relativeTo: .body))
 
                 HStack(spacing: 6) {
                     if let count = txCount {
@@ -322,7 +322,7 @@ private struct BackupFileRow: View {
 
             ShareLink(item: file.url, preview: SharePreview(file.name)) {
                 Image(systemName: "square.and.arrow.up")
-                    .font(.system(size: 16))
+                    .font(.dsBody)
                     .foregroundStyle(.secondary)
                     .padding(8)
                     .contentShape(Rectangle())

@@ -125,7 +125,7 @@ struct CategoryManagementView: View {
                         .fill(Color(hex: category.colorHex).opacity(DSOpacity.subtle))
                         .frame(width: 32, height: 32)
                     Text(category.emoji)
-                        .font(.system(size: 18))
+                        .font(.system(size: 18, relativeTo: .headline))
                 }
 
                 Text(category.name)
@@ -134,7 +134,7 @@ struct CategoryManagementView: View {
                 Spacer()
 
                 Image(systemName: "chevron.right")
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.dsCaptionSemi)
                     .foregroundStyle(DSColor.textMuted)
             }
         }

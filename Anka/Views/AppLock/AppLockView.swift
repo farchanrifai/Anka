@@ -30,7 +30,7 @@ struct AppLockView: View {
                 Spacer()
 
                 Image(systemName: "lock.fill")
-                    .font(.system(size: 48))
+                    .font(.system(size: 48, relativeTo: .largeTitle))
                     .foregroundStyle(DSColor.accent)
                     .padding(.bottom, DSSpacing.lg)
 
@@ -146,7 +146,7 @@ struct AppLockView: View {
     private var lockoutSection: some View {
         VStack(spacing: DSSpacing.sm) {
             Image(systemName: "hourglass")
-                .font(.system(size: 24))
+                .font(.system(size: 24, relativeTo: .title2))
                 .foregroundStyle(DSColor.textMuted)
             Text("Try again in \(lockoutCountdown)")
                 .font(.dsBody)
@@ -180,7 +180,7 @@ struct AppLockView: View {
                 } label: {
                     HStack(spacing: DSSpacing.md) {
                         Image(systemName: biometricSymbol)
-                            .font(.system(size: 20))
+                            .font(.system(size: 20, relativeTo: .title3))
                         Text(biometricLabel)
                             .font(.dsBody)
                             .fontWeight(.semibold)
@@ -249,7 +249,7 @@ struct AppLockView: View {
                 .keyboardType(.numberPad)
                 .textContentType(.password)
                 .multilineTextAlignment(.center)
-                .font(.system(size: 32, weight: .bold, design: .monospaced))
+                .font(.system(size: 32, weight: .bold, design: .monospaced, relativeTo: .title))
                 .frame(height: 56)
                 .frame(maxWidth: .infinity)
                 .background(DSColor.bgCard)

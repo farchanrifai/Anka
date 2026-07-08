@@ -85,7 +85,7 @@ struct AddEditCategorySheet: View {
                 .foregroundStyle(DSColor.textMuted)
 
             TextField("", text: $viewModel.newCategoryEmoji)
-                .font(.system(size: 32))
+                .font(.system(size: 32, relativeTo: .title))
                 .foregroundStyle(DSColor.textPrimary)
                 .frame(height: 56)
                 .padding(DSSpacing.md)

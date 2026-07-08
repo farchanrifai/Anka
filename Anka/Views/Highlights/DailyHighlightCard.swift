@@ -53,8 +53,7 @@ struct DailyHighlightCard: View {
             }
         }
         .padding(DSSpacing.md)
-        .background(DSColor.bgCard)
-        .clipShape(RoundedRectangle(cornerRadius: DSRadius.large))
+        .dsCard()
     }
 
     private func statColumn(dot: Color, label: String, amount: Double, color: Color) -> some View {

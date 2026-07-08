@@ -130,31 +130,8 @@ struct StatsView: View {
     // MARK: - Balance mode picker
 
     private var balanceModePicker: some View {
-        HStack(spacing: 8) {
-            ForEach(BalanceMode.allCases, id: \.self) { mode in
-                let isActive = vm.balanceMode == mode
-                Button {
-                    withAnimation(.dsSpring) { vm.balanceMode = mode }
-                } label: {
-                    HStack(spacing: isActive ? 6 : 0) {
-                        Image(systemName: mode.icon)
-                            .font(.dsFootnoteMedium)
-                        if isActive {
-                            Text(mode.title)
-                                .font(.dsFootnoteMedium)
-                                .lineLimit(1)
-                        }
-                    }
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 8)
-                    .foregroundStyle(isActive ? DSColor.bgPrimary : .primary)
-                    .background(isActive ? Color.primary : DSColor.bgSecondary, in: Capsule())
-                    .animation(.dsSpring, value: isActive)
-                }
-                .buttonStyle(.pressable)
-            }
-        }
-        .padding(.horizontal, DSSpacing.screenEdge)
+        BalanceModePicker(mode: $vm.balanceMode)
+            .padding(.horizontal, DSSpacing.screenEdge)
     }
 
     // MARK: - Chart + breakdown content

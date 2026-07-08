@@ -239,7 +239,7 @@ struct MainPageV2View: View {
                     withAnimation(.dsSnappy) { chartMode = mode }
                 } label: {
                     Image(systemName: mode.icon)
-                        .font(.system(size: 15, weight: .medium))
+                        .font(.system(size: 15, weight: .medium, relativeTo: .body))
                         .foregroundStyle(chartMode == mode ? .primary : DSColor.textMuted)
                 }
                 .buttonStyle(.pressable)
@@ -280,7 +280,7 @@ struct MainPageV2View: View {
                             .frame(width: 30, height: 30)
                             .overlay {
                                 Text("+\(count - 2)")
-                                    .font(.system(size: 11, weight: .bold))
+                                    .font(.dsCaption2Bold)
                                     .foregroundStyle(DSColor.textPrimary)
                             }
                     }
@@ -297,7 +297,7 @@ struct MainPageV2View: View {
         RoundedRectangle(cornerRadius: DSRadius.small)
             .fill(Color(hex: item.colorHex))
             .frame(width: 30, height: 30)
-            .overlay { Text(item.emoji).font(.system(size: 15)) }
+            .overlay { Text(item.emoji).font(.system(size: 15, relativeTo: .body)) }
             .overlay {
                 // Tonal separation between stacked badges (No-Shadow Rule).
                 if front {
@@ -311,23 +311,8 @@ struct MainPageV2View: View {
     // MARK: - View mode picker (icon-only)
 
     private var viewModePicker: some View {
-        HStack(spacing: 8) {
-            ForEach(BalanceMode.allCases, id: \.self) { mode in
-                let isActive = vm.balanceMode == mode
-                Button {
-                    withAnimation(.dsSpring) { vm.balanceMode = mode }
-                } label: {
-                    Image(systemName: mode.icon)
-                        .font(.dsFootnoteMedium)
-                        .frame(width: 40, height: 40)
-                        .foregroundStyle(isActive ? DSColor.bgPrimary : .primary)
-                        .background(isActive ? Color.primary : DSColor.bgSecondary, in: Circle())
-                }
-                .buttonStyle(.pressable)
-                .accessibilityLabel(mode.title)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .center)
+        BalanceModePicker(mode: $vm.balanceMode, iconOnly: true)
+            .frame(maxWidth: .infinity, alignment: .center)
     }
 
     // MARK: - Transaction list

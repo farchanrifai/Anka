@@ -246,7 +246,7 @@ struct AddTransactionView: View {
             if existingTransaction != nil {
                 Button { showDeleteAlert = true } label: {
                     Image(systemName: "trash")
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(.dsFootnoteSemi)
                         .frame(width: 44, height: 44)
                 }
                 .tint(.red)
@@ -255,7 +255,7 @@ struct AddTransactionView: View {
             Spacer()
             Button { dismiss() } label: {
                 Image(systemName: "xmark")
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.dsFootnoteSemi)
                     .frame(width: 44, height: 44)
             }
             .tint(.primary)
@@ -310,8 +310,7 @@ struct AddTransactionView: View {
         }
         .padding(.horizontal, 12)
         .frame(height: 32)
-        .overlay(RoundedRectangle(cornerRadius: DSRadius.full).stroke(Color(.separator), lineWidth: 0.5))
-        .background(DSColor.bgCard, in: RoundedRectangle(cornerRadius: DSRadius.full))
+        .dsChip()
     }
 
     // MARK: - Text Fields
@@ -426,8 +425,7 @@ struct AddTransactionView: View {
                                 }
                                 .padding(.horizontal, 14)
                                 .frame(height: 40)
-                                .background(DSColor.bgCard, in: RoundedRectangle(cornerRadius: DSRadius.full))
-                                .overlay(RoundedRectangle(cornerRadius: DSRadius.full).stroke(Color(.separator), lineWidth: 0.5))
+                                .dsChip()
                             }
                             .buttonStyle(.pressable)
                         }
@@ -484,7 +482,7 @@ struct AddTransactionView: View {
             HStack(spacing: 0) {
                 if vm.selectedCategory == nil || vm.isMLAssigned {
                     Image(systemName: "sparkles")
-                        .font(.system(size: vm.selectedCategory != nil ? 13 : 17, weight: .medium))
+                        .font(.system(size: vm.selectedCategory != nil ? 13 : 17, weight: .medium, relativeTo: .body))
                         .symbolRenderingMode(.hierarchical)
                         .symbolEffect(
                             .variableColor.iterative.reversing,
@@ -569,7 +567,7 @@ struct AddTransactionView: View {
             Button(action: performSave) {
                 HStack(spacing: isTagInputActive ? 0 : 6) {
                     Image(systemName: "checkmark")
-                        .font(.system(size: isTagInputActive ? 17 : 15, weight: .semibold))
+                        .font(.system(size: isTagInputActive ? 17 : 15, weight: .semibold, relativeTo: .body))
 
                     // Keep in hierarchy to avoid layout rebuild mid-spring;
                     // collapse with opacity + zero-width instead of if/else removal.
@@ -613,7 +611,7 @@ struct AddTransactionView: View {
                 }
             } label: {
                 Text("#")
-                    .font(.system(size: 20, weight: .bold))
+                    .font(.system(size: 20, weight: .bold, relativeTo: .title3))
                     .foregroundStyle(.primary)
                     .frame(width: 50, height: 50)
             }
@@ -632,7 +630,7 @@ struct AddTransactionView: View {
                         }
                     } label: {
                         Image(systemName: "xmark")
-                            .font(.system(size: 13, weight: .bold))
+                            .font(.dsFootnoteBold)
                             .foregroundStyle(.secondary)
                             .frame(width: 26, height: 26)
                             .background(DSColor.bgGrouped, in: Circle())

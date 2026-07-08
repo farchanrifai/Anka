@@ -201,7 +201,7 @@ private struct DataLoadErrorView: View {
 
             VStack(spacing: 20) {
                 Image(systemName: "exclamationmark.triangle")
-                    .font(.system(size: 48))
+                    .font(.system(size: 48, relativeTo: .largeTitle))
                     .foregroundStyle(DSColor.accent)
 
                 VStack(spacing: 8) {

@@ -20,11 +20,15 @@ import UIKit
 
 extension Font {
 
-    /// Internal helper: creates a scalable system font by baking the weight into
-    /// a UIFont first, then scaling it with UIFontMetrics.
-    static func system(size: CGFloat, weight: Font.Weight = .regular, relativeTo textStyle: Font.TextStyle) -> Font {
-        let uiFont  = UIFont.systemFont(ofSize: size, weight: weight.uiWeight)
-        let scaled  = UIFontMetrics(forTextStyle: textStyle.uiTextStyle).scaledFont(for: uiFont)
+    /// Internal helper: creates a scalable system font by baking the weight
+    /// (and optional design, e.g. `.monospaced`) into a UIFont first, then
+    /// scaling it with UIFontMetrics.
+    static func system(size: CGFloat, weight: Font.Weight = .regular, design: Font.Design = .default, relativeTo textStyle: Font.TextStyle) -> Font {
+        var uiFont = UIFont.systemFont(ofSize: size, weight: weight.uiWeight)
+        if design != .default, let descriptor = uiFont.fontDescriptor.withDesign(design.uiDesign) {
+            uiFont = UIFont(descriptor: descriptor, size: size)
+        }
+        let scaled = UIFontMetrics(forTextStyle: textStyle.uiTextStyle).scaledFont(for: uiFont)
         return Font(scaled)
     }
 
@@ -119,6 +123,16 @@ private extension Font.Weight {
         if self == .heavy      { return .heavy      }
         if self == .black      { return .black      }
         return .regular
+    }
+}
+
+private extension Font.Design {
+    /// Maps SwiftUI Font.Design to UIFontDescriptor.SystemDesign.
+    var uiDesign: UIFontDescriptor.SystemDesign {
+        if self == .monospaced { return .monospaced }
+        if self == .rounded    { return .rounded    }
+        if self == .serif      { return .serif      }
+        return .default
     }
 }
 

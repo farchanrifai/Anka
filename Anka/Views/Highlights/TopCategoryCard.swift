@@ -76,7 +76,6 @@ struct TopCategoryCard: View {
             .buttonStyle(.plain)
         }
         .padding(DSSpacing.md)
-        .background(DSColor.bgCard)
-        .clipShape(RoundedRectangle(cornerRadius: DSRadius.large))
+        .dsCard()
     }
 }

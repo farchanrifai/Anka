@@ -52,8 +52,7 @@ struct WeeklyHighlightCard: View {
             }
         }
         .padding(DSSpacing.md)
-        .background(DSColor.bgCard)
-        .clipShape(RoundedRectangle(cornerRadius: DSRadius.large))
+        .dsCard()
     }
 
     private func weekdayLetter(_ date: Date) -> String {

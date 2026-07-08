@@ -53,7 +53,7 @@ struct CurrencySettingsView: View {
 
                 if selected == currency.code {
                     Image(systemName: "checkmark")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.dsBodySemi)
                         .foregroundStyle(DSColor.accent)
                 }
             }
