@@ -1,5 +1,20 @@
 # Anka Full-App Audit & Rework Plan
 
+## Status (2026-07-08) — ALL PHASES COMPLETE
+
+| Phase | Commit | Notes |
+|---|---|---|
+| 1 Dead code + hygiene | `2f1cd27` | Week-helper cluster deleted too (startOfWeek/weekInterval/weekLabel/formatWeekRange were also dead) |
+| 2 DS components + font sweep | `5c07eb2` | 30 sites fixed (list had 29 + AnkaApp:204); helper gained `design:` param |
+| 3 Performance | `200427a` | 3a–3d done; 3e skipped (see below); VM's `availableCategories`/public `filteredTransactions` were dead → deleted, not cached |
+| 4 Dashboard scaffold | `ba611a8` | V2 gained widget/backup/deep-link/haptics/predictor-feed for free; verified both dashboards in simulator |
+| 5 Unified edit flow | `dc6634a` | Edit sheet gained tag row; zoom transition kept on edit sheet |
+| 6 AddTransaction decomposition | `2b65a83` | New `dsMorph` token; sparkle 4→2 stacked animations; Save-button zero-width collapse kept (documented, deliberate) |
+| 7 Visual pass | `ed3c86c` | 7a done; 7b (V1 collapsing header) dropped — safeAreaInset height animation feeds back into scroll insets; 7c/7d already conformant after 2+6 |
+| 8 Tests | `f920240` | 94 tests / 13 suites green (was 76/10) |
+
+Note: `graphify` CLI is not installed on this machine — `graphify update .` could not be run after changes.
+
 ## Context
 
 Anka: single-user iOS 26 expense tracker (SwiftData, @Observable, Liquid Glass, DS tokens). Full audit ran across architecture, UI/UX, animations, and debt. Foundation is disciplined (real token system, Dynamic Type via DSFont, modern haptics, good a11y), but debt is concentrated in: uncached O(n) ViewModel work on main, ~29 Dynamic-Type-breaking fonts, duplicated V1/V2 dashboard scaffold, triplicated components, animation-token drift in AddTransactionView (764-line monolith), dead chart code, and zero tests on security-critical AppLock code.
