@@ -88,6 +88,20 @@ enum BalanceMode: String, CaseIterable, Hashable {
         dataVersion += 1
     }
 
+    /// Sendable snapshots of `transactions`, re-mapped only when the data
+    /// actually changed — month swipes and mode toggles (same dataVersion)
+    /// skip the O(n) map in refreshDashboard.
+    private var snapshotCache: [TransactionSnapshot] = []
+    private var snapshotVersion = -1
+
+    private func snapshots() -> [TransactionSnapshot] {
+        if snapshotVersion != dataVersion {
+            snapshotCache = transactions.map(TransactionSnapshot.init)
+            snapshotVersion = dataVersion
+        }
+        return snapshotCache
+    }
+
     // MARK: - Filter + chart state
 
     var selectedPeriod: PeriodFilter = .month
@@ -287,15 +301,20 @@ enum BalanceMode: String, CaseIterable, Hashable {
         return (0..<count).compactMap { current.addingMonths(-$0) }
     }
 
-    var expenseTotal: Double {
-        periodTransactions.filter { $0.type == .expense }.reduce(0) { $0 + $1.convertedAmount(to: AppCurrency.code) }
-    }
+    // MARK: - Derived: cached aggregates
+    //
+    // Stored, not computed: SwiftUI re-reads these on every body evaluation, so
+    // computed O(n) scans over periodTransactions ran per frame. They are
+    // recomputed exactly once per refreshDashboard — every input (period,
+    // month, custom range, balanceMode, categories, data) is encoded in
+    // dashboardKey, so the `.task(id:)` gate guarantees they can't go stale.
 
-    var incomeTotal: Double {
-        periodTransactions.filter { $0.type == .income }.reduce(0) { $0 + $1.convertedAmount(to: AppCurrency.code) }
-    }
+    private(set) var expenseTotal: Double = 0
+    private(set) var incomeTotal: Double = 0
 
-    // MARK: - Category stats shortcut
+    /// Hero number for the active balance mode (nets income − expense in Total
+    /// mode with a category filter — AUDIT.md D10).
+    private(set) var heroAmount: Double = 0
 
     struct TopCategoryItem: Equatable {
         let emoji: String
@@ -303,8 +322,40 @@ enum BalanceMode: String, CaseIterable, Hashable {
     }
 
     /// Top 2 categories by spend in the current period, respecting balanceMode.
-    /// Expense/Total → expense categories; Income → income categories.
-    var topCategoryItems: [TopCategoryItem] {
+    private(set) var topCategoryItems: [TopCategoryItem] = []
+
+    /// Total distinct categories with transactions in the current period.
+    private(set) var periodCategoryCount: Int = 0
+
+    /// Recomputes the cached aggregates from the just-assigned
+    /// `periodTransactions`/`groupedByDay`. Main-actor, once per refresh.
+    private func recomputeDerived() {
+        let target = AppCurrency.code
+
+        expenseTotal = periodTransactions
+            .filter { $0.type == .expense }
+            .reduce(0) { $0 + $1.convertedAmount(to: target) }
+        incomeTotal = periodTransactions
+            .filter { $0.type == .income }
+            .reduce(0) { $0 + $1.convertedAmount(to: target) }
+
+        if !selectedCategories.isEmpty {
+            // groupedByDay is already type- and category-filtered.
+            let filtered = groupedByDay.flatMap(\.transactions)
+            switch balanceMode {
+            case .expense, .income:
+                heroAmount = filtered.reduce(0) { $0 + $1.convertedAmount(to: target) }
+            case .total:
+                heroAmount = filtered.reduce(0) { $0 + ($1.type == .income ? $1.convertedAmount(to: target) : -$1.convertedAmount(to: target)) }
+            }
+        } else {
+            switch balanceMode {
+            case .expense: heroAmount = expenseTotal
+            case .income:  heroAmount = incomeTotal
+            case .total:   heroAmount = incomeTotal - expenseTotal
+            }
+        }
+
         let relevant = periodTransactions.filter {
             balanceMode == .income ? $0.type == .income : $0.type == .expense
         }
@@ -314,66 +365,11 @@ enum BalanceMode: String, CaseIterable, Hashable {
             let prev = totals[cat.id]?.amount ?? 0
             totals[cat.id] = (TopCategoryItem(emoji: cat.emoji, colorHex: cat.colorHex), prev + tx.amount)
         }
-        return totals.values
+        topCategoryItems = totals.values
             .sorted { $0.amount > $1.amount }
             .prefix(2)
             .map(\.item)
-    }
-
-    /// Total distinct categories with transactions in the current period.
-    var periodCategoryCount: Int {
-        let relevant = periodTransactions.filter {
-            balanceMode == .income ? $0.type == .income : $0.type == .expense
-        }
-        return Set(relevant.compactMap { $0.category?.id }).count
-    }
-
-    // MARK: - Derived: Display (cheap — operate on cached periodTransactions)
-
-    var heroAmount: Double {
-        if !selectedCategories.isEmpty {
-            // In Total mode the filtered set contains both types, so net them
-            // (income − expense) rather than summing — otherwise the hero
-            // added income onto expenses (AUDIT.md D10). Expense/Income modes
-            // already filter to a single type, so a plain sum is correct.
-            switch balanceMode {
-            case .expense, .income:
-                return filteredTransactions.reduce(0) { $0 + $1.convertedAmount(to: AppCurrency.code) }
-            case .total:
-                return filteredTransactions.reduce(0) { $0 + ($1.type == .income ? $1.convertedAmount(to: AppCurrency.code) : -$1.convertedAmount(to: AppCurrency.code)) }
-            }
-        }
-        switch balanceMode {
-        case .expense: return expenseTotal
-        case .income:  return incomeTotal
-        case .total:   return incomeTotal - expenseTotal
-        }
-    }
-
-    var filteredTransactions: [Transaction] {
-        var txs: [Transaction]
-        switch balanceMode {
-        case .expense: txs = periodTransactions.filter { $0.type == .expense }
-        case .income:  txs = periodTransactions.filter { $0.type == .income }
-        case .total:   txs = periodTransactions
-        }
-        if !selectedCategories.isEmpty {
-            let ids = Set(selectedCategories.map { $0.id })
-            txs = txs.filter { ids.contains($0.category?.id ?? UUID()) }
-        }
-        return txs.sorted { $0.date > $1.date }
-    }
-
-    var availableCategories: [Category] {
-        let ids = Set(selectedCategories.map { $0.id })
-        return categories.filter { cat in
-            guard !ids.contains(cat.id) else { return false }
-            switch balanceMode {
-            case .expense: return cat.type == .expense
-            case .income:  return cat.type == .income
-            case .total:   return true
-            }
-        }
+        periodCategoryCount = Set(relevant.compactMap { $0.category?.id }).count
     }
 
     // MARK: - Async refresh
@@ -384,8 +380,8 @@ enum BalanceMode: String, CaseIterable, Hashable {
         isLoading = true
         defer { isLoading = false }
 
-        // 1. Snapshot Sendable value types on the main actor.
-        let txSnaps           = transactions.map(TransactionSnapshot.init)
+        // 1. Snapshot Sendable value types on the main actor (cached per dataVersion).
+        let txSnaps           = snapshots()
         let interval          = periodInterval
         // nil = include both types (Total mode)
         let capturedType: TransactionType? = {
@@ -480,7 +476,11 @@ enum BalanceMode: String, CaseIterable, Hashable {
         // 3. Back on main: check cancellation, merge IDs with model objects.
         guard !Task.isCancelled else { return }
 
-        let txByID = Dictionary(transactions.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+        // Only period members are looked up — no need to index every transaction.
+        let txByID = Dictionary(
+            transactions.lazy.filter { result.periodIDs.contains($0.id) }.map { ($0.id, $0) },
+            uniquingKeysWith: { a, _ in a }
+        )
 
         let newGroups: [(date: Date, transactions: [Transaction])] = result.dayGroups.compactMap { date, ids in
             let txs = ids.compactMap { txByID[$0] }
@@ -495,6 +495,7 @@ enum BalanceMode: String, CaseIterable, Hashable {
                 periodTransactions = transactions.filter { result.periodIDs.contains($0.id) }
                 groupedByDay = newGroups
                 previousPeriodChangePercent = result.changePercent
+                recomputeDerived()
             }
             // Assigned outside withAnimation so the chart's own
             // .animation(value: series) drives the in-place tween without
@@ -505,6 +506,7 @@ enum BalanceMode: String, CaseIterable, Hashable {
             groupedByDay = newGroups
             dailySeries = result.dailySeries
             previousPeriodChangePercent = result.changePercent
+            recomputeDerived()
             hasLoadedOnce = true
         }
     }

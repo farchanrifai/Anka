@@ -62,7 +62,7 @@ xcodebuild -project Anka.xcodeproj -scheme Anka -destination 'platform=iOS Simul
 
 **3d. `Services/AutoBackupService.swift:88-92` + `BackupService.swift`** — split export into `makeDTO` (on main, touches @Model) + `encode` (pure, moves into existing detached write task).
 
-**3e. `Services/CategoryPredictor.swift`** — move NLModel inference off main: small `actor PredictionCore` holding the models, `predict()` becomes async; call sites (`AddTransactionViewModel`, `InlineTransactionEntryViewModel`) already debounce, await the suggestion.
+**3e. `Services/CategoryPredictor.swift`** — SKIPPED (decided during implementation): inference is a single short-string NLModel lookup (~1ms) and already debounced; making `predict()` async ripples through `InlineTransactionParser` (sync API), its tests, `QuickAddTransactionIntent`, and both entry VMs. Cost exceeds gain. Revisit only if Instruments shows it on the main thread during typing.
 
 **Verify:** unit tests pass; add parity assertions in `TodayViewModelTests` (cached totals == from-scratch recompute on fixtures). Manual: rapid month swipes, balance toggle, search typing with large sample data.
 

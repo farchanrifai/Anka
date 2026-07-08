@@ -7,7 +7,7 @@ import SwiftData
 /// `version` increments whenever the schema changes in a breaking way;
 /// restoring a backup with version > currentVersion emits a warning but
 /// still attempts a best-effort import.
-struct AnkaBackup: Codable {
+nonisolated struct AnkaBackup: Codable, Sendable {
 
     /// v1 — transactions only (category stored as a bare name).
     /// v2 — adds `categories` so emoji / color / **type** / order survive a
@@ -61,6 +61,12 @@ enum BackupService {
 
     /// Encodes the given transactions + categories as a versioned JSON payload.
     static func export(transactions: [Transaction], categories: [Category]) throws -> Data {
+        try encode(makeBackup(transactions: transactions, categories: categories))
+    }
+
+    /// DTO mapping only — touches @Model rows, so call on the main actor.
+    /// The returned value is Sendable; hand it to `encode(_:)` off main.
+    static func makeBackup(transactions: [Transaction], categories: [Category]) -> AnkaBackup {
         let backupTxns = transactions.map { tx in
             AnkaBackup.BackupTransaction(
                 id: tx.id.uuidString,
@@ -83,13 +89,22 @@ enum BackupService {
                 sortOrder: cat.sortOrder
             )
         }
-        let backup = AnkaBackup(
+        return AnkaBackup(
             version: AnkaBackup.currentVersion,
             exportedAt: Date(),
             transactions: backupTxns,
             categories: backupCats
         )
-        return try Self.encoder.encode(backup)
+    }
+
+    /// Pure JSON encoding — safe to run off the main actor. (Builds a local
+    /// encoder: JSONEncoder isn't Sendable, so the shared static can't cross
+    /// the actor boundary.)
+    nonisolated static func encode(_ backup: AnkaBackup) throws -> Data {
+        let e = JSONEncoder()
+        e.dateEncodingStrategy = .secondsSince1970
+        e.outputFormatting     = [.prettyPrinted, .sortedKeys]
+        return try e.encode(backup)
     }
 
     // MARK: - Restore (async with progress)

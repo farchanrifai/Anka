@@ -3,7 +3,7 @@ import Foundation
 /// Types + keys shared between the main Anka app (writer) and the widget
 /// extension (reader). The widget target must include this file in its
 /// target membership (Xcode: select file → File Inspector → check AnkaWidgets).
-public enum WidgetKeys {
+public nonisolated enum WidgetKeys {
     public static let suiteName        = "group.com.nc.Anka"
     public static let todayExpense     = "widget_today_expense"
     public static let todayIncome      = "widget_today_income"

@@ -31,7 +31,14 @@ final class WidgetDataWriter {
         return f
     }()
 
+    /// In-flight debounced write — each call cancels and replaces it, so a
+    /// burst of data changes produces a single defaults write + timeline reload.
+    private var pendingWrite: Task<Void, Never>?
+
     func updateWidgetData(transactions: [Transaction]) {
+        // Touching @Model rows must stay on the main actor; today's rows are a
+        // handful, so totals + DTO mapping are cheap here. The I/O (defaults
+        // write, JSON encode, timeline reload) moves off main below.
         let todayTxs = transactions.filter { Calendar.current.isDateInToday($0.date) }
 
         let expense = todayTxs
@@ -56,23 +63,32 @@ final class WidgetDataWriter {
                 )
             }
 
-        guard let defaults = UserDefaults(suiteName: WidgetKeys.suiteName) else {
-            // App Group not registered (entitlement missing or mismatched).
-            // Silent — main app continues working; widget just won't update.
-            return
+        let snapshotDay = Self.dayFormatter.string(from: Date())
+
+        pendingWrite?.cancel()
+        pendingWrite = Task.detached(priority: .utility) {
+            // Trailing debounce: coalesce rapid successive calls into one write.
+            try? await Task.sleep(for: .seconds(1))
+            guard !Task.isCancelled else { return }
+
+            guard let defaults = UserDefaults(suiteName: WidgetKeys.suiteName) else {
+                // App Group not registered (entitlement missing or mismatched).
+                // Silent — main app continues working; widget just won't update.
+                return
+            }
+
+            defaults.set(expense, forKey: WidgetKeys.todayExpense)
+            defaults.set(income, forKey: WidgetKeys.todayIncome)
+            defaults.set(Date(), forKey: WidgetKeys.lastUpdated)
+            // Store the calendar day so the widget can detect stale data after
+            // midnight without the main app opening (W1).
+            defaults.set(snapshotDay, forKey: WidgetKeys.snapshotDate)
+
+            if let encoded = try? JSONEncoder().encode(Array(recent)) {
+                defaults.set(encoded, forKey: WidgetKeys.recentTxs)
+            }
+
+            WidgetCenter.shared.reloadAllTimelines()
         }
-
-        defaults.set(expense, forKey: WidgetKeys.todayExpense)
-        defaults.set(income, forKey: WidgetKeys.todayIncome)
-        defaults.set(Date(), forKey: WidgetKeys.lastUpdated)
-        // Store the calendar day so the widget can detect stale data after
-        // midnight without the main app opening (W1).
-        defaults.set(Self.dayFormatter.string(from: Date()), forKey: WidgetKeys.snapshotDate)
-
-        if let encoded = try? JSONEncoder().encode(Array(recent)) {
-            defaults.set(encoded, forKey: WidgetKeys.recentTxs)
-        }
-
-        WidgetCenter.shared.reloadAllTimelines()
     }
 }

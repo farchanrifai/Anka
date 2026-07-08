@@ -85,13 +85,14 @@ final class AutoBackupService {
         transactions: [Transaction],
         categories: [Category]
     ) async {
-        // 1. Encode on MainActor (safe — @Model objects live here). Shares the
-        //    versioned AnkaBackup format (v2: includes categories) with manual
-        //    exports, so any backup file restores through the same path.
+        // 1. DTO mapping on MainActor (safe — @Model objects live here); the
+        //    JSON encoding itself runs in the detached write task below. Shares
+        //    the versioned AnkaBackup format (v2: includes categories) with
+        //    manual exports, so any backup file restores through the same path.
         let liveTxns = transactions.filter { !$0.isDeleted }
-        guard let data = try? BackupService.export(transactions: liveTxns, categories: categories) else { return }
+        let backup = BackupService.makeBackup(transactions: liveTxns, categories: categories)
 
-        // 2. Resolve target directories (URL and Data are Sendable value types)
+        // 2. Resolve target directories (URL and AnkaBackup are Sendable value types)
         let fm       = FileManager.default
         let agDir    = fm.containerURL(forSecurityApplicationGroupIdentifier: PlatformPaths.appGroupID)?
                           .appendingPathComponent("Backups")
@@ -102,23 +103,16 @@ final class AutoBackupService {
         let agFile   = agDir?.appendingPathComponent(filename)
         let docsFile = docsDir?.appendingPathComponent(filename)
 
-        // 3. Write concurrently in detached background tasks
-        async let writeAG: Void = Task.detached(priority: .background) {
-            guard let dir = agDir, let file = agFile else { return }
-            try? FileManager.default.createDirectory(
-                at: dir, withIntermediateDirectories: true)
-            try? data.write(to: file, options: .atomic)
+        // 3. Encode once + write both targets in a detached background task
+        await Task.detached(priority: .background) {
+            guard let data = try? BackupService.encode(backup) else { return }
+            for (dir, file) in [(agDir, agFile), (docsDir, docsFile)] {
+                guard let dir, let file else { continue }
+                try? FileManager.default.createDirectory(
+                    at: dir, withIntermediateDirectories: true)
+                try? data.write(to: file, options: .atomic)
+            }
         }.value
-
-        async let writeDocs: Void = Task.detached(priority: .background) {
-            guard let dir = docsDir, let file = docsFile else { return }
-            try? FileManager.default.createDirectory(
-                at: dir, withIntermediateDirectories: true)
-            try? data.write(to: file, options: .atomic)
-        }.value
-
-        _ = await writeAG
-        _ = await writeDocs
 
         // 4. Prune old backups
         if let dir = agDir   { pruneOldBackups(in: dir) }
