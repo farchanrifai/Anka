@@ -11,8 +11,6 @@ import SwiftData
 // picker). Reached via the runtime `useMainPageV2` toggle in
 // Settings → Developer (see AppRouter).
 struct MainPageV2View: View {
-    @Environment(\.modelContext) private var modelContext
-
     @Query(sort: \Transaction.date, order: .reverse) private var allTransactions: [Transaction]
     @Query(sort: \Category.sortOrder) private var allCategories: [Category]
 
@@ -25,27 +23,12 @@ struct MainPageV2View: View {
 
     var body: some View {
         content
-            .todaySheets(
+            .dashboardChrome(
                 vm: vm,
                 allTransactions: allTransactions,
                 allCategories: allCategories,
                 namespace: animationNamespace
             )
-            .task(id: vm.dashboardKey) { await vm.refreshDashboard() }
-            .sensoryFeedback(.selection, trigger: vm.balanceMode)
-            .sensoryFeedback(.success, trigger: vm.deleteSuccessCount)
-            .onAppear { feedVM() }
-            .onChange(of: allTransactions) { feedVM() }
-            .onChange(of: allCategories) { feedVM() }
-            .onReceive(NotificationCenter.default.publisher(for: .ankaDataDidChange)) { _ in
-                let fresh = (try? modelContext.fetch(FetchDescriptor<Transaction>(sortBy: [SortDescriptor(\.date, order: .reverse)]))) ?? allTransactions
-                vm.update(transactions: fresh, categories: allCategories)
-            }
-            .inlineComposer(vm: vm)
-    }
-
-    private func feedVM() {
-        vm.update(transactions: allTransactions, categories: allCategories)
     }
 
     // MARK: - Content
@@ -53,36 +36,17 @@ struct MainPageV2View: View {
     private var content: some View {
         NavigationStack {
             scrollContent
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbarBackground(.hidden, for: .navigationBar)
-                .background(DSColor.bgPrimary.ignoresSafeArea())
+                .dashboardToolbar(vm: vm, namespace: animationNamespace)
+                // V2-only toolbar items, merged with the shared set above.
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         categoryStatsButton
-                    }
-                    ToolbarItemGroup(placement: .topBarTrailing) {
-                        SettingsToolbarButton(vm: vm)
                     }
                     ToolbarItem(placement: .principal) {
                         heroToolbarTitle
                             .opacity(heroCollapsed ? 1 : 0)
                     }
-                    ToolbarItem(placement: .bottomBar) {
-                        StatsToolbarButton(vm: vm, namespace: animationNamespace)
-                    }
-                    ToolbarItem(placement: .bottomBar) {
-                        FilterToolbarButton(vm: vm, namespace: animationNamespace)
-                    }
-                    ToolbarSpacer(.flexible, placement: .bottomBar)
-                    DefaultToolbarItem(kind: .search, placement: .bottomBar)
-                    ToolbarItem(placement: .bottomBar) {
-                        AddToolbarButton(vm: vm, namespace: animationNamespace)
-                    }
                 }
-                .toolbarVisibility(vm.showInlineComposer ? .hidden : .visible, for: .bottomBar)
-                .searchable(text: $vm.searchQuery, prompt: "Search transactions")
-                .searchToolbarBehavior(.minimize)
-                .searchPresentationToolbarBehavior(.avoidHidingContent)
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
     }
@@ -135,24 +99,7 @@ struct MainPageV2View: View {
                 withAnimation(.dsSnappy) { heroCollapsed = collapsed }
             }
         }
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 18)
-                .onChanged { value in
-                    if abs(value.translation.width) > abs(value.translation.height) {
-                        isSwitchingPeriod = true
-                    }
-                }
-                .onEnded { value in
-                    let dx = value.translation.width
-                    let dy = value.translation.height
-                    if abs(dx) > 60, abs(dx) > abs(dy) * 1.5 {
-                        withAnimation(.dsSnappy) {
-                            vm.navigateMonth(by: dx < 0 ? 1 : -1)
-                        }
-                    }
-                    DispatchQueue.main.async { isSwitchingPeriod = false }
-                }
-        )
+        .simultaneousGesture(monthSwipeGesture(vm: vm, isSwitching: $isSwitchingPeriod))
         .ignoresSafeArea(.keyboard, edges: .bottom)
     }
 
@@ -319,44 +266,12 @@ struct MainPageV2View: View {
 
     private var transactionList: some View {
         Group {
-            if vm.showSkeleton {
-                ForEach(0..<5, id: \.self) { _ in
-                    SkeletonTransactionRow()
-                }
-            } else if vm.displayedGroupedByDay.isEmpty {
-                TransactionEmptyStateView(
-                    isUnfiltered: allTransactions.isEmpty,
-                    hasActiveFilter: !vm.selectedCategories.isEmpty,
-                    isSearchActive: vm.isSearchActive,
-                    onAdd: { vm.showAddTransaction = true },
-                    onClearFilter: { vm.clearCategoryFilter() },
-                    onClearSearch: { vm.clearSearch() }
-                )
-            } else {
-                ForEach(vm.displayedGroupedByDay, id: \.date) { group in
-                    Section {
-                        ForEach(group.transactions, id: \.id) { tx in
-                            TransactionRow(
-                                transaction: tx,
-                                namespace: animationNamespace,
-                                onEdit: {
-                                    guard !isSwitchingPeriod else { return }
-                                    vm.editingTransaction = tx
-                                },
-                                onDelete: { vm.requestDelete(tx) }
-                            )
-                            .transition(.opacity.combined(with: .scale(scale: 0.97, anchor: .top)))
-                        }
-                    } header: {
-                        let daily = vm.dailyTotal(for: group.transactions)
-                        DayHeaderView(
-                            label: vm.shortDateLabel(for: group.date),
-                            total: daily.amount,
-                            sign: daily.sign
-                        )
-                    }
-                }
-            }
+            DashboardTransactionList(
+                vm: vm,
+                allTransactionsEmpty: allTransactions.isEmpty,
+                namespace: animationNamespace,
+                isSwitching: { isSwitchingPeriod }
+            )
         }
         .padding(.horizontal, DSSpacing.screenEdge)
     }
@@ -387,4 +302,5 @@ private struct HeroOffsetKey: PreferenceKey {
     MainPageV2View()
         .modelContainer(SampleData.container())
         .environment(CategoryPredictor())
+        .environment(DeepLinkRouter())
 }
